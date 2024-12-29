@@ -24,7 +24,7 @@ const ThreeScene = () => {
   useEffect(() => {
     // Existing Three.js setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x000000);
+    scene.background = new THREE.Color(0xd7d6cd);
 
     const aspect = window.innerWidth / window.innerHeight;
     const frustumSize = 20;
@@ -52,7 +52,7 @@ const ThreeScene = () => {
 
     // Grid and Geometry setup
     const gridGroup = new THREE.Group();
-    const gridColor = new THREE.Color(0x555555);
+    const gridColor = new THREE.Color(0x000000); // Set grid color to black
     const gridMaterial = new THREE.LineBasicMaterial({
       color: gridColor,
       opacity: 0.2, // Decreased opacity
@@ -120,10 +120,10 @@ const ThreeScene = () => {
     // Create and add the thick line
     // const thickLine = createThickLine(scene);
     // create lines along four directions
-    createXLines(scene, step);
-    createZLines(scene, step);
-    createNegativeZLines(scene, step);
-    createNegativeXLines(scene, step);
+    createXLines(scene, step, 0x000000); // Set line color to black
+    createZLines(scene, step, 0x000000); // Set line color to black
+    createNegativeZLines(scene, step, 0x000000); // Set line color to black
+    createNegativeXLines(scene, step, 0x000000); // Set line color to black
 
     // Start animation
     startAnimation(cube, camera, scene, cubeSize, targetScale);
@@ -131,24 +131,25 @@ const ThreeScene = () => {
     handleResize(camera, renderer, frustumSize, aspect);
 
     // Add corners group to the scene
-    const cornersGroup = createNavTitle(0.2, 0xffffff); // Adjust size and color if needed
+    const cornersGroup = createNavTitle(0.2, 0x000000); // Adjust size and color if needed
     cornersGroup.rotation.z = Math.PI / 2; // Rotate the corners group by Math.PI / 2
     cornersGroup.rotation.x = 1.64; // Set default X rotation to 1.64
     scene.add(cornersGroup);
 
     // Add navtitle Events
-    const navEvents = createNavEvents(0.2, 0xffffff);
+    const navEvents = createNavEvents(0.2, 0x000000);
     navEvents.position.set(-7, 0, -7.5);
     navEvents.rotation.z = 0;
     navEvents.rotation.x = 1.64;
     scene.add(navEvents);
-
+/*
     //NavAlumni
     const navAlumni = createNavAlumni(0.2, 0xffffff);
     navAlumni.position.set(-7, 0, -7.5);
     navAlumni.rotation.z = 0;
     navAlumni.rotation.x = 1.64;
     scene.add(navAlumni);
+*/
 
     // Manually shift the position of the corners group
     cornersGroup.position.set(-0.07, 0, -8.5); // Adjust these values as needed
@@ -202,7 +203,7 @@ const ThreeScene = () => {
   return <>    
     
   <div id="threejs-canvas" className="" >
-  <h1>PAINTING WING </h1>
+  {/* <h1>PAINTING WING </h1> */}
   </div>
   </>
 };

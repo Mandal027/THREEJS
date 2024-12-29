@@ -65,7 +65,7 @@ export function createNavTitle(cornerSize = 0.2, lineColor = 0xffffff) {
       size: 0.4,
       height: 0.1,
     });
-    const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
     const textMesh = new THREE.Mesh(textGeometry, textMaterial);
 
     textGeometry.center(); // Center the text geometry
@@ -143,7 +143,7 @@ export function createNavEvents(cornerSize = 0.2, lineColor = 0xffffff) {
   // Load font and add text
   const loader = new FontLoader();
   loader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
-    const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
 
     // Generate each letter as a separate mesh
     const text = "EVENTS";

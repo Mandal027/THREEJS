@@ -4,7 +4,7 @@ import * as THREE from 'three';
 
 // Function to create a thick '+' sign at each intersection
 export function createPlusSign(x, z, size = 0.02, thickness = 0.08) {
-    const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
     // Horizontal line
     const horizontalGeometry = new THREE.PlaneGeometry(size, thickness);
