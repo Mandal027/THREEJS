@@ -4,7 +4,7 @@ export class LineManager {
   constructor(scene) {
     this.scene = scene;
     this.lineMaterial = new THREE.LineBasicMaterial({
-      color: 0x4deeea,
+      color:0x000000,
       linewidth: 5,
       transparent: true,
       opacity: 0,

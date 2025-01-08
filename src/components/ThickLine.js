@@ -13,8 +13,8 @@ export function createThickLine(scene) {
 
     const lineMaterial = new THREE.LineBasicMaterial({
         color: 0x4DEEEA, // Light glowing bulb color
-        linewidth: 5,    // Line thickness
-        transparent: true, // Make the line transparent
+        linewidth: 7,    // Line thickness
+        transparent: false, // Make the line transparent
         opacity: 0        // Set the opacity to 0 initially
     });
 

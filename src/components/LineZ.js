@@ -14,7 +14,7 @@ export function createZLines(scene, step) {
   // Extended Line 3 in +X
   const extendedLine3Points = manager.extendLine(
     new THREE.Vector3(0, 0.05, step + 5),
-    new THREE.Vector3(1, 0.05, 0),
+    new THREE.Vector3(1.018, 0.05, 0.03),
     2
   );
   manager.createLine(extendedLine3Points);

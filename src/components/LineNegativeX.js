@@ -34,6 +34,15 @@ export function createNegativeXLines(scene, step) {
   ];
   manager.createLine(newLineXPoints);
 
+
+  //Extended newLineXPoints Line in +Z direction by 1 unit start point is end point of newLineXPoints
+  const newLineXPoints_Z = manager.extendLine(
+    new THREE.Vector3(newLineXPoints[1].x, 0.05, newLineXPoints[1].z ),
+    new THREE.Vector3(0, 0, 1),
+    1
+  );
+  manager.createLine(newLineXPoints_Z);
+
   // Extended Line 1 in -Z
   const extendedLine1_ZPoints = manager.extendLine(
     new THREE.Vector3(-step, 0.05, -0.2),
@@ -53,15 +62,16 @@ export function createNegativeXLines(scene, step) {
   // Extend this line along -X direction by 1 unit
   const newLine_XPoints = [
     newLine_ZPoints[newLine_ZPoints.length - 1], // Starting from the end point of newLineZPoints
-    new THREE.Vector3(newLine_ZPoints[newLine_ZPoints.length - 1].x - 1, 0.05, newLine_ZPoints[newLine_ZPoints.length - 1].z) // End point (+1 unit along X-axis)
+    new THREE.Vector3(newLine_ZPoints[newLine_ZPoints.length - 1].x - 1, 0.05, newLine_ZPoints[newLine_ZPoints.length - 1].z + 0.1) // End point (+1 unit along X-axis)
   ];
   manager.createLine(newLine_XPoints);
 
   // Extended newLine_XPoints Line in -Z direction by 1 unit
   const newLine_XPoints_Z = manager.extendLine(
-    new THREE.Vector3(newLine_XPoints[1].x, 0.05, newLine_XPoints[1].z),
+    new THREE.Vector3(newLine_XPoints[1].x, 0.05, newLine_XPoints[1].z ),
     new THREE.Vector3(0, 0, -1),
     1
   );
   manager.createLine(newLine_XPoints_Z);
+  
 }

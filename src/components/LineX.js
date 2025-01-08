@@ -6,8 +6,8 @@ export function createXLines(scene, step) {
 
   // Line 1
   const line1Points = [
-    new THREE.Vector3(step, 0.05, 0),
-    new THREE.Vector3(step + 7, 0.05, 0),
+    new THREE.Vector3(step, 0.09, 0),
+    new THREE.Vector3(step + 7, 0.09, 0),
   ];
   manager.createLine(line1Points);
 
@@ -27,13 +27,22 @@ export function createXLines(scene, step) {
   );
   manager.createLine(newLineZPoints);
 
-  // Add a new line starting from the end point of newLineZPoints, along -X direction of 1 unit
+  // Add a new line starting from the end point of newLineZPoints, along -X direction of 0.5 unit
   const newLineXPoints = [
     newLineZPoints[newLineZPoints.length - 1], // Starting from the end point of newLineZPoints
-    new THREE.Vector3(newLineZPoints[newLineZPoints.length - 1].x - 1, 0.05, newLineZPoints[newLineZPoints.length - 1].z) // End point (-1 unit along X-axis)
+    new THREE.Vector3(newLineZPoints[newLineZPoints.length - 1].x - 0.6, 0.05, newLineZPoints[newLineZPoints.length - 1].z) // End point (-0.5 unit along X-axis)
   ];
   manager.createLine(newLineXPoints);
+  
 
+  //extend the newLineXPoints along +Z direction of 0.4 units starting from the end point of newLineXPoints
+  const extendedLineXPoints = manager.extendLine(
+    newLineXPoints[newLineXPoints.length - 1], // Starting from the end point of newLineXPoints
+    new THREE.Vector3(0, 0.05, 0.2), // Direction vector 
+    0.4 // Length of the line
+  );
+  manager.createLine(extendedLineXPoints);
+ 
 
     // design a label box or nameplate having v shape design at 4 corners of a rectagle shape label 
     // design a label box or nameplate having v shape design at 4 corners of a rectagle shape label

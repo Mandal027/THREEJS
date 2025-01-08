@@ -27,16 +27,16 @@ function createCorner(size, material) {
 }
 
 // Function to create and return the navTitle "ABOUT US"
-export function createNavTitle(cornerSize = 0.2, lineColor = 0xffffff) {
+export function createNavTitle(cornerSize = 0.2, lineColor = 0xa44c24) {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: lineColor,
-    linewidth: 2,
+    linewidth: 5,
   });
   const cornersGroup = new THREE.Group();
 
   // Define rectangle dimensions
   const rectangleWidth = 1;
-  const rectangleHeight = 4;
+  const rectangleHeight = 3.5;
 
   // Create corners
   const topLeft = createCorner(cornerSize, lineMaterial);
@@ -57,63 +57,84 @@ export function createNavTitle(cornerSize = 0.2, lineColor = 0xffffff) {
   // Add corners to the group
   cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);
 
+ 
+
   // Load font and add text
   const loader = new FontLoader();
-  loader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
-    const textGeometry = new TextGeometry("ABOUT US", {
-      font: font,
-      size: 0.4,
-      height: 0.1,
-    });
+  loader.load("/fonts/Decorya DEMO_Regular.json", (font) => {
     const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
-    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
 
-    textGeometry.center(); // Center the text geometry
+    // Generate each letter as a separate mesh
+    const text = "ABOUT US";
+    const textGroup = new THREE.Group(); // Group to hold all letters
+    let xOffset = -0.4 * text.length; // Adjust spacing between letters
 
-    // Position the text
-    textMesh.position.set(-0.5, 0.6, 0.9);
-    textMesh.rotation.set(3, 0, 1.66);
-    cornersGroup.add(textMesh);
+    for (let i = 0; i < text.length; i++) {
+      const charGeometry = new TextGeometry(text[i], {
+        font: font,
+        size: 0.5,
+        depth: 0.06,
+      });
+      const charMesh = new THREE.Mesh(charGeometry, textMaterial);
+
+      charGeometry.center(); // Center each letter
+
+      charMesh.position.set(xOffset, 2.7, 1.1);
+      textGroup.add(charMesh);
+
+      xOffset += 0.35; // Adjust spacing between letters
+    }
+
+  
+    cornersGroup.add(textGroup);
+
+    // Set final rotation values for the text group
+    textGroup.rotation.set(3, 0, 1.62); // Adjust these values as needed
+    textGroup.position.set(3.1, -2.6, 0.2); // Adjust these values as needed
+
 
     // GUI configuration for text position and rotation
-    const textControls = {
-      xPosition: textMesh.position.x,
-      yPosition: textMesh.position.y,
-      zPosition: textMesh.position.z,
-      xRotation: textMesh.rotation.x,
-      yRotation: textMesh.rotation.y,
-      zRotation: textMesh.rotation.z,
-    };
+    // const textControls = {
+    //   xPosition: textGroup.position.x,
+    //   yPosition: textGroup.position.y,
+    //   zPosition: textGroup.position.z,
+    //   xRotation: textGroup.rotation.x,
+    //   yRotation: textGroup.rotation.y,
+    //   zRotation: textGroup.rotation.z,
+    // };
 
-    // const gui = new GUI();
+    // const gui = new GUI({width: 300});
+    // gui.index = 1;
     // gui.add(textControls, "xPosition", -5, 5, 0.1).name("Text X Position").onChange((value) => {
-    //   textMesh.position.x = value;
+    //   textGroup.position.x = value;
     // });
     // gui.add(textControls, "yPosition", -5, 5, 0.1).name("Text Y Position").onChange((value) => {
-    //   textMesh.position.y = value;
+    //   textGroup.position.y = value;
     // });
     // gui.add(textControls, "zPosition", -5, 5, 0.1).name("Text Z Position").onChange((value) => {
-    //   textMesh.position.z = value;
+    //   textGroup.position.z = value;
     // });
     // gui.add(textControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text X Rotation").onChange((value) => {
-    //   textMesh.rotation.x = value;
+    //   textGroup.rotation.x = value;
     // });
     // gui.add(textControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Y Rotation").onChange((value) => {
-    //   textMesh.rotation.y = value;
+    //   textGroup.rotation.y = value;
     // });
     // gui.add(textControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Z Rotation").onChange((value) => {
-    //   textMesh.rotation.z = value;
+    //   textGroup.rotation.z = value;
     // });
   });
+
+ 
 
   return cornersGroup;
 }
 
 // Function to create and return the navTitle "EVENTS"
-export function createNavEvents(cornerSize = 0.2, lineColor = 0xffffff) {
+export function createNavEvents(cornerSize = 0.2, lineColor = 0xa44c24) {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: lineColor,
-    linewidth: 1,
+    linewidth: 5,
   });
   const cornersGroup = new THREE.Group();
 
@@ -142,7 +163,7 @@ export function createNavEvents(cornerSize = 0.2, lineColor = 0xffffff) {
 
   // Load font and add text
   const loader = new FontLoader();
-  loader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
+  loader.load("/fonts/Decorya DEMO_Regular.json", (font) => {
     const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
 
     // Generate each letter as a separate mesh
@@ -153,8 +174,8 @@ export function createNavEvents(cornerSize = 0.2, lineColor = 0xffffff) {
     for (let i = 0; i < text.length; i++) {
       const charGeometry = new TextGeometry(text[i], {
         font: font,
-        size: 0.4,
-        height: 0.1,
+        size: 0.5,
+        depth: 0.06, // Decrease thickness
       });
       const charMesh = new THREE.Mesh(charGeometry, textMaterial);
 
@@ -163,24 +184,24 @@ export function createNavEvents(cornerSize = 0.2, lineColor = 0xffffff) {
       charMesh.position.set(xOffset, 1.5, 0.5);
       textGroup.add(charMesh);
 
-      xOffset += 0.4; // Decrease spacing between letters
+      xOffset += 0.36; // Decrease spacing between letters
     }
 
     cornersGroup.add(textGroup);
 
     // Set final rotation values for the text group
-    textGroup.rotation.set(3.27, 0, 1.51); // Adjust these values as needed
-    textGroup.position.set(1.55, -1.3, 0.2); // Adjust these values as needed
+    textGroup.rotation.set(3.07, 0, 4.7); // Adjust these values as needed
+    textGroup.position.set(-1.7, 1.3, 0); // Adjust these values as needed
 
     // GUI configuration for the whole text group's position and rotation
-    const textGroupControls = {
-      xPosition: textGroup.position.x,
-      yPosition: textGroup.position.y,
-      zPosition: textGroup.position.z,
-      xRotation: textGroup.rotation.x,
-      yRotation: textGroup.rotation.y,
-      zRotation: textGroup.rotation.z,
-    };
+    // const textGroupControls = {
+    //   xPosition: textGroup.position.x,
+    //   yPosition: textGroup.position.y,
+    //   zPosition: textGroup.position.z,
+    //   xRotation: textGroup.rotation.x,
+    //   yRotation: textGroup.rotation.y,
+    //   zRotation: textGroup.rotation.z,
+    // };
 
     // const gui = new GUI();
     // gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
@@ -203,12 +224,320 @@ export function createNavEvents(cornerSize = 0.2, lineColor = 0xffffff) {
     // });
   });
 
+ 
+
+  return cornersGroup;
+}
+
+// Function to create and return the navTitle "MEMBERS"
+export function createNavMembers(cornerSize = 0.2, lineColor = 0xffffff) {
+  const lineMaterial = new THREE.LineBasicMaterial({
+    color: lineColor,
+    linewidth: 2,
+  });
+  const cornersGroup = new THREE.Group();
+
+  // Define rectangle dimensions
+  const rectangleWidth = 1;
+  const rectangleHeight = 3;
+
+  // Create corners
+  const topLeft = createCorner(cornerSize, lineMaterial);
+  topLeft.position.set(-rectangleWidth / 2, rectangleHeight / 2, 0);
+
+  const topRight = createCorner(cornerSize, lineMaterial);
+  topRight.position.set(rectangleWidth / 2, rectangleHeight / 2, 0);
+  topRight.rotation.z = -Math.PI / 2;
+
+  const bottomRight = createCorner(cornerSize, lineMaterial);
+  bottomRight.position.set(rectangleWidth / 2, -rectangleHeight / 2, 0);
+  bottomRight.rotation.z = Math.PI;
+
+  const bottomLeft = createCorner(cornerSize, lineMaterial);
+  bottomLeft.position.set(-rectangleWidth / 2, -rectangleHeight / 2, 0);
+  bottomLeft.rotation.z = Math.PI / 2;
+
+  // Add corners to the group
+  cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);
+  // cornersGroup.position.set(-3, 0, 0); // Adjust these values as needed
+
+  // Load font and add text
+  const loader = new FontLoader();
+  loader.load("/fonts/Decorya DEMO_Regular.json", (font) => {
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
+
+    // Generate each letter as a separate mesh
+    const text = "MEMBERS";
+    const textGroup = new THREE.Group(); // Group to hold all letters
+    let xOffset = -0.7 * text.length; // Decrease spacing between letters
+
+    for (let i = 0; i < text.length; i++) {
+      const charGeometry = new TextGeometry(text[i], {
+        font: font,
+        size: 0.5,
+        depth: 0.06,
+      });
+      const charMesh = new THREE.Mesh(charGeometry, textMaterial);
+
+      charGeometry.center(); // Center each letter
+
+      charMesh.position.set(xOffset, 1.5, 0.5);
+      textGroup.add(charMesh);
+
+      xOffset += 0.36; // Decrease spacing between letters
+
+      
+    }
+
+    cornersGroup.add(textGroup);
+
+   
+
+    // Set final rotation values for the text group
+    textGroup.rotation.set(3.2, 0, 1.57); // Adjust these values as needed
+    textGroup.position.set(1.4, -3.7, 0.5); // Adjust these values as needed
+
+    // GUI configuration for the whole text group's position and rotation
+    // const textGroupControls = {
+    //   xPosition: textGroup.position.x,
+    //   yPosition: textGroup.position.y,
+    //   zPosition: textGroup.position.z,
+    //   xRotation: textGroup.rotation.x,
+    //   yRotation: textGroup.rotation.y,
+    //   zRotation: textGroup.rotation.z,
+    // };
+
+    //   const gui = new GUI();
+    //   gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
+    //     textGroup.position.x = value;
+    //   });
+    //   gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
+    //     textGroup.position.y = value;
+    //   });
+    //   gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
+    //     textGroup.position.z = value;
+    //   });
+    //   gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
+    //     textGroup.rotation.x = value;
+    //   });
+    //   gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
+    //     textGroup.rotation.y = value;
+    //   });
+    //   gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
+    //     textGroup.rotation.z = value;
+    //   });
+  });
+
+ 
+
+  return cornersGroup;
+}
+// Function to create and return the navTitle "ALUMNI"
+export function createNavAlumni(cornerSize = 0.2, lineColor = 0xffffff) {
+  const lineMaterial = new THREE.LineBasicMaterial({
+    color: lineColor,
+    linewidth: 2,
+  });
+  const cornersGroup = new THREE.Group();
+
+  // Define rectangle dimensions
+  const rectangleWidth = 1;
+  const rectangleHeight = 3;
+
+  // Create corners
+  const topLeft = createCorner(cornerSize, lineMaterial);
+  topLeft.position.set(-rectangleWidth / 2, rectangleHeight / 2, 0);
+
+  const topRight = createCorner(cornerSize, lineMaterial);
+  topRight.position.set(rectangleWidth / 2, rectangleHeight / 2, 0);
+  topRight.rotation.z = -Math.PI / 2;
+
+  const bottomRight = createCorner(cornerSize, lineMaterial);
+  bottomRight.position.set(rectangleWidth / 2, -rectangleHeight / 2, 0);
+  bottomRight.rotation.z = Math.PI;
+
+  const bottomLeft = createCorner(cornerSize, lineMaterial);
+  bottomLeft.position.set(-rectangleWidth / 2, -rectangleHeight / 2, 0);
+  bottomLeft.rotation.z = Math.PI / 2;
+
+  // Add corners to the group
+  cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);
+  // cornersGroup.position.set(-3, 0, 0); // Adjust these values as needed
+
+  // Load font and add text
+  const loader = new FontLoader();
+  loader.load("/fonts/Decorya DEMO_Regular.json", (font) => {
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
+
+    // Generate each letter as a separate mesh
+    const text = "ALUMNI";
+    const textGroup = new THREE.Group(); // Group to hold all letters
+    let xOffset = -0.7 * text.length; // Decrease spacing between letters
+
+    for (let i = 0; i < text.length; i++) {
+      const charGeometry = new TextGeometry(text[i], {
+        font: font,
+        size: 0.5,
+        depth: 0.06,
+      });
+      const charMesh = new THREE.Mesh(charGeometry, textMaterial);
+
+      charGeometry.center(); // Center each letter
+
+      charMesh.position.set(xOffset, 1.5, 0.5);
+      textGroup.add(charMesh);
+
+      xOffset += 0.36; // Decrease spacing between letters
+    }
+
+    cornersGroup.add(textGroup);
+
+    // Set final rotation values for the text group
+    textGroup.rotation.set(3.2, 0, 1.57); // Adjust these values as needed
+    textGroup.position.set(1.2, -3.1, 0.9); // Adjust these values as needed
+
+    // gui for word alumni positioning and rotation
+    // const textGroupControls = {
+    //   xPosition: textGroup.position.x,
+    //   yPosition: textGroup.position.y,
+    //   zPosition: textGroup.position.z,
+    //   xRotation: textGroup.rotation.x,
+    //   yRotation: textGroup.rotation.y,
+    //   zRotation: textGroup.rotation.z,
+    // };
+
+    // const gui = new GUI();
+    // gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
+    //   textGroup.position.x = value;
+    // });
+    // gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
+    //   textGroup.position.y = value;
+    // });
+    // gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
+    //   textGroup.position.z = value;
+    // });
+    // gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
+    //   textGroup.rotation.x = value;
+    // });
+    // gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
+    //   textGroup.rotation.y = value;
+    // });
+    // gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
+    //   textGroup.rotation.z = value;
+    // });
+
+
+     
+  });
+
+ 
+
+  return cornersGroup;
+}
+
+// Function to create and return the navTitle "MERCHANDISE"
+export function createNavMernc(cornerSize = 0.2, lineColor = 0xffffff) {
+  const lineMaterial = new THREE.LineBasicMaterial({
+    color: lineColor,
+    linewidth: 2,
+  });
+  const cornersGroup = new THREE.Group();
+
+  // Define rectangle dimensions
+  const rectangleWidth = 1;
+  const rectangleHeight = 4.7;
+
+  // Create corners
+  const topLeft = createCorner(cornerSize, lineMaterial);
+  topLeft.position.set(-rectangleWidth / 2, rectangleHeight / 2, 0);
+
+  const topRight = createCorner(cornerSize, lineMaterial);
+  topRight.position.set(rectangleWidth / 2, rectangleHeight / 2, 0);
+  topRight.rotation.z = -Math.PI / 2;
+
+  const bottomRight = createCorner(cornerSize, lineMaterial);
+  bottomRight.position.set(rectangleWidth / 2, -rectangleHeight / 2, 0);
+  bottomRight.rotation.z = Math.PI;
+
+  const bottomLeft = createCorner(cornerSize, lineMaterial);
+  bottomLeft.position.set(-rectangleWidth / 2, -rectangleHeight / 2, 0);
+  bottomLeft.rotation.z = Math.PI / 2;
+
+  // Add corners to the group
+  cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);
+  // cornersGroup.position.set(-3, 0, 0); // Adjust these values as needed
+
+  // Load font and add text
+  const loader = new FontLoader();
+  loader.load("/fonts/Decorya DEMO_Regular.json", (font) => {
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
+
+    // Generate each letter as a separate mesh
+    const text = "MERCHANDISE";
+    const textGroup = new THREE.Group(); // Group to hold all letters
+    let xOffset = -0.7 * text.length; // Decrease spacing between letters
+
+    for (let i = 0; i < text.length; i++) {
+      const charGeometry = new TextGeometry(text[i], {
+        font: font,
+        size: 0.5,
+        depth: 0.06,
+      });
+      const charMesh = new THREE.Mesh(charGeometry, textMaterial);
+
+      charGeometry.center(); // Center each letter
+
+      charMesh.position.set(xOffset, 1.5, 0.5);
+      textGroup.add(charMesh);
+
+      xOffset += 0.36; // Decrease spacing between letters
+    }
+
+    cornersGroup.add(textGroup);
+
+    // Set final rotation values for the text group
+    textGroup.rotation.set(3.27, 0, 1.48); // Adjust these values as needed
+    textGroup.position.set(1.8, -6, 0.2); // Adjust these values as needed
+
+    // GUI configuration for the whole text group's position and rotation
+    // const textGroupControls = {
+    //   xPosition: textGroup.position.x,
+    //   yPosition: textGroup.position.y,
+    //   zPosition: textGroup.position.z,
+    //   xRotation: textGroup.rotation.x,
+    //   yRotation: textGroup.rotation.y,
+    //   zRotation: textGroup.rotation.z,
+    // };
+
+    //   const gui = new GUI();
+    //   gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
+    //     textGroup.position.x = value;
+    //   });
+    //   gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
+    //     textGroup.position.y = value;
+    //   });
+    //   gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
+    //     textGroup.position.z = value;
+    //   });
+    //   gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
+    //     textGroup.rotation.x = value;
+    //   });
+    //   gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
+    //     textGroup.rotation.y = value;
+    //   });
+    //   gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
+    //     textGroup.rotation.z = value;
+    //   });
+  });
+
+ 
+
   return cornersGroup;
 }
 
 
-// Function to create and return the navTitle "ALUMNI"
-export function createNavAlumni(cornerSize = 0.2, lineColor = 0xffffff) {
+// Function to create and return the navTitle "BIT SINDRI"
+export function createNavBIT(cornerSize = 0.2, lineColor = 0xffffff) {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: lineColor,
     linewidth: 2,
@@ -237,22 +566,23 @@ export function createNavAlumni(cornerSize = 0.2, lineColor = 0xffffff) {
 
   // Add corners to the group
   cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);
+  // cornersGroup.position.set(-3, 0, 0); // Adjust these values as needed
 
   // Load font and add text
   const loader = new FontLoader();
-  loader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
-    const textMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  loader.load("/fonts/Decorya DEMO_Regular.json", (font) => {
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
 
     // Generate each letter as a separate mesh
-    const text = "MEMBERS";
+    const text = "BIT SINDRI";
     const textGroup = new THREE.Group(); // Group to hold all letters
     let xOffset = -0.7 * text.length; // Decrease spacing between letters
 
     for (let i = 0; i < text.length; i++) {
       const charGeometry = new TextGeometry(text[i], {
         font: font,
-        size: 0.4,
-        height: 0.1,
+        size: 0.5,
+        depth: 0.06,
       });
       const charMesh = new THREE.Mesh(charGeometry, textMaterial);
 
@@ -261,45 +591,249 @@ export function createNavAlumni(cornerSize = 0.2, lineColor = 0xffffff) {
       charMesh.position.set(xOffset, 1.5, 0.5);
       textGroup.add(charMesh);
 
-      xOffset += 0.4; // Decrease spacing between letters
+      xOffset += 0.36; // Decrease spacing between letters
     }
 
     cornersGroup.add(textGroup);
 
     // Set final rotation values for the text group
     textGroup.rotation.set(3.27, 0, 1.48); // Adjust these values as needed
-    textGroup.position.set(0.6, 8, 0.1); // Adjust these values as needed
+    textGroup.position.set(1.7, -5.6, 0.4); // Adjust these values as needed
+
+    // // GUI configuration for the whole text group's position and rotation
+    // const textGroupControls = {
+    //   xPosition: textGroup.position.x,
+    //   yPosition: textGroup.position.y,
+    //   zPosition: textGroup.position.z,
+    //   xRotation: textGroup.rotation.x,
+    //   yRotation: textGroup.rotation.y,
+    //   zRotation: textGroup.rotation.z,
+    // };
+
+    //   const gui = new GUI();
+    //   gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
+    //     textGroup.position.x = value;
+    //   });
+    //   gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
+    //     textGroup.position.y = value;
+    //   });
+    //   gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
+    //     textGroup.position.z = value;
+    //   });
+    //   gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
+    //     textGroup.rotation.x = value;
+    //   });
+    //   gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
+    //     textGroup.rotation.y = value;
+    //   });
+    //   gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
+    //     textGroup.rotation.z = value;
+    //   });
+  });
+
+ 
+
+  return cornersGroup;
+}
+
+
+// Function to create and return the navTitle "COLLAB"
+export function createNavCollab(cornerSize = 0.2, lineColor = 0xffffff) {
+  const lineMaterial = new THREE.LineBasicMaterial({
+    color: lineColor,
+    linewidth: 2,
+  });
+  const cornersGroup = new THREE.Group();
+
+  // Define rectangle dimensions
+  const rectangleWidth = 1;
+  const rectangleHeight = 3;
+
+  // Create corners
+  const topLeft = createCorner(cornerSize, lineMaterial);
+  topLeft.position.set(-rectangleWidth / 2, rectangleHeight / 2, 0);
+
+  const topRight = createCorner(cornerSize, lineMaterial);
+  topRight.position.set(rectangleWidth / 2, rectangleHeight / 2, 0);
+  topRight.rotation.z = -Math.PI / 2;
+
+  const bottomRight = createCorner(cornerSize, lineMaterial);
+  bottomRight.position.set(rectangleWidth / 2, -rectangleHeight / 2, 0);
+  bottomRight.rotation.z = Math.PI;
+
+  const bottomLeft = createCorner(cornerSize, lineMaterial);
+  bottomLeft.position.set(-rectangleWidth / 2, -rectangleHeight / 2, 0);
+  bottomLeft.rotation.z = Math.PI / 2;
+
+  // Add corners to the group
+  cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);
+  // cornersGroup.position.set(-3, 0, 0); // Adjust these values as needed
+
+  // Load font and add text
+  const loader = new FontLoader();
+  loader.load("/fonts/Decorya DEMO_Regular.json", (font) => {
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
+
+    // Generate each letter as a separate mesh
+    const text = "COLLABS";
+    const textGroup = new THREE.Group(); // Group to hold all letters
+    let xOffset = -0.7 * text.length; // Decrease spacing between letters
+
+    for (let i = 0; i < text.length; i++) {
+      const charGeometry = new TextGeometry(text[i], {
+        font: font,
+        size: 0.5,
+        depth: 0.06, // Increase thickness to make it bolder
+      });
+      const charMesh = new THREE.Mesh(charGeometry, textMaterial);
+
+      charGeometry.center(); // Center each letter
+
+      charMesh.position.set(xOffset, 1.5, 0.5);
+      textGroup.add(charMesh);
+
+      xOffset += 0.36; // Decrease spacing between letters
+    }
+
+    cornersGroup.add(textGroup);
+
+    // Set final rotation values for the text group
+    textGroup.rotation.set(3, 0, 1.64); // Adjust these values as needed
+    textGroup.position.set(1.7, -3.5, 0); // Adjust these values as needed
 
     // GUI configuration for the whole text group's position and rotation
-    const textGroupControls = {
-      xPosition: textGroup.position.x,
-      yPosition: textGroup.position.y,
-      zPosition: textGroup.position.z,
-      xRotation: textGroup.rotation.x,
-      yRotation: textGroup.rotation.y,
-      zRotation: textGroup.rotation.z,
-    };
+    // const textGroupControls = {
+    //   xPosition: textGroup.position.x,
+    //   yPosition: textGroup.position.y,
+    //   zPosition: textGroup.position.z,
+    //   xRotation: textGroup.rotation.x,
+    //   yRotation: textGroup.rotation.y,
+    //   zRotation: textGroup.rotation.z,
+    // };
 
-    const gui = new GUI();
-    gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
-      textGroup.position.x = value;
-    });
-    gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
-      textGroup.position.y = value;
-    });
-    gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
-      textGroup.position.z = value;
-    });
-    gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
-      textGroup.rotation.x = value;
-    });
-    gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
-      textGroup.rotation.y = value;
-    });
-    gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
-      textGroup.rotation.z = value;
-    });
+    //   const gui = new GUI();
+    //   gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
+    //     textGroup.position.x = value;
+    //   });
+    //   gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
+    //     textGroup.position.y = value;
+    //   });
+    //   gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
+    //     textGroup.position.z = value;
+    //   });
+    //   gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
+    //     textGroup.rotation.x = value;
+    //   });
+    //   gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
+    //     textGroup.rotation.y = value;
+    //   });
+    //   gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
+    //     textGroup.rotation.z = value;
+    //   });
   });
+
+ 
+
+  return cornersGroup;
+}
+
+
+// Function to create and return the navTitle "INDUCTION"
+export function createNavInduction(cornerSize = 0.2, lineColor = 0xffffff) {
+  const lineMaterial = new THREE.LineBasicMaterial({
+    color: lineColor,
+    linewidth: 2,
+  });
+  const cornersGroup = new THREE.Group();
+
+  // Define rectangle dimensions
+  const rectangleWidth = 1;
+  const rectangleHeight = 4;
+
+  // Create corners
+  const topLeft = createCorner(cornerSize, lineMaterial);
+  topLeft.position.set(-rectangleWidth / 2, rectangleHeight / 2, 0);
+
+  const topRight = createCorner(cornerSize, lineMaterial);
+  topRight.position.set(rectangleWidth / 2, rectangleHeight / 2, 0);
+  topRight.rotation.z = -Math.PI / 2;
+
+  const bottomRight = createCorner(cornerSize, lineMaterial);
+  bottomRight.position.set(rectangleWidth / 2, -rectangleHeight / 2, 0);
+  bottomRight.rotation.z = Math.PI;
+
+  const bottomLeft = createCorner(cornerSize, lineMaterial);
+  bottomLeft.position.set(-rectangleWidth / 2, -rectangleHeight / 2, 0);
+  bottomLeft.rotation.z = Math.PI / 2;
+
+  // Add corners to the group
+  cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);
+  // cornersGroup.position.set(-3, 0, 0); // Adjust these values as needed
+
+  // Load font and add text
+  const loader = new FontLoader();
+  loader.load("/fonts/Decorya DEMO_Regular.json", (font) => {
+    const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
+
+    // Generate each letter as a separate mesh
+    const text = "INDUCTION";
+    const textGroup = new THREE.Group(); // Group to hold all letters
+    let xOffset = -0.7 * text.length; // Decrease spacing between letters
+
+    for (let i = 0; i < text.length; i++) {
+      const charGeometry = new TextGeometry(text[i], {
+        font: font,
+        size: 0.5,
+        depth: 0.06,
+      });
+      const charMesh = new THREE.Mesh(charGeometry, textMaterial);
+
+      charGeometry.center(); // Center each letter
+
+      charMesh.position.set(xOffset, 1.5, 0.5);
+      textGroup.add(charMesh);
+
+      xOffset += 0.36; // Decrease spacing between letters
+    }
+
+    cornersGroup.add(textGroup);
+
+    // Set final rotation values for the text group
+    textGroup.rotation.set(3.27, 0, 1.48); // Adjust these values as needed
+    textGroup.position.set(1.9, -4.7, 0); // Adjust these values as needed
+
+    // // // GUI configuration for the whole text group's position and rotation
+    // const textGroupControls = {
+    //   xPosition: textGroup.position.x,
+    //   yPosition: textGroup.position.y,
+    //   zPosition: textGroup.position.z,
+    //   xRotation: textGroup.rotation.x,
+    //   yRotation: textGroup.rotation.y,
+    //   zRotation: textGroup.rotation.z,
+    // };
+
+    //   const gui = new GUI();
+    //   gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
+    //     textGroup.position.x = value;
+    //   });
+    //   gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
+    //     textGroup.position.y = value;
+    //   });
+    //   gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
+    //     textGroup.position.z = value;
+    //   });
+    //   gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
+    //     textGroup.rotation.x = value;
+    //   });
+    //   gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
+    //     textGroup.rotation.y = value;
+    //   });
+    //   gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
+    //     textGroup.rotation.z = value;
+    //   });
+  });
+
+ 
 
   return cornersGroup;
 }

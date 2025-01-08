@@ -13,18 +13,49 @@ import { createXLines } from "./LineX";
 import { createZLines } from "./LineZ";
 import { createNegativeZLines } from "./LineNegativeZ";
 import { createNegativeXLines } from "./LineNegativeX";
-import { createNavEvents, createNavTitle , createNavAlumni} from "./CreateNavTitle.js";
-import { GUI } from "dat.gui"; // Correct import for dat.GUI
+import {
+  createNavEvents,
+  createNavTitle,
+  createNavAlumni,
+  createNavMembers,
+  createNavMernc,
+  createNavBIT,
+  createNavCollab,
+  createNavInduction,
+} from "./CreateNavTitle.js";
+
 
 const gridSize = 100; // Example value, adjust as needed
 const gridDivisions = 100; // Example value, adjust as needed
 const step = gridSize / gridDivisions;
+const group = new THREE.Group();  
 
 const ThreeScene = () => {
   useEffect(() => {
+    // Function to reload the page on resize
+    const handleWindowResize = () => {
+      window.location.reload();
+    };
+
+    // Attach the resize event listener
+    window.addEventListener("resize", handleWindowResize);
+
     // Existing Three.js setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xd7d6cd);
+
+    // Group for background and grid layout
+    const backgroundGridGroup = new THREE.Group();
+    scene.add(backgroundGridGroup);
+
+    // Load a texture as the background
+    const loader = new THREE.TextureLoader();
+    loader.load("/noisy-background.jpg", function (texture) {
+      scene.background = texture;
+    });
+
+    // Group for grid and background texture
+    const gridBackgroundGroup = new THREE.Group();
+    backgroundGridGroup.add(gridBackgroundGroup);
 
     const aspect = window.innerWidth / window.innerHeight;
     const frustumSize = 20;
@@ -55,7 +86,7 @@ const ThreeScene = () => {
     const gridColor = new THREE.Color(0x000000); // Set grid color to black
     const gridMaterial = new THREE.LineBasicMaterial({
       color: gridColor,
-      opacity: 0.2, // Decreased opacity
+      opacity: 0.1, // Decreased opacity
       transparent: true,
     });
 
@@ -63,7 +94,7 @@ const ThreeScene = () => {
     const gridHelper = new THREE.GridHelper(gridSize, gridDivisions);
     gridHelper.material = gridMaterial;
     gridGroup.add(gridHelper);
-    scene.add(gridGroup);
+    gridBackgroundGroup.add(gridGroup);
 
     // Cube
     const cubeSize = 2;
@@ -72,14 +103,21 @@ const ThreeScene = () => {
       cubeSize * 1,
       cubeSize
     );
-    const cubeMaterial = new THREE.MeshBasicMaterial({ color: 0xfbffff });
+    const cubeMaterial = new THREE.MeshBasicMaterial({
+      color: 0xd25c25,
+      transparent: true,
+      opacity: 0.8,
+    });
     const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.position.set(0, 13.35, 0);
     scene.add(cube);
 
+
+    
+
     // Hollow Cube
     const hollowCubeSize = 1.2;
-    const hollowCubeThickness = 0.25;
+    const hollowCubeThickness = 0.27;
     const outerGeometry = new RoundedBoxGeometry(
       hollowCubeSize,
       hollowCubeSize * 0.6,
@@ -106,7 +144,7 @@ const ThreeScene = () => {
     hollowCubeInner.position.set(0, -0.0, 0);
     scene.add(hollowCubeInner);
 
-    const rectLight = new THREE.RectAreaLight(0xffffff, 5, 2, 2);
+    const rectLight = new THREE.RectAreaLight(0x00000, 5, 2, 2);
     rectLight.position.set(0, 0.001, 0);
     rectLight.rotation.x = -Math.PI / 2;
     scene.add(rectLight);
@@ -120,92 +158,92 @@ const ThreeScene = () => {
     // Create and add the thick line
     // const thickLine = createThickLine(scene);
     // create lines along four directions
-    createXLines(scene, step, 0x000000); // Set line color to black
-    createZLines(scene, step, 0x000000); // Set line color to black
-    createNegativeZLines(scene, step, 0x000000); // Set line color to black
-    createNegativeXLines(scene, step, 0x000000); // Set line color to black
-
-    // Start animation
-    startAnimation(cube, camera, scene, cubeSize, targetScale);
-    // Handle resize
-    handleResize(camera, renderer, frustumSize, aspect);
+    const xLines = createXLines(scene, step, 0x0000); // Set line color to black
+    const zLines = createZLines(scene, step, 0x0000); // Set line color to black
+    const negativeZLines = createNegativeZLines(scene, step, 0x0000); // Set line color to black
+    const negativeXLines = createNegativeXLines(scene, step, 0x0000); // Set line color to black
+    // group.add(xLines);
+    // group.add(zLines);
+    // group.add(negativeZLines);
+    // group.add(negativeXLines);
 
     // Add corners group to the scene
-    const cornersGroup = createNavTitle(0.2, 0x000000); // Adjust size and color if needed
+    const cornersGroup = createNavTitle(0.2, 0xa44c24); // Adjust size and color if needed
     cornersGroup.rotation.z = Math.PI / 2; // Rotate the corners group by Math.PI / 2
     cornersGroup.rotation.x = 1.64; // Set default X rotation to 1.64
-    scene.add(cornersGroup);
+    cornersGroup.position.set(-2.3, 0, -10.5); // Adjust these values as needed
+    group.add(cornersGroup);
 
     // Add navtitle Events
-    const navEvents = createNavEvents(0.2, 0x000000);
-    navEvents.position.set(-7, 0, -7.5);
-    navEvents.rotation.z = 0;
-    navEvents.rotation.x = 1.64;
-    scene.add(navEvents);
-/*
-    //NavAlumni
-    const navAlumni = createNavAlumni(0.2, 0xffffff);
-    navAlumni.position.set(-7, 0, -7.5);
-    navAlumni.rotation.z = 0;
-    navAlumni.rotation.x = 1.64;
-    scene.add(navAlumni);
-*/
+    const navEvents = createNavEvents(0.2, 0xa44c24);
+    navEvents.rotation.set(1.6, 0, 3.2);
+    navEvents.position.set(-6.9, 0.2, -7.4); // Adjust these values as needed
 
-    // Manually shift the position of the corners group
-    cornersGroup.position.set(-0.07, 0, -8.5); // Adjust these values as needed
+    // Add navtitle Members
+    const navMembers = createNavMembers(0.2, 0xa44c24);
+    navMembers.position.set(-6.9, 0.2, 6.6);
+    navMembers.rotation.set(1.64, 0, 1.583);
+    group.add(navMembers);
 
-    // GUI configuration for corners group
-    const cornersGroupControls = {
-      zPosition: 0, // Default position along Z-axis
-      zRotation: 0, // Default rotation around Z-axis
-      xRotation: 1.64, // Default rotation around X-axis
-      yRotation: 0, // Default rotation around Y-axis
-    };
+    // Add navtitle Alumni
+    const navAlumni = createNavAlumni(0.2, 0xa44c24);
+    navAlumni.position.set(-0.5, 0, 6.9);
+    navAlumni.rotation.set(1.64, 0, 1.583);
+    group.add(navAlumni);
 
-    // GUI configuration for navEvents group
-    const navEventsControls = {
-      xPosition: navEvents.position.x,
-      yPosition: navEvents.position.y,
-      zPosition: navEvents.position.z,
-      xRotation: navEvents.rotation.x,
-      yRotation: navEvents.rotation.y,
-      zRotation: navEvents.rotation.z,
-    };
+    // Add navtitle Merchandise
+    const navMernc = createNavMernc(0.2, 0xa44c24);
+    navMernc.position.set(9.3, 1.5, -0.5);
+    navMernc.rotation.set(1.57, 0, 0);
+    group.add(navMernc);
 
-    // const gui = new GUI();
-    // gui.add(navEventsControls, 'xPosition', -5, 5, 0.1).name('NavEvents X Position').onChange((value) => {
-    //   navEvents.position.x = value;
-    // });
-    // gui.add(navEventsControls, 'yPosition', -5, 5, 0.1).name('NavEvents Y Position').onChange((value) => {
-    //   navEvents.position.y = value;
-    // });
-    // gui.add(navEventsControls, 'zPosition', -5, 5, 0.1).name('NavEvents Z Position').onChange((value) => {
-    //   navEvents.position.z = value;
-    // });
-    // gui.add(navEventsControls, 'xRotation', 0, Math.PI * 2, 0.01).name('NavEvents X Rotation').onChange((value) => {
-    //   navEvents.rotation.x = value;
-    // });
-    // gui.add(navEventsControls, 'yRotation', 0, Math.PI * 2, 0.01).name('NavEvents Y Rotation').onChange((value) => {
-    //   navEvents.rotation.y = value;
-    // });
-    // gui.add(navEventsControls, 'zRotation', 0, Math.PI * 2, 0.01).name('NavEvents Z Rotation').onChange((value) => {
-    //   navEvents.rotation.z = value;
-    // });
+    // Add navtitle BIT
+    const navBIT = createNavBIT(0.2, 0xa44c24);
+    navBIT.position.set(-8.5, 0, 0);
+    navBIT.rotation.set(1.57, 0, 0);
+    group.add(navBIT);
+
+    // Add navtitle Collab
+    const navCollab = createNavCollab(0.2, 0xa44c24);
+    navCollab.position.set(5.4, -0.2, 3.7);
+    navCollab.rotation.set(1.71, 0, 0.08);
+    group.add(navCollab);
+
+    // Add navtitle Induction
+    const navInduction = createNavInduction(0.2, 0xa44c24);
+    navInduction.position.set(3.5, 0, -7);
+    navInduction.rotation.set(1.57, 0, 6.28);
+    group.add(navInduction);
+
+    // Start animation and add navEvents after the animation completes
+    startAnimation(cube, camera, scene, cubeSize, targetScale, () => {
+      scene.add(group);
+      group.add(navEvents);
+    });
+
+   
+    // Handle resize
+    handleResize(camera, renderer, frustumSize, aspect);
 
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
+      // rippleEffect.update(); // Update ripple animation
       renderer.render(scene, camera);
     }
     animate();
+
+    // Cleanup event listener when the component unmounts
+    return () => {
+      window.removeEventListener("resize", handleWindowResize);
+    };
   }, []);
 
-  return <>    
-    
-  <div id="threejs-canvas" className="" >
-  {/* <h1>PAINTING WING </h1> */}
-  </div>
-  </>
+  return (
+    <>
+      <div id="threejs-canvas" className=""></div>
+    </>
+  );
 };
 
 export default ThreeScene;
