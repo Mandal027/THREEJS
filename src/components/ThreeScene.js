@@ -23,7 +23,7 @@ import {
   createNavCollab,
   createNavInduction,
 } from "./CreateNavTitle.js";
-
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 const gridSize = 100; // Example value, adjust as needed
 const gridDivisions = 100; // Example value, adjust as needed
@@ -112,9 +112,6 @@ const ThreeScene = () => {
     cube.position.set(0, 13.35, 0);
     scene.add(cube);
 
-
-    
-
     // Hollow Cube
     const hollowCubeSize = 1.2;
     const hollowCubeThickness = 0.27;
@@ -197,6 +194,30 @@ const ThreeScene = () => {
     navMernc.rotation.set(1.57, 0, 0);
     group.add(navMernc);
 
+
+
+
+    // <iframe src='https://my.spline.design/molang3dcopy-bf8f454b075cc8cfdad22f8b41cb8a9d/' frameborder='0' width='100%' height='100%'></iframe>
+    // <iframe src='https://my.spline.design/tshirtbodymaledarkcopy-905869297fb73d7591d9157b051a4e74/' frameborder='0' width='100%' height='100%'></iframe>
+
+  const tshirtLoader = new GLTFLoader();
+  tshirtLoader.load(
+    '/tshirt.glb', // Path to the model in the public folder
+    (gltf) => {
+      // Add the loaded model to the scene
+      scene.add(gltf.scene);
+    },
+    (xhr) => {
+      console.log(`Model ${(xhr.loaded / xhr.total) * 100}% loaded`);
+    },
+    (error) => {
+      console.error('An error occurred:', error);
+    }
+  );
+
+
+
+
     // Add navtitle BIT
     const navBIT = createNavBIT(0.2, 0xa44c24);
     navBIT.position.set(-8.5, 0, 0);
@@ -241,6 +262,8 @@ const ThreeScene = () => {
 
   return (
     <>
+    {/* <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.58/build/spline-viewer.js"></script> */}
+    {/* <spline-viewer url="https://prod.spline.design/4noEgOe65nRGzAKc/scene.splinecode"></spline-viewer> */}
       <div id="threejs-canvas" className=""></div>
     </>
   );
