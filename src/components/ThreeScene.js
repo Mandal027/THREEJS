@@ -23,7 +23,8 @@ import {
   createNavCollab,
   createNavInduction,
 } from "./CreateNavTitle.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+// import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GUI } from "dat.gui";
 
 const gridSize = 100; // Example value, adjust as needed
 const gridDivisions = 100; // Example value, adjust as needed
@@ -58,7 +59,7 @@ const ThreeScene = () => {
     backgroundGridGroup.add(gridBackgroundGroup);
 
     const aspect = window.innerWidth / window.innerHeight;
-    const frustumSize = 20;
+    const frustumSize = 22;
     const camera = new THREE.OrthographicCamera(
       (frustumSize * aspect) / -2,
       (frustumSize * aspect) / 2,
@@ -72,14 +73,35 @@ const ThreeScene = () => {
 
     // Increase the final zoom value
     // camera.zoom = 1.5; // Adjust this value as needed
-    // camera.updateProjectionMatrix();
+    camera.updateProjectionMatrix();
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById("threejs-canvas").appendChild(renderer.domElement);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
+
+    // // Enable damping for smooth movement
+    // controls.enableDamping = true;
+    
+    // // Rotation limits (in radians)
+    // controls.minPolarAngle = Math.PI / 10; // Limit the downward view (minimum vertical angle)
+    // controls.maxPolarAngle = Math.PI / 2; // Limit the upward view (maximum vertical angle)
+    
+    // // Prevent full 360° horizontal rotation (optional)
+    // controls.minAzimuthAngle = -Math.PI / 4; // Limit the leftward rotation
+    // controls.maxAzimuthAngle = Math.PI / 4; // Limit the rightward rotation
+    
+    // // Zoom limits
+    // controls.minDistance = 10; // Minimum distance from the target
+    // controls.maxDistance = 50; // Maximum distance from the target
+    
+    // Disable panning
+    controls.enablePan = false;
+
+    
+
+  
 
     // Grid and Geometry setup
     const gridGroup = new THREE.Group();
@@ -152,71 +174,52 @@ const ThreeScene = () => {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    // Create and add the thick line
-    // const thickLine = createThickLine(scene);
+   
     // create lines along four directions
     const xLines = createXLines(scene, step, 0x0000); // Set line color to black
     const zLines = createZLines(scene, step, 0x0000); // Set line color to black
     const negativeZLines = createNegativeZLines(scene, step, 0x0000); // Set line color to black
     const negativeXLines = createNegativeXLines(scene, step, 0x0000); // Set line color to black
-    // group.add(xLines);
-    // group.add(zLines);
-    // group.add(negativeZLines);
-    // group.add(negativeXLines);
+ 
 
     // Add corners group to the scene
     const cornersGroup = createNavTitle(0.2, 0xa44c24); // Adjust size and color if needed
-    cornersGroup.rotation.z = Math.PI / 2; // Rotate the corners group by Math.PI / 2
-    cornersGroup.rotation.x = 1.64; // Set default X rotation to 1.64
     cornersGroup.position.set(-2.3, 0, -10.5); // Adjust these values as needed
+    cornersGroup.rotation.set(4.71, 0, 1.57);
     group.add(cornersGroup);
+
+
 
     // Add navtitle Events
     const navEvents = createNavEvents(0.2, 0xa44c24);
-    navEvents.rotation.set(1.6, 0, 3.2);
-    navEvents.position.set(-6.9, 0.2, -7.4); // Adjust these values as needed
+    navEvents.rotation.set(4.71, 0, 0);
+    navEvents.position.set(-7, 0, -7.5); // Adjust these values as needed
+
+   
+
 
     // Add navtitle Members
     const navMembers = createNavMembers(0.2, 0xa44c24);
-    navMembers.position.set(-6.9, 0.2, 6.6);
-    navMembers.rotation.set(1.64, 0, 1.583);
+    navMembers.position.set(-6.5, 0, 6.5);
+    navMembers.rotation.set(4.71, 0, 1.57);
     group.add(navMembers);
 
+     
     // Add navtitle Alumni
     const navAlumni = createNavAlumni(0.2, 0xa44c24);
-    navAlumni.position.set(-0.5, 0, 6.9);
-    navAlumni.rotation.set(1.64, 0, 1.583);
+    navAlumni.position.set(-0.55, 0, 6.9);
+    navAlumni.rotation.set(4.71, 0, 1.57);
     group.add(navAlumni);
+
+    
 
     // Add navtitle Merchandise
     const navMernc = createNavMernc(0.2, 0xa44c24);
-    navMernc.position.set(9.3, 1.5, -0.5);
-    navMernc.rotation.set(1.57, 0, 0);
+    navMernc.position.set(8.5, 0, -1.2);
+    navMernc.rotation.set(1.6, 0, 0);
     group.add(navMernc);
 
-
-
-
-    // <iframe src='https://my.spline.design/molang3dcopy-bf8f454b075cc8cfdad22f8b41cb8a9d/' frameborder='0' width='100%' height='100%'></iframe>
-    // <iframe src='https://my.spline.design/tshirtbodymaledarkcopy-905869297fb73d7591d9157b051a4e74/' frameborder='0' width='100%' height='100%'></iframe>
-
-  const tshirtLoader = new GLTFLoader();
-  tshirtLoader.load(
-    '/tshirt.glb', // Path to the model in the public folder
-    (gltf) => {
-      // Add the loaded model to the scene
-      scene.add(gltf.scene);
-    },
-    (xhr) => {
-      console.log(`Model ${(xhr.loaded / xhr.total) * 100}% loaded`);
-    },
-    (error) => {
-      console.error('An error occurred:', error);
-    }
-  );
-
-
-
+  
 
     // Add navtitle BIT
     const navBIT = createNavBIT(0.2, 0xa44c24);
@@ -226,29 +229,34 @@ const ThreeScene = () => {
 
     // Add navtitle Collab
     const navCollab = createNavCollab(0.2, 0xa44c24);
-    navCollab.position.set(5.4, -0.2, 3.7);
-    navCollab.rotation.set(1.71, 0, 0.08);
+    navCollab.position.set(5.5, 0, 3.8);
+    navCollab.rotation.set(1.6, 3.1, 3.1);
     group.add(navCollab);
 
     // Add navtitle Induction
     const navInduction = createNavInduction(0.2, 0xa44c24);
     navInduction.position.set(3.5, 0, -7);
-    navInduction.rotation.set(1.57, 0, 6.28);
+    navInduction.rotation.set(4.7, 0, 0);
     group.add(navInduction);
 
+
+    //add ambient light to the gltf model
+    const ambientLightModel = new THREE.AmbientLight(0xffffff, 2);
+    scene.add(ambientLightModel);
+
     // Start animation and add navEvents after the animation completes
-    startAnimation(cube, camera, scene, cubeSize, targetScale, () => {
+    startAnimation(cube, camera, scene, cubeSize, targetScale,  () => {
       scene.add(group);
       group.add(navEvents);
     });
 
-   
     // Handle resize
     handleResize(camera, renderer, frustumSize, aspect);
 
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
+    
       // rippleEffect.update(); // Update ripple animation
       renderer.render(scene, camera);
     }
@@ -262,8 +270,6 @@ const ThreeScene = () => {
 
   return (
     <>
-    {/* <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.58/build/spline-viewer.js"></script> */}
-    {/* <spline-viewer url="https://prod.spline.design/4noEgOe65nRGzAKc/scene.splinecode"></spline-viewer> */}
       <div id="threejs-canvas" className=""></div>
     </>
   );

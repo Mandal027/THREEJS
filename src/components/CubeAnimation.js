@@ -2,6 +2,8 @@
 
 import * as THREE from 'three';
 import { gsap } from 'gsap';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { GUI } from 'dat.gui';
 
 export function startAnimation(cube, camera, scene, cubeSize, targetScale, completionCallback) {
   const timeline = gsap.timeline({ delay: 0.3 }); // Add a delay of 0.6 seconds
@@ -29,7 +31,7 @@ export function startAnimation(cube, camera, scene, cubeSize, targetScale, compl
 
       const cubeGeometry = new THREE.BoxGeometry(4, 4, 4);
       const cubeMaterial = new THREE.MeshBasicMaterial({
-        color:0xd25c25,
+        color: 0xd25c25,
         transparent: true,
         opacity: 0,
       });
@@ -86,6 +88,49 @@ export function startAnimation(cube, camera, scene, cubeSize, targetScale, compl
           },
         });
       });
+
+      // Add GLTF model to the scene
+      const gltfLoader = new GLTFLoader();
+      gltfLoader.load(
+        '/BIT.glb', // Path to the model in the public folder
+        (gltf) => {
+          const model = gltf.scene;
+          scene.add(model);
+
+          // Set initial position, rotation, and scale
+          model.position.set(-10, 1, -0.1); // Change this line to set the final position
+          model.rotation.set(0, 1.5, 0);
+          model.scale.set(2, 2, 1);
+
+          // Animate the GLTF model to appear
+          gsap.fromTo(model.position, { y: 0 }, { y: 1, duration: 1, ease: 'power2.inOut' });
+          gsap.fromTo(model.scale, { x: 0, y: 0, z: 0 }, { x: 2, y: 2, z: 1, duration: 1, ease: 'power2.inOut' });
+
+          // Animate the GLTF model to rotate continuously along the Y-axis
+          gsap.to(model.rotation, {
+            y: "+=6.28319", // Rotate by 2*PI radians (360 degrees)
+            duration: 10,
+            repeat: -1, // Repeat indefinitely
+            ease: 'linear',
+          });
+
+          // // Add dat.GUI for GLTF model position and rotation
+          // const gui = new GUI();
+          // const modelFolder = gui.addFolder('GLTF Model');
+          // modelFolder.add(model.position, 'x', -20, 20).name('Position X');
+          // modelFolder.add(model.position, 'y', -20, 20).name('Position Y');
+          // modelFolder.add(model.position, 'z', -20, 20).name('Position Z').onChange(() => {
+          //   model.position.set(-10, 0,0.13) ; // Set final z position to 0.13
+          // });
+         
+        },
+        (xhr) => {
+          console.log(`Model ${(xhr.loaded / xhr.total) * 100}% loaded`);
+        },
+        (error) => {
+          console.error('An error occurred:', error);
+        }
+      );
     },
   });
 
@@ -136,6 +181,9 @@ export function startAnimation(cube, camera, scene, cubeSize, targetScale, compl
       onUpdate: () => {
         camera.updateProjectionMatrix(); // Update the projection matrix on each frame
       },
+      onComplete: () => {
+        console.log('Final zoom value:', camera.zoom); // Log the final zoom value
+      }
     },
     0 // Start zooming at the same time as falling
   );

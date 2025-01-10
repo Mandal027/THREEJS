@@ -89,8 +89,8 @@ export function createNavTitle(cornerSize = 0.2, lineColor = 0xa44c24) {
     cornersGroup.add(textGroup);
 
     // Set final rotation values for the text group
-    textGroup.rotation.set(3, 0, 1.62); // Adjust these values as needed
-    textGroup.position.set(3.1, -2.6, 0.2); // Adjust these values as needed
+    textGroup.position.set(-2.7, -2.1, -1); // Adjust these values as needed
+    textGroup.rotation.set(0, 0, 4.71); // Adjust these values as needed
 
 
     // GUI configuration for text position and rotation
@@ -190,8 +190,8 @@ export function createNavEvents(cornerSize = 0.2, lineColor = 0xa44c24) {
     cornersGroup.add(textGroup);
 
     // Set final rotation values for the text group
-    textGroup.rotation.set(3.07, 0, 4.7); // Adjust these values as needed
-    textGroup.position.set(-1.7, 1.3, 0); // Adjust these values as needed
+    textGroup.rotation.set(0, 0, 1.57); // Adjust these values as needed
+    textGroup.position.set(1.5, 1.6, -0.5); // Adjust these values as needed
 
     // GUI configuration for the whole text group's position and rotation
     // const textGroupControls = {
@@ -294,8 +294,8 @@ export function createNavMembers(cornerSize = 0.2, lineColor = 0xffffff) {
    
 
     // Set final rotation values for the text group
-    textGroup.rotation.set(3.2, 0, 1.57); // Adjust these values as needed
-    textGroup.position.set(1.4, -3.7, 0.5); // Adjust these values as needed
+    textGroup.rotation.set(0, 0, 4.71); // Adjust these values as needed
+    textGroup.position.set(-1.5, -3.8, -0.4); // Adjust these values as needed
 
     // GUI configuration for the whole text group's position and rotation
     // const textGroupControls = {
@@ -393,8 +393,8 @@ export function createNavAlumni(cornerSize = 0.2, lineColor = 0xffffff) {
     cornersGroup.add(textGroup);
 
     // Set final rotation values for the text group
-    textGroup.rotation.set(3.2, 0, 1.57); // Adjust these values as needed
-    textGroup.position.set(1.2, -3.1, 0.9); // Adjust these values as needed
+    textGroup.position.set(-1.6, -3.4, -0.5); // Adjust these values as needed
+    textGroup.rotation.set(0, 0, 4.71); // Adjust these values as needed
 
     // gui for word alumni positioning and rotation
     // const textGroupControls = {
@@ -496,8 +496,8 @@ export function createNavMernc(cornerSize = 0.2, lineColor = 0xffffff) {
     cornersGroup.add(textGroup);
 
     // Set final rotation values for the text group
-    textGroup.rotation.set(3.27, 0, 1.48); // Adjust these values as needed
-    textGroup.position.set(1.8, -6, 0.2); // Adjust these values as needed
+    textGroup.position.set(1.5, -6, 0.6); // Adjust these values as needed
+    textGroup.rotation.set(3.14, 0, 1.57); // Adjust these values as needed
 
     // GUI configuration for the whole text group's position and rotation
     // const textGroupControls = {
@@ -597,8 +597,8 @@ export function createNavBIT(cornerSize = 0.2, lineColor = 0xffffff) {
     cornersGroup.add(textGroup);
 
     // Set final rotation values for the text group
-    textGroup.rotation.set(3.27, 0, 1.48); // Adjust these values as needed
-    textGroup.position.set(1.7, -5.6, 0.4); // Adjust these values as needed
+    textGroup.rotation.set(0, 3.14, 4.71); // Adjust these values as needed
+    textGroup.position.set(1.6, -5.3, 0.4); // Adjust these values as needed
 
     // // GUI configuration for the whole text group's position and rotation
     // const textGroupControls = {
@@ -667,7 +667,10 @@ export function createNavCollab(cornerSize = 0.2, lineColor = 0xffffff) {
 
   // Add corners to the group
   cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);
-  // cornersGroup.position.set(-3, 0, 0); // Adjust these values as needed
+  // cornersGroup.position.set(0, 0, 0); // Adjust these values as needed
+  // cornersGroup.position.set(15.5, -0.2, 0.4); // Adjust these values as needed
+  // cornersGroup.rotation.set(0, 3.14, 4.71); // Adjust these values as needed
+
 
   // Load font and add text
   const loader = new FontLoader();
@@ -695,11 +698,13 @@ export function createNavCollab(cornerSize = 0.2, lineColor = 0xffffff) {
       xOffset += 0.36; // Decrease spacing between letters
     }
 
-    cornersGroup.add(textGroup);
+    
 
     // Set final rotation values for the text group
-    textGroup.rotation.set(3, 0, 1.64); // Adjust these values as needed
-    textGroup.position.set(1.7, -3.5, 0); // Adjust these values as needed
+  
+    textGroup.rotation.set(0, 0, 1.57); // Adjust these values as needed
+    textGroup.position.set(1.5, 3.9, -0.4); // Adjust these values as needed
+    cornersGroup.add(textGroup);
 
     // GUI configuration for the whole text group's position and rotation
     // const textGroupControls = {
@@ -799,8 +804,8 @@ export function createNavInduction(cornerSize = 0.2, lineColor = 0xffffff) {
     cornersGroup.add(textGroup);
 
     // Set final rotation values for the text group
-    textGroup.rotation.set(3.27, 0, 1.48); // Adjust these values as needed
-    textGroup.position.set(1.9, -4.7, 0); // Adjust these values as needed
+    textGroup.position.set(1.5, 4.7, -0.5); // Adjust these values as needed
+    textGroup.rotation.set(0, 0, 1.57); // Adjust these values as needed
 
     // // // GUI configuration for the whole text group's position and rotation
     // const textGroupControls = {
