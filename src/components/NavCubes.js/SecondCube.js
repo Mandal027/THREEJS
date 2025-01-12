@@ -1,6 +1,6 @@
 // SecondCube.js
 import * as THREE from 'three';
-import { GUI } from 'dat.gui';
+// import { GUI } from 'dat.gui';
 
 class SecondCube {
   constructor(scene) {
@@ -36,13 +36,11 @@ class SecondCube {
       opacity: 0,
     });
 
-
-
     // Create cubes and add to scene
     this.cubes = [];
-    this.gui = new GUI();
+    // this.gui = new GUI();
     // Assuming you have a reference to your GUI instance  
-this.gui.domElement.style.display = 'none';
+    // this.gui.domElement.style.display = 'none';
 
     this.cubePositions.forEach((position, index) => {
       const cube = new THREE.Mesh(this.secondCubeGeometry, this.secondCubeMaterial);
@@ -51,14 +49,14 @@ this.gui.domElement.style.display = 'none';
       this.cubes.push(cube);
 
       // Add GUI folder for each cube
-      const cubeFolder = this.gui.addFolder(`Cube ${index + 1}`);
-      cubeFolder.add(cube.position, 'x', -10, 10).name('Position X');
-      cubeFolder.add(cube.position, 'y', -10, 10).name('Position Y');
-      cubeFolder.add(cube.position, 'z', -10, 10).name('Position Z');
-      cubeFolder.add(cube.scale, 'x', 0.1, 5).name('Width').setValue(this.defaultWidth);
-      cubeFolder.add(cube.scale, 'y', 0.1, 5).name('Height').setValue(this.defaultHeight);
-      cubeFolder.add(cube.scale, 'z', 0.1, 5).name('Length').setValue(this.defaultLength);
-      cubeFolder.open();
+      // const cubeFolder = this.gui.addFolder(`Cube ${index + 1}`);
+      // cubeFolder.add(cube.position, 'x', -10, 10).name('Position X');
+      // cubeFolder.add(cube.position, 'y', -10, 10).name('Position Y');
+      // cubeFolder.add(cube.position, 'z', -10, 10).name('Position Z');
+      // cubeFolder.add(cube.scale, 'x', 0.1, 5).name('Width').setValue(this.defaultWidth);
+      // cubeFolder.add(cube.scale, 'y', 0.1, 5).name('Height').setValue(this.defaultHeight);
+      // cubeFolder.add(cube.scale, 'z', 0.1, 5).name('Length').setValue(this.defaultLength);
+      // cubeFolder.open();
     });
   }
 }

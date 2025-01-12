@@ -99,12 +99,12 @@ export function startAnimation(cube, camera, scene, cubeSize, targetScale, compl
 
           // Set initial position, rotation, and scale
           model.position.set(-10, 1, -0.1); // Change this line to set the final position
-          model.rotation.set(0, 1.5, 0);
+          model.rotation.set(0, 1.3, 0);
           model.scale.set(2, 2, 1);
 
           // Animate the GLTF model to appear
-          gsap.fromTo(model.position, { y: 0 }, { y: 1, duration: 1, ease: 'power2.inOut' });
-          gsap.fromTo(model.scale, { x: 0, y: 0, z: 0 }, { x: 2, y: 2, z: 1, duration: 1, ease: 'power2.inOut' });
+          gsap.fromTo(model.position, { y: 0 }, { y: 2, duration: 1, ease: 'power2.inOut' });
+          gsap.fromTo(model.scale, { x: 0, y: 0, z: 0 }, { x: 2, y: 4, z: 1, duration: 1, ease: 'power2.inOut' });
 
           // Animate the GLTF model to rotate continuously along the Y-axis
           gsap.to(model.rotation, {

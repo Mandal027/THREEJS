@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
-import { GUI } from "dat.gui"; // Correct import for dat.GUI
+// import { GUI } from "dat.gui"; // Correct import for dat.GUI
 
 // Function to create a right-angle corner
 function createCorner(size, material) {
@@ -57,8 +57,6 @@ export function createNavTitle(cornerSize = 0.2, lineColor = 0xa44c24) {
   // Add corners to the group
   cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);
 
- 
-
   // Load font and add text
   const loader = new FontLoader();
   loader.load("/fonts/Decorya DEMO_Regular.json", (font) => {
@@ -85,47 +83,12 @@ export function createNavTitle(cornerSize = 0.2, lineColor = 0xa44c24) {
       xOffset += 0.35; // Adjust spacing between letters
     }
 
-  
     cornersGroup.add(textGroup);
 
     // Set final rotation values for the text group
     textGroup.position.set(-2.7, -2.1, -1); // Adjust these values as needed
     textGroup.rotation.set(0, 0, 4.71); // Adjust these values as needed
-
-
-    // GUI configuration for text position and rotation
-    // const textControls = {
-    //   xPosition: textGroup.position.x,
-    //   yPosition: textGroup.position.y,
-    //   zPosition: textGroup.position.z,
-    //   xRotation: textGroup.rotation.x,
-    //   yRotation: textGroup.rotation.y,
-    //   zRotation: textGroup.rotation.z,
-    // };
-
-    // const gui = new GUI({width: 300});
-    // gui.index = 1;
-    // gui.add(textControls, "xPosition", -5, 5, 0.1).name("Text X Position").onChange((value) => {
-    //   textGroup.position.x = value;
-    // });
-    // gui.add(textControls, "yPosition", -5, 5, 0.1).name("Text Y Position").onChange((value) => {
-    //   textGroup.position.y = value;
-    // });
-    // gui.add(textControls, "zPosition", -5, 5, 0.1).name("Text Z Position").onChange((value) => {
-    //   textGroup.position.z = value;
-    // });
-    // gui.add(textControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text X Rotation").onChange((value) => {
-    //   textGroup.rotation.x = value;
-    // });
-    // gui.add(textControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Y Rotation").onChange((value) => {
-    //   textGroup.rotation.y = value;
-    // });
-    // gui.add(textControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Z Rotation").onChange((value) => {
-    //   textGroup.rotation.z = value;
-    // });
   });
-
- 
 
   return cornersGroup;
 }
@@ -192,39 +155,7 @@ export function createNavEvents(cornerSize = 0.2, lineColor = 0xa44c24) {
     // Set final rotation values for the text group
     textGroup.rotation.set(0, 0, 1.57); // Adjust these values as needed
     textGroup.position.set(1.5, 1.6, -0.5); // Adjust these values as needed
-
-    // GUI configuration for the whole text group's position and rotation
-    // const textGroupControls = {
-    //   xPosition: textGroup.position.x,
-    //   yPosition: textGroup.position.y,
-    //   zPosition: textGroup.position.z,
-    //   xRotation: textGroup.rotation.x,
-    //   yRotation: textGroup.rotation.y,
-    //   zRotation: textGroup.rotation.z,
-    // };
-
-    // const gui = new GUI();
-    // gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
-    //   textGroup.position.x = value;
-    // });
-    // gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
-    //   textGroup.position.y = value;
-    // });
-    // gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
-    //   textGroup.position.z = value;
-    // });
-    // gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
-    //   textGroup.rotation.x = value;
-    // });
-    // gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
-    //   textGroup.rotation.y = value;
-    // });
-    // gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
-    //   textGroup.rotation.z = value;
-    // });
   });
-
- 
 
   return cornersGroup;
 }
@@ -285,50 +216,14 @@ export function createNavMembers(cornerSize = 0.2, lineColor = 0xffffff) {
       textGroup.add(charMesh);
 
       xOffset += 0.36; // Decrease spacing between letters
-
-      
     }
 
     cornersGroup.add(textGroup);
 
-   
-
     // Set final rotation values for the text group
     textGroup.rotation.set(0, 0, 4.71); // Adjust these values as needed
     textGroup.position.set(-1.5, -3.8, -0.4); // Adjust these values as needed
-
-    // GUI configuration for the whole text group's position and rotation
-    // const textGroupControls = {
-    //   xPosition: textGroup.position.x,
-    //   yPosition: textGroup.position.y,
-    //   zPosition: textGroup.position.z,
-    //   xRotation: textGroup.rotation.x,
-    //   yRotation: textGroup.rotation.y,
-    //   zRotation: textGroup.rotation.z,
-    // };
-
-    //   const gui = new GUI();
-    //   gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
-    //     textGroup.position.x = value;
-    //   });
-    //   gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
-    //     textGroup.position.y = value;
-    //   });
-    //   gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
-    //     textGroup.position.z = value;
-    //   });
-    //   gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
-    //     textGroup.rotation.x = value;
-    //   });
-    //   gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
-    //     textGroup.rotation.y = value;
-    //   });
-    //   gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
-    //     textGroup.rotation.z = value;
-    //   });
   });
-
- 
 
   return cornersGroup;
 }
@@ -395,42 +290,7 @@ export function createNavAlumni(cornerSize = 0.2, lineColor = 0xffffff) {
     // Set final rotation values for the text group
     textGroup.position.set(-1.6, -3.4, -0.5); // Adjust these values as needed
     textGroup.rotation.set(0, 0, 4.71); // Adjust these values as needed
-
-    // gui for word alumni positioning and rotation
-    // const textGroupControls = {
-    //   xPosition: textGroup.position.x,
-    //   yPosition: textGroup.position.y,
-    //   zPosition: textGroup.position.z,
-    //   xRotation: textGroup.rotation.x,
-    //   yRotation: textGroup.rotation.y,
-    //   zRotation: textGroup.rotation.z,
-    // };
-
-    // const gui = new GUI();
-    // gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
-    //   textGroup.position.x = value;
-    // });
-    // gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
-    //   textGroup.position.y = value;
-    // });
-    // gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
-    //   textGroup.position.z = value;
-    // });
-    // gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
-    //   textGroup.rotation.x = value;
-    // });
-    // gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
-    //   textGroup.rotation.y = value;
-    // });
-    // gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
-    //   textGroup.rotation.z = value;
-    // });
-
-
-     
   });
-
- 
 
   return cornersGroup;
 }
@@ -498,43 +358,10 @@ export function createNavMernc(cornerSize = 0.2, lineColor = 0xffffff) {
     // Set final rotation values for the text group
     textGroup.position.set(1.5, -6, 0.6); // Adjust these values as needed
     textGroup.rotation.set(3.14, 0, 1.57); // Adjust these values as needed
-
-    // GUI configuration for the whole text group's position and rotation
-    // const textGroupControls = {
-    //   xPosition: textGroup.position.x,
-    //   yPosition: textGroup.position.y,
-    //   zPosition: textGroup.position.z,
-    //   xRotation: textGroup.rotation.x,
-    //   yRotation: textGroup.rotation.y,
-    //   zRotation: textGroup.rotation.z,
-    // };
-
-    //   const gui = new GUI();
-    //   gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
-    //     textGroup.position.x = value;
-    //   });
-    //   gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
-    //     textGroup.position.y = value;
-    //   });
-    //   gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
-    //     textGroup.position.z = value;
-    //   });
-    //   gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
-    //     textGroup.rotation.x = value;
-    //   });
-    //   gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
-    //     textGroup.rotation.y = value;
-    //   });
-    //   gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
-    //     textGroup.rotation.z = value;
-    //   });
   });
-
- 
 
   return cornersGroup;
 }
-
 
 // Function to create and return the navTitle "BIT SINDRI"
 export function createNavBIT(cornerSize = 0.2, lineColor = 0xffffff) {
@@ -599,43 +426,10 @@ export function createNavBIT(cornerSize = 0.2, lineColor = 0xffffff) {
     // Set final rotation values for the text group
     textGroup.rotation.set(0, 3.14, 4.71); // Adjust these values as needed
     textGroup.position.set(1.6, -5.3, 0.4); // Adjust these values as needed
-
-    // // GUI configuration for the whole text group's position and rotation
-    // const textGroupControls = {
-    //   xPosition: textGroup.position.x,
-    //   yPosition: textGroup.position.y,
-    //   zPosition: textGroup.position.z,
-    //   xRotation: textGroup.rotation.x,
-    //   yRotation: textGroup.rotation.y,
-    //   zRotation: textGroup.rotation.z,
-    // };
-
-    //   const gui = new GUI();
-    //   gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
-    //     textGroup.position.x = value;
-    //   });
-    //   gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
-    //     textGroup.position.y = value;
-    //   });
-    //   gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
-    //     textGroup.position.z = value;
-    //   });
-    //   gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
-    //     textGroup.rotation.x = value;
-    //   });
-    //   gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
-    //     textGroup.rotation.y = value;
-    //   });
-    //   gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
-    //     textGroup.rotation.z = value;
-    //   });
   });
-
- 
 
   return cornersGroup;
 }
-
 
 // Function to create and return the navTitle "COLLAB"
 export function createNavCollab(cornerSize = 0.2, lineColor = 0xffffff) {
@@ -671,7 +465,6 @@ export function createNavCollab(cornerSize = 0.2, lineColor = 0xffffff) {
   // cornersGroup.position.set(15.5, -0.2, 0.4); // Adjust these values as needed
   // cornersGroup.rotation.set(0, 3.14, 4.71); // Adjust these values as needed
 
-
   // Load font and add text
   const loader = new FontLoader();
   loader.load("/fonts/Decorya DEMO_Regular.json", (font) => {
@@ -698,50 +491,14 @@ export function createNavCollab(cornerSize = 0.2, lineColor = 0xffffff) {
       xOffset += 0.36; // Decrease spacing between letters
     }
 
-    
-
     // Set final rotation values for the text group
-  
     textGroup.rotation.set(0, 0, 1.57); // Adjust these values as needed
     textGroup.position.set(1.5, 3.9, -0.4); // Adjust these values as needed
     cornersGroup.add(textGroup);
-
-    // GUI configuration for the whole text group's position and rotation
-    // const textGroupControls = {
-    //   xPosition: textGroup.position.x,
-    //   yPosition: textGroup.position.y,
-    //   zPosition: textGroup.position.z,
-    //   xRotation: textGroup.rotation.x,
-    //   yRotation: textGroup.rotation.y,
-    //   zRotation: textGroup.rotation.z,
-    // };
-
-    //   const gui = new GUI();
-    //   gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
-    //     textGroup.position.x = value;
-    //   });
-    //   gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
-    //     textGroup.position.y = value;
-    //   });
-    //   gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
-    //     textGroup.position.z = value;
-    //   });
-    //   gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
-    //     textGroup.rotation.x = value;
-    //   });
-    //   gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
-    //     textGroup.rotation.y = value;
-    //   });
-    //   gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
-    //     textGroup.rotation.z = value;
-    //   });
   });
-
- 
 
   return cornersGroup;
 }
-
 
 // Function to create and return the navTitle "INDUCTION"
 export function createNavInduction(cornerSize = 0.2, lineColor = 0xffffff) {
@@ -806,39 +563,7 @@ export function createNavInduction(cornerSize = 0.2, lineColor = 0xffffff) {
     // Set final rotation values for the text group
     textGroup.position.set(1.5, 4.7, -0.5); // Adjust these values as needed
     textGroup.rotation.set(0, 0, 1.57); // Adjust these values as needed
-
-    // // // GUI configuration for the whole text group's position and rotation
-    // const textGroupControls = {
-    //   xPosition: textGroup.position.x,
-    //   yPosition: textGroup.position.y,
-    //   zPosition: textGroup.position.z,
-    //   xRotation: textGroup.rotation.x,
-    //   yRotation: textGroup.rotation.y,
-    //   zRotation: textGroup.rotation.z,
-    // };
-
-    //   const gui = new GUI();
-    //   gui.add(textGroupControls, "xPosition", -5, 5, 0.1).name("Text Group X Position").onChange((value) => {
-    //     textGroup.position.x = value;
-    //   });
-    //   gui.add(textGroupControls, "yPosition", -5, 5, 0.1).name("Text Group Y Position").onChange((value) => {
-    //     textGroup.position.y = value;
-    //   });
-    //   gui.add(textGroupControls, "zPosition", -5, 5, 0.1).name("Text Group Z Position").onChange((value) => {
-    //     textGroup.position.z = value;
-    //   });
-    //   gui.add(textGroupControls, "xRotation", 0, Math.PI * 2, 0.01).name("Text Group X Rotation").onChange((value) => {
-    //     textGroup.rotation.x = value;
-    //   });
-    //   gui.add(textGroupControls, "yRotation", 0, Math.PI * 2, 0.01).name("Text Group Y Rotation").onChange((value) => {
-    //     textGroup.rotation.y = value;
-    //   });
-    //   gui.add(textGroupControls, "zRotation", 0, Math.PI * 2, 0.01).name("Text Group Z Rotation").onChange((value) => {
-    //     textGroup.rotation.z = value;
-    //   });
   });
-
- 
 
   return cornersGroup;
 }

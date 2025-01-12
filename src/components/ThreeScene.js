@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
@@ -23,15 +23,22 @@ import {
   createNavCollab,
   createNavInduction,
 } from "./CreateNavTitle.js";
-// import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { GUI } from "dat.gui";
+// import Header from "./Header";
+import BitSindri from "./BitSindri"
+import { setupNavBITEventListener } from './NavBITEventListener';
+
 
 const gridSize = 100; // Example value, adjust as needed
 const gridDivisions = 100; // Example value, adjust as needed
 const step = gridSize / gridDivisions;
-const group = new THREE.Group();  
+const group = new THREE.Group();
 
 const ThreeScene = () => {
+  const [showBitSindri, setshowBitSindri] = useState(false);
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
+
+
   useEffect(() => {
     // Function to reload the page on resize
     const handleWindowResize = () => {
@@ -59,12 +66,12 @@ const ThreeScene = () => {
     backgroundGridGroup.add(gridBackgroundGroup);
 
     const aspect = window.innerWidth / window.innerHeight;
-    const frustumSize = 22;
+    const frustumSize = 20;
     const camera = new THREE.OrthographicCamera(
       (frustumSize * aspect) / -2,
       (frustumSize * aspect) / 2,
       frustumSize / 1,
-      frustumSize / -1.7,
+      frustumSize / -1.4,
       0.1,
       100000
     );
@@ -81,27 +88,26 @@ const ThreeScene = () => {
 
     const controls = new OrbitControls(camera, renderer.domElement);
 
-    // // Enable damping for smooth movement
-    // controls.enableDamping = true;
-    
+    // Enable damping for smooth movement
+    controls.enableDamping = true;
+    // Create an Axis Helper
+    // const axesHelper = new THREE.AxesHelper(5); // Size of 5 means each axis is 5 units long
+    // scene.add(axesHelper);
+
     // // Rotation limits (in radians)
     // controls.minPolarAngle = Math.PI / 10; // Limit the downward view (minimum vertical angle)
     // controls.maxPolarAngle = Math.PI / 2; // Limit the upward view (maximum vertical angle)
-    
+
     // // Prevent full 360° horizontal rotation (optional)
     // controls.minAzimuthAngle = -Math.PI / 4; // Limit the leftward rotation
     // controls.maxAzimuthAngle = Math.PI / 4; // Limit the rightward rotation
-    
+
     // // Zoom limits
     // controls.minDistance = 10; // Minimum distance from the target
     // controls.maxDistance = 50; // Maximum distance from the target
-    
+
     // Disable panning
     controls.enablePan = false;
-
-    
-
-  
 
     // Grid and Geometry setup
     const gridGroup = new THREE.Group();
@@ -174,13 +180,11 @@ const ThreeScene = () => {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-   
     // create lines along four directions
-    const xLines = createXLines(scene, step, 0x0000); // Set line color to black
-    const zLines = createZLines(scene, step, 0x0000); // Set line color to black
-    const negativeZLines = createNegativeZLines(scene, step, 0x0000); // Set line color to black
-    const negativeXLines = createNegativeXLines(scene, step, 0x0000); // Set line color to black
- 
+  createXLines(scene, step, 0x0000); // Set line color to black
+  createZLines(scene, step, 0x0000); // Set line color to black
+    createNegativeZLines(scene, step, 0x0000); // Set line color to black
+    createNegativeXLines(scene, step, 0x0000); // Set line color to black
 
     // Add corners group to the scene
     const cornersGroup = createNavTitle(0.2, 0xa44c24); // Adjust size and color if needed
@@ -188,15 +192,10 @@ const ThreeScene = () => {
     cornersGroup.rotation.set(4.71, 0, 1.57);
     group.add(cornersGroup);
 
-
-
     // Add navtitle Events
     const navEvents = createNavEvents(0.2, 0xa44c24);
     navEvents.rotation.set(4.71, 0, 0);
     navEvents.position.set(-7, 0, -7.5); // Adjust these values as needed
-
-   
-
 
     // Add navtitle Members
     const navMembers = createNavMembers(0.2, 0xa44c24);
@@ -204,22 +203,17 @@ const ThreeScene = () => {
     navMembers.rotation.set(4.71, 0, 1.57);
     group.add(navMembers);
 
-     
     // Add navtitle Alumni
     const navAlumni = createNavAlumni(0.2, 0xa44c24);
     navAlumni.position.set(-0.55, 0, 6.9);
     navAlumni.rotation.set(4.71, 0, 1.57);
     group.add(navAlumni);
 
-    
-
     // Add navtitle Merchandise
     const navMernc = createNavMernc(0.2, 0xa44c24);
     navMernc.position.set(8.5, 0, -1.2);
     navMernc.rotation.set(1.6, 0, 0);
     group.add(navMernc);
-
-  
 
     // Add navtitle BIT
     const navBIT = createNavBIT(0.2, 0xa44c24);
@@ -245,7 +239,7 @@ const ThreeScene = () => {
     scene.add(ambientLightModel);
 
     // Start animation and add navEvents after the animation completes
-    startAnimation(cube, camera, scene, cubeSize, targetScale,  () => {
+    startAnimation(cube, camera, scene, cubeSize, targetScale, () => {
       scene.add(group);
       group.add(navEvents);
     });
@@ -256,21 +250,40 @@ const ThreeScene = () => {
     function animate() {
       requestAnimationFrame(animate);
       controls.update();
-    
+
       // rippleEffect.update(); // Update ripple animation
       renderer.render(scene, camera);
     }
     animate();
+   
 
+     // Setup event listener for navBIT
+  const cleanupNavBITEventListener = setupNavBITEventListener(scene, camera, navBIT, group, setOverlayOpacity, setshowBitSindri);
     // Cleanup event listener when the component unmounts
     return () => {
       window.removeEventListener("resize", handleWindowResize);
+      window.removeEventListener("click", onMouseClick);
+      cleanupNavBITEventListener();
     };
   }, []);
 
+ 
+
+
   return (
     <>
-      <div id="threejs-canvas" className=""></div>
+      <div id="threejs-canvas" className="relative w-full h-screen"></div>
+      <div 
+        className="fixed inset-0 flex items-center justify-start transition-opacity duration-500"
+        style={{ 
+          backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
+          pointerEvents: showBitSindri ? 'auto' : 'none',
+          opacity: showBitSindri ? 1 : 0
+        }}
+      >
+        {showBitSindri && <BitSindri />}
+      </div>
+      <div id="three-scene" />;
     </>
   );
 };
