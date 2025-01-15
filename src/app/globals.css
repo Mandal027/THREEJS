@@ -35,6 +35,23 @@ body, html {
   align-items: center; /* Center content vertically */ 
 }  
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide vertical scrollbar but keep content scrollable */
+::-webkit-scrollbar {
+  width: 0;  /* Remove scrollbar space */
+  background: transparent;  /* Optional: just to avoid a white bar */
+}
+
 h1 {  
   position: absolute; /* Position h1 over the canvas */  
   top: 10px; /* Adjust top position as needed */  
@@ -71,6 +88,10 @@ h1 {
     font-size: 1rem;
     margin-top: 0.5rem;
   }
+} */
+
+/* button{
+  background: #a81a1a;
 } */
 
 

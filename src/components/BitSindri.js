@@ -1,10 +1,8 @@
 import { ArrowRight, Facebook, Instagram, Mail, Phone } from "lucide-react";
 import { useState, useEffect } from 'react';
 
-
 export default function Header() {
-
-    const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
 
   useEffect(() => {
@@ -18,10 +16,9 @@ export default function Header() {
     return () => clearTimeout(timer);
   }, []);
 
-
   return (
-    
-    <div className="w-full max-w-4xl mx-auto rounded-lg overflow-hidden">
+    <div className="w-4/5 mt-1 max-w-7xl mx-2 rounded-lg overflow-hidden">
+      {/* The margin-top is set here with the class "mt-1" */}
       {/* Existing Header */}
       {/* <div className="flex items-center px-4 py-2 md:px-10 justify-between w-full border-b">
         <div className="py-1">
@@ -45,13 +42,14 @@ export default function Header() {
       </div> */}
 
       {/* Content Section */}
-      <div className="p-6 md:p-8">
+      <div className="p-3 md:p-8 overflow-y-scroll max-h-screen">
         {/* About Section */}
         <div className={`mb-8 transition-all duration-500 ease-out delay-100 ${
           contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}>
           <h2 className="text-2xl font-bold mb-4">About BIT Painting Wing</h2>
-          <p className="text-grey mb-4">
+          
+          <p className="text-black mb-4">
             BIT Painting Wing is a creative community dedicated to fostering
             artistic expression and cultural enrichment within our institution.
             Founded with the vision of bringing colors to campus life, we
@@ -145,7 +143,8 @@ export default function Header() {
         </div>
 
         {/* Join Section */}
-        <div className={`mt-8 bg-orange-50 p-6 rounded-lg transition-all duration-500 ease-out delay-400 ${
+        <div className={`mt-8 bg-transparent text-black
+         p-6 rounded-lg transition-all duration-500 ease-out delay-400 ${
           contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
         }`}>
           <h3 className="text-xl font-semibold mb-3">Join Our Wing</h3>
@@ -157,6 +156,39 @@ export default function Header() {
           <button className="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition-colors">
             Apply Now
           </button>
+        </div>
+
+        {/* Gallery Section */}
+        <div className={`mb-8 transition-all duration-500 ease-out delay-500 ${
+          contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}>
+          <h3 className="text-xl font-semibold mb-4">Gallery</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <img src="/api/placeholder/300/200" alt="Gallery Image 1" className="w-full h-auto rounded-lg" />
+            <img src="/api/placeholder/300/200" alt="Gallery Image 2" className="w-full h-auto rounded-lg" />
+            <img src="/api/placeholder/300/200" alt="Gallery Image 3" className="w-full h-auto rounded-lg" />
+          </div>
+        </div>
+
+        {/* Testimonials Section */}
+        <div className={`mb-8 transition-all duration-500 ease-out delay-600 ${
+          contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}>
+          <h3 className="text-xl font-semibold mb-4">Testimonials</h3>
+          <div className="space-y-4">
+            <div className="p-4 bg-gray-800 rounded-lg">
+              <p className="text-white">
+          "Being a part of the BIT Painting Wing has been an incredible experience. It has allowed me to grow as an artist and connect with like-minded individuals."
+              </p>
+              <p className="text-orange-600 mt-2">- Student A</p>
+            </div>
+            <div className="p-4 bg-gray-800 rounded-lg">
+              <p className="text-white">
+          "The workshops and events organized by the Painting Wing are top-notch. I've learned so much and had a lot of fun along the way."
+              </p>
+              <p className="text-orange-600 mt-2">- Student B</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

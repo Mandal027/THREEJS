@@ -6,6 +6,11 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
+  // 🔴 Store the original camera position and zoom
+  const originalCameraPosition = camera.position.clone();
+  const originalCameraZoom = camera.zoom;
+
+  // 🖱️ Handle mouse click event
   const onMouseClick = (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -39,9 +44,10 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
         }
       });
 
+      // Animate camera position and zoom
       gsap.to(camera.position, {
         x: 10,
-        y: 1.5,
+        y: 1.3,
         z: -3.3,
         duration: 5,
         ease: "power2.inOut",
@@ -51,10 +57,10 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
       });
 
       gsap.to(navBIT, {
-        duration: 1, // Duration of the animation in seconds
-        opacity: 0, // Target opacity
+        duration: 1,
+        opacity: 0,
         onComplete: () => {
-          navBIT.visible = false; // Make navBIT text disappear after animation
+          navBIT.visible = false;
         },
       });
 
@@ -67,6 +73,7 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
         },
         onComplete: () => {
           setshowBitSindri(true);
+          crossButton.style.display = 'block'; // Show the 'X' button
         },
       });
     }
@@ -74,8 +81,78 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
 
   window.addEventListener("click", onMouseClick);
 
-  // Cleanup event listener on unmount
+  // 🔄 Add cross button to reset the scene
+  const crossButton = document.createElement('button');
+  crossButton.innerText = 'X';
+  crossButton.style.position = 'absolute';
+  crossButton.style.top = '1px'; // Shift downward
+  crossButton.style.right = '10px';
+  crossButton.style.padding = '50px';
+  crossButton.style.fontSize = '18px';
+  crossButton.style.cursor = 'pointer';
+  crossButton.style.display = 'none'; // Initially hide the 'X' button
+  document.body.appendChild(crossButton);
+
+  // 🔄 Handle cross button click
+  crossButton.addEventListener('click', () => {
+    // Reset camera position and zoom
+    gsap.to(camera.position, {
+      x: originalCameraPosition.x,
+      y: originalCameraPosition.y,
+      z: originalCameraPosition.z,
+      duration: 2,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        camera.lookAt(0, 0, 0);
+      },
+    });
+
+    gsap.to(camera, {
+      zoom: originalCameraZoom * 1.3, // Decrease the final zoom value
+      duration: 2,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        camera.updateProjectionMatrix();
+      },
+    });
+
+    // Restore scene objects
+    group.children.forEach((child) => {
+      child.visible = true;
+    });
+
+    scene.children.forEach((child) => {
+      if (
+        child instanceof THREE.Line ||
+        (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
+        child instanceof THREE.RectAreaLight
+      ) {
+        child.visible = true;
+      }
+    });
+
+    // Reset overlay opacity and navBIT visibility
+    gsap.to({}, {
+      duration: 0.5,
+      onUpdate: () => {
+        setOverlayOpacity(gsap.getProperty({}, "progress"));
+      },
+      onComplete: () => {
+        setOverlayOpacity(0);
+        navBIT.visible = true;
+      },
+    });
+
+    // Reverse BitSindri content
+    setshowBitSindri(false);
+
+    // Hide the 'X' button
+    crossButton.style.display = 'none';
+  });
+
+  // Cleanup event listeners on unmount
   return () => {
     window.removeEventListener("click", onMouseClick);
+    crossButton.remove();
   };
 }

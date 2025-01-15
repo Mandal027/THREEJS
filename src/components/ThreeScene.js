@@ -25,9 +25,12 @@ import {
 } from "./CreateNavTitle.js";
 import { GUI } from "dat.gui";
 // import Header from "./Header";
-import BitSindri from "./BitSindri"
+import BitSindri from "./BitSindri";
+import Members from "./Members";
+import Alumni from "./Alumni";
 import { setupNavBITEventListener } from './NavBITEventListener';
-
+import { setupNavMembersEventListener } from './NavMembersEventListener';
+import { setupNavAlumniEventListener } from './NavAlumniEventListener';
 
 const gridSize = 100; // Example value, adjust as needed
 const gridDivisions = 100; // Example value, adjust as needed
@@ -36,8 +39,9 @@ const group = new THREE.Group();
 
 const ThreeScene = () => {
   const [showBitSindri, setshowBitSindri] = useState(false);
+  const [showMembers, setshowMembers] = useState(false);
+  const [showAlumni, setshowAlumni] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
-
 
   useEffect(() => {
     // Function to reload the page on resize
@@ -66,7 +70,7 @@ const ThreeScene = () => {
     backgroundGridGroup.add(gridBackgroundGroup);
 
     const aspect = window.innerWidth / window.innerHeight;
-    const frustumSize = 20;
+    const frustumSize = 18;
     const camera = new THREE.OrthographicCamera(
       (frustumSize * aspect) / -2,
       (frustumSize * aspect) / 2,
@@ -203,11 +207,17 @@ const ThreeScene = () => {
     navMembers.rotation.set(4.71, 0, 1.57);
     group.add(navMembers);
 
+    // Setup event listener for navMembers
+    const cleanupNavMembersEventListener = setupNavMembersEventListener(scene, camera, navMembers, group, setOverlayOpacity, setshowMembers);
+
     // Add navtitle Alumni
     const navAlumni = createNavAlumni(0.2, 0xa44c24);
     navAlumni.position.set(-0.55, 0, 6.9);
     navAlumni.rotation.set(4.71, 0, 1.57);
     group.add(navAlumni);
+
+    // Setup event listener for navAlumni
+    const cleanupNavAlumniEventListener = setupNavAlumniEventListener(scene, camera, navAlumni, group, setOverlayOpacity, setshowAlumni);
 
     // Add navtitle Merchandise
     const navMernc = createNavMernc(0.2, 0xa44c24);
@@ -264,6 +274,8 @@ const ThreeScene = () => {
       window.removeEventListener("resize", handleWindowResize);
       window.removeEventListener("click", onMouseClick);
       cleanupNavBITEventListener();
+      cleanupNavMembersEventListener();
+      cleanupNavAlumniEventListener();
     };
   }, []);
 
@@ -277,11 +289,13 @@ const ThreeScene = () => {
         className="fixed inset-0 flex items-center justify-start transition-opacity duration-500"
         style={{ 
           backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
-          pointerEvents: showBitSindri ? 'auto' : 'none',
-          opacity: showBitSindri ? 1 : 0
+          pointerEvents: showBitSindri || showMembers || showAlumni ? 'auto' : 'none',
+          opacity: showBitSindri || showMembers || showAlumni ? 1 : 0
         }}
       >
         {showBitSindri && <BitSindri />}
+        {showMembers && <Members />}
+        {showAlumni && <Alumni />}
       </div>
       <div id="three-scene" />;
     </>
