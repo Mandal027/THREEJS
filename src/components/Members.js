@@ -33,7 +33,7 @@ const Members = () => {
     }, []);
 
     return (
-        <div className={`max-w-6xl mx-3 mt-1 px-4 sm:px-6 lg:px-8 py-12 rounded-lg overflow-y-auto max-h-screen transition-opacity duration-500 ease-out ${contentVisible ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`max-w-6xl w-3/4  mx-1 mt-1 px-4 sm:px-6 lg:px-8 py-12 rounded-lg overflow-y-auto max-h-screen transition-opacity duration-500 ease-out ${contentVisible ? 'opacity-100' : 'opacity-0'}`}>
             <h2 className="text-4xl font-bold text-orange-600 text-center mb-8">Painting Wing Club Members</h2>
             <p className="text-lg text-gray-700 mb-10 text-center">
                 Welcome to the Painting Wing Club! Our members are a diverse group of talented individuals specializing in various art forms. 

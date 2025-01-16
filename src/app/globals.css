@@ -76,22 +76,21 @@ h1 {
   }
 }
 
-/* @media (max-width: 768px) {
-  h1 {
-    font-size: 1.5rem;
-    margin-top: 1rem;
-  }
+/* Ensure the container and text are correctly styled to allow scrolling */
+.max-w-6xl {
+  max-width: 100%;
 }
 
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1rem;
-    margin-top: 0.5rem;
-  }
-} */
+.overflow-y-auto {
+  overflow-y: auto;
+}
 
-/* button{
-  background: #a81a1a;
-} */
+.max-h-screen {
+  max-height: 100vh;
+}
+
+.text-orange-600 {
+  color: #ff6600;
+}
 
 

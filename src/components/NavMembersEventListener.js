@@ -27,6 +27,15 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
         },
       });
 
+      // Hide all models except Model2
+      scene.children.forEach((child) => {
+        if (child.name === "Model1") {
+          child.visible = true; // Ensure Model2 is visible
+        } else if (child.name && child.name.startsWith("Model")) {
+          child.visible = false; // Hide all other models
+        }
+      });
+
       // Make other navCollabs, lines, and RectAreaLights disappear
       group.children.forEach((child) => {
         if (child !== navMembers) {
@@ -46,9 +55,9 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
 
       // Animate camera position, rotation, and zoom
       gsap.to(camera.position, {
-        x: 1,
-        y: 1.3,
-        z: -3.3,
+        x: -40,
+        y: 6,
+        z: 22,
         duration: 5,
         ease: "power2.inOut",
         onUpdate: () => {
@@ -65,7 +74,7 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
       });
 
       gsap.to(camera, {
-        zoom: 4,
+        zoom: 3.5,
         duration: 2,
         ease: "power2.inOut",
         onUpdate: () => {
@@ -108,7 +117,7 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
     });
 
     gsap.to(camera, {
-      zoom: originalCameraZoom  * 1.3, // Reset the zoom value
+      zoom: originalCameraZoom * 1.3,
       duration: 2,
       ease: "power2.inOut",
       onUpdate: () => {
@@ -116,34 +125,38 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
       },
     });
 
-    // Restore scene objects
-    group.children.forEach((child) => {
-      child.visible = true;
-    });
-
+    // Restore visibility for all models and scene objects
     scene.children.forEach((child) => {
+      if (child.name && child.name.startsWith("Model")) {
+        child.visible = true; // Show all models
+      }
+
       if (
         child instanceof THREE.Line ||
         (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
         child instanceof THREE.RectAreaLight
       ) {
-        child.visible = true;
+        child.visible = true; // Show lines and lights
       }
     });
 
-    // Reset overlay opacity and navMembers visibility
+    group.children.forEach((child) => {
+      child.visible = true; // Restore visibility of navigation objects
+    });
+
+    // Reset overlay opacity and 'navMembers' visibility
     gsap.to({}, {
       duration: 0.5,
       onUpdate: () => {
         setOverlayOpacity(gsap.getProperty({}, "progress"));
       },
       onComplete: () => {
-        setOverlayOpacity(0);
-        navMembers.visible = true;
+        setOverlayOpacity(0); // Ensure overlay fades out
+        navMembers.visible = true; // Make navMembers visible
       },
     });
 
-    // Reverse Members content
+    // Hide Members content
     setshowMembers(false);
 
     // Hide the 'X' button

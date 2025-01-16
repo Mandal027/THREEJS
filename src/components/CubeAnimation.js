@@ -89,48 +89,50 @@ export function startAnimation(cube, camera, scene, cubeSize, targetScale, compl
         });
       });
 
-      // Add GLTF model to the scene
+      // Add GLTF models to the scene with unique names
       const gltfLoader = new GLTFLoader();
-      gltfLoader.load(
-        '/BIT.glb', // Path to the model in the public folder
-        (gltf) => {
-          const model = gltf.scene;
-          scene.add(model);
+      const modelPaths = [
+        { path: '/BIT.glb', name: 'Model1', position: [-6.9, 1, 8] },
+        { path: '/BIT.glb', name: 'Model2', position: [-10, 1, -0.1] },
+        { path: '/BIT.glb', name: 'Model3', position: [-2, 1, -11.5] },
+        { path: '/BIT.glb', name: 'Model4', position: [8, 1, 4] },
+        { path: '/BIT.glb', name: 'Model5', position: [6, 1, -6.5] },
+        { path: '/BIT.glb', name: 'Model6', position: [-8, 1, -7.5] },
+        { path: '/BIT.glb', name: 'Model7', position: [11, 1, -1] },
+        { path: '/BIT.glb', name: 'Model8', position: [-0.5, 1, 9] },
+      ];
 
-          // Set initial position, rotation, and scale
-          model.position.set(-10, 1, -0.1); // Change this line to set the final position
-          model.rotation.set(0, 1.3, 0);
-          model.scale.set(2, 2, 1);
+      modelPaths.forEach(({ path, name, position }) => {
+        gltfLoader.load(
+          path,
+          (gltf) => {
+            const model = gltf.scene;
+            model.name = name;
+            model.position.set(...position);
+            model.rotation.set(0, 1.3, 0);
+            model.scale.set(2, 2, 1);
+            scene.add(model);
 
-          // Animate the GLTF model to appear
-          gsap.fromTo(model.position, { y: 0 }, { y: 2, duration: 1, ease: 'power2.inOut' });
-          gsap.fromTo(model.scale, { x: 0, y: 0, z: 0 }, { x: 2, y: 4, z: 1, duration: 1, ease: 'power2.inOut' });
+            // Animate the GLTF model to appear
+            gsap.fromTo(model.position, { y: 0 }, { y: 2, duration: 1, ease: 'power2.inOut' });
+            gsap.fromTo(model.scale, { x: 0, y: 0, z: 0 }, { x: 2, y: 4, z: 1, duration: 1, ease: 'power2.inOut' });
 
-          // Animate the GLTF model to rotate continuously along the Y-axis
-          gsap.to(model.rotation, {
-            y: "+=6.28319", // Rotate by 2*PI radians (360 degrees)
-            duration: 10,
-            repeat: -1, // Repeat indefinitely
-            ease: 'linear',
-          });
-
-          // // Add dat.GUI for GLTF model position and rotation
-          // const gui = new GUI();
-          // const modelFolder = gui.addFolder('GLTF Model');
-          // modelFolder.add(model.position, 'x', -20, 20).name('Position X');
-          // modelFolder.add(model.position, 'y', -20, 20).name('Position Y');
-          // modelFolder.add(model.position, 'z', -20, 20).name('Position Z').onChange(() => {
-          //   model.position.set(-10, 0,0.13) ; // Set final z position to 0.13
-          // });
-         
-        },
-        (xhr) => {
-          console.log(`Model ${(xhr.loaded / xhr.total) * 100}% loaded`);
-        },
-        (error) => {
-          console.error('An error occurred:', error);
-        }
-      );
+            // Animate the GLTF model to rotate continuously along the Y-axis
+            gsap.to(model.rotation, {
+              y: "+=6.28319", // Rotate by 2*PI radians (360 degrees)
+              duration: 10,
+              repeat: -1, // Repeat indefinitely
+              ease: 'linear',
+            });
+          },
+          (xhr) => {
+            console.log(`Model ${(xhr.loaded / xhr.total) * 100}% loaded`);
+          },
+          (error) => {
+            console.error('An error occurred:', error);
+          }
+        );
+      });
     },
   });
 
