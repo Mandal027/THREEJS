@@ -134,6 +134,8 @@ export function startAnimation(cube, camera, scene, cubeSize, targetScale, compl
     },
   });
 
+  
+
   timeline.to(
     cube.scale,
     {

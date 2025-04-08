@@ -85,7 +85,7 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
   const crossButton = document.createElement('button');
   crossButton.innerText = 'X';
   crossButton.style.position = 'absolute';
-  crossButton.style.top = '1px'; // Shift downward
+  crossButton.style.bottom = '10px'; // Shift to the bottom
   crossButton.style.right = '10px';
   crossButton.style.padding = '50px';
   crossButton.style.fontSize = '18px';
@@ -150,9 +150,77 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
     crossButton.style.display = 'none';
   });
 
+  // Add loading screen logic
+  window.addEventListener('load', () => {
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+      gsap.to(loadingScreen, {
+        opacity: 0,
+        duration: 1,
+        ease: 'power2.out',
+        onComplete: () => {
+          loadingScreen.style.display = 'none';
+        },
+      });
+    }
+  });
+
+  // Add resize loader logic
+  // const resizeLoader = document.createElement('div');
+  // resizeLoader.innerText = 'Reloading...';
+  // resizeLoader.style.position = 'fixed';
+  // resizeLoader.style.top = '0';
+  // resizeLoader.style.left = '0';
+  // resizeLoader.style.width = '100vw';
+  // resizeLoader.style.height = '100vh';
+  // resizeLoader.style.backgroundColor = '#000';
+  // resizeLoader.style.color = '#fff';
+  // resizeLoader.style.display = 'none';
+  // resizeLoader.style.zIndex = '9999';
+  // resizeLoader.style.justifyContent = 'center';
+  // resizeLoader.style.alignItems = 'center';
+  // resizeLoader.style.fontSize = '2rem';
+  // resizeLoader.style.fontWeight = 'bold';
+  // document.body.appendChild(resizeLoader);
+
+  let resizeTimeout = null;
+
+  // const handleResize = () => {
+  //   if (resizeTimeout) clearTimeout(resizeTimeout);
+
+  //   // Reset and show loader
+  //   resizeLoader.style.display = 'flex';
+  //   gsap.fromTo(
+  //     resizeLoader,
+  //     { opacity: 0 },
+  //     { opacity: 1, duration: 0.5, ease: 'power1.out' }
+  //   );
+
+  //   // Adjust camera aspect ratio and update projection matrix
+  //   camera.aspect = window.innerWidth / window.innerHeight;
+  //   camera.updateProjectionMatrix();
+
+  //   // Animate out after 1s
+  //   resizeTimeout = setTimeout(() => {
+  //     gsap.to(resizeLoader, {
+  //       opacity: 0,
+  //       duration: 0.5,
+  //       ease: 'power1.inOut',
+  //       onComplete: () => {
+  //         resizeLoader.style.display = 'none';
+  //       },
+  //     });
+  //   }, 1000);
+  // };
+
+  // window.addEventListener('resize', handleResize);
+
   // Cleanup event listeners on unmount
   return () => {
     window.removeEventListener("click", onMouseClick);
     crossButton.remove();
+    // window.removeEventListener('resize', handleResize);
+    // if (resizeTimeout) clearTimeout(resizeTimeout);
+    // resizeLoader.remove();
   };
 }
