@@ -31,8 +31,9 @@ import Alumni from "./Alumni";
 import { setupNavBITEventListener } from './NavBITEventListener';
 import { setupNavMembersEventListener } from './NavMembersEventListener';
 import { setupNavAlumniEventListener } from './NavAlumniEventListener';
-import { setupNavCollabEventListener } from './NavCollabEventListener';
-import Collabs from './Collabs'; // Import Collabs component
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
+import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
+import { Raycaster } from "three";
 
 const gridSize = 100; // Example value, adjust as needed
 const gridDivisions = 100; // Example value, adjust as needed
@@ -45,6 +46,7 @@ const ThreeScene = () => {
   const [showAlumni, setshowAlumni] = useState(false);
   const [showCollabs, setshowCollabs] = useState(false); // Add state for Collabs
   const [overlayOpacity, setOverlayOpacity] = useState(0);
+  const [activeContent, setActiveContent] = useState(null);
 
   useEffect(() => {
     // Function to reload the page on resize
@@ -66,10 +68,14 @@ const ThreeScene = () => {
     superGroup.add(backgroundGridGroup);
 
     // Load a texture as the background
-    const loader = new THREE.TextureLoader();
-    loader.load("/noisy-background.jpg", function (texture) {
-      scene.background = texture;
-    });
+    // const loader = new THREE.TextureLoader();
+    // loader.load("/noisy-background.jpg", function (texture) {
+    //   scene.background = texture;
+    // });
+
+    scene.background = new THREE.Color(0xffffff);  // Set back
+
+    
 
     // Group for grid and background texture
     const gridBackgroundGroup = new THREE.Group();
@@ -117,8 +123,16 @@ const ThreeScene = () => {
     // controls.minDistance = 10; // Minimum distance from the target
     // controls.maxDistance = 50; // Maximum distance from the target
 
+
+
+
+   
+
+
     // Disable panning
     controls.enablePan = false;
+    controls.enableRotate = false;
+    controls.enableZoom = false;
 
     // Grid and Geometry setup
     const gridGroup = new THREE.Group();
@@ -129,11 +143,42 @@ const ThreeScene = () => {
       transparent: true,
     });
 
+
+    // const gltfLoader = new GLTFLoader();
+    // gltfLoader.load(
+    //   '/pw.glb',
+    //   (gltf) => {
+    //     const model = gltf.scene;
+    //     model.scale.set(10, 10, 10);
+    //     model.position.set(0, 0, 0);
+    //     model.rotation.set(0, 0, 0);
+    //     scene.add(model);
+    
+    //     // GUI should go here — after model is loaded
+    // 
+    //   },
+    //   undefined,
+    //   (error) => {
+    //     console.error('Error loading GLTF model:', error);
+    //   }
+    // );
+    
+  
     addGridPlusSigns(gridGroup, gridSize, gridDivisions);
     const gridHelper = new THREE.GridHelper(gridSize, gridDivisions);
     gridHelper.material = gridMaterial;
     gridGroup.add(gridHelper);
     gridBackgroundGroup.add(gridGroup);
+     
+
+    //       // Load texture
+    // const textureLoader = new THREE.TextureLoader();
+    // const texture = textureLoader.load("/noisy-background.jpg"); // Make sure image is inside /public/textures/
+    //     const geometry = new THREE.PlaneGeometry(50, 50); // width: 2, height: 1
+    //     const material = new THREE.MeshBasicMaterial({map:texture, side: THREE.DoubleSide });
+    //     const plane = new THREE.Mesh(geometry, material);
+    //     plane.rotation.x = Math.PI / 2; // Rotate the plane to be horizontal
+    //     scene.add(plane);
 
     // Cube
     const cubeSize = 2;
@@ -151,12 +196,214 @@ const ThreeScene = () => {
     cube.position.set(0, 13.35, 0);
     scene.add(cube);
 
+
+     // Load the SVG
+  const gltfLoader = new GLTFLoader()
+
+  //add dat.gui to control scale and postion of the stroke model 
+  // gltfLoader.load(
+  //   "/strokes.glb", // Replace with the path to your GLTF file
+  //   (gltf) => {
+  //     const model = gltf.scene;
+
+  //     // Position and scale the GLTF model
+  //     model.scale.set(5, 5, 0); // Adjust scale as needed
+  //     model.position.set(8.5, -0.2, -1.5); // Adjust position as needed
+  //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
+
+  //     group.add(model);
+    
+  //   },
+  //   undefined,
+  //   (error) => {
+  //     console.error("Error loading GLTF model:", error);
+  //   }
+  // );
+  // gltfLoader.load(
+  //   "/strokes.glb", // Replace with the path to your GLTF file
+  //   (gltf) => {
+  //     const model = gltf.scene;
+
+  //     // Position and scale the GLTF model
+  //     model.scale.set(5, 5, 0); // Adjust scale as needed
+  //     model.position.set(-8.4, 0, 0.1); // Adjust position as needed
+  //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
+
+  //     group.add(model);
+
+     
+  //   },
+  //   undefined,
+  //   (error) => {
+  //     console.error("Error loading GLTF model:", error);
+  //   }
+  // );
+
+  // gltfLoader.load(
+  //   "/strokes.glb", // Replace with the path to your GLTF file
+  //   (gltf) => {
+  //     const model = gltf.scene;
+
+  //     // Position and scale the GLTF model
+  //     model.scale.set(5, 5, 0); // Adjust scale as needed
+  //     model.position.set(3.6, 0, -7); // Adjust position as needed
+  //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
+
+  //     group.add(model);
+
+  //     // Add dat.gui to control scale and position of the stroke model
+     
+  //   },
+  //   undefined,
+  //   (error) => {
+  //     console.error("Error loading GLTF model:", error);
+  //   }
+  // );
+  // gltfLoader.load(
+  //   "/strokes.glb", // Replace with the path to your GLTF file
+  //   (gltf) => {
+  //     const model = gltf.scene;
+
+  //     // Position and scale the GLTF model
+  //     model.scale.set(3.3, 5, 0); // Adjust scale as needed
+  //     model.position.set(-6.9, 0, -7.8); // Adjust position as needed
+  //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
+
+  //     group.add(model);
+
+     
+  //   },
+  //   undefined,
+  //   (error) => {
+  //     console.error("Error loading GLTF model:", error);
+  //   }
+  // );
+
+  // gltfLoader.load(
+  //   "/strokes.glb", // Replace with the path to your GLTF file
+  //   (gltf) => {
+  //     const model = gltf.scene;
+
+  //     // Position and scale the GLTF model
+  //     model.scale.set(3.9, 5, 0); // Adjust scale as needed
+  //     model.position.set(-2.5, 0, -10.5); // Adjust position as needed
+  //     model.rotation.set(-1.57, 3.14, 0); // Adjust rotation as needed
+
+  //     group.add(model);
+
+  //     // Add dat.gui to control scale and position of the stroke model
+     
+  //   },
+  //   undefined,
+  //   (error) => {
+  //     console.error("Error loading GLTF model:", error);
+  //   }
+  // );
+  // gltfLoader.load(
+  //   "/strokes.glb", // Replace with the path to your GLTF file
+  //   (gltf) => {
+  //     const model = gltf.scene;
+
+  //     // Position and scale the GLTF model
+  //     model.scale.set(3.8, 5, 0); // Adjust scale as needed
+  //     model.position.set(-0.5, 0, 7.1); // Adjust position as needed
+  //     model.rotation.set(-1.57, 3.14, 0); // Adjust rotation as needed
+
+  //     group.add(model);
+
+  //     // Add dat.gui to control scale and position of the stroke model
+    
+  //   },
+  //   undefined,
+  //   (error) => {
+  //     console.error("Error loading GLTF model:", error);
+  //   }
+  // );
+  // gltfLoader.load(
+  //   "/strokes.glb", // Replace with the path to your GLTF file
+  //   (gltf) => {
+  //     const model = gltf.scene;
+
+  //     // Position and scale the GLTF model
+  //     model.scale.set(3.8, 5, 0); // Adjust scale as needed
+  //     model.position.set(-6.8, 0, 6.5); // Adjust position as needed
+  //     model.rotation.set(-1.57, 3.14, 0); // Adjust rotation as needed
+
+  //     group.add(model);
+
+  //     // Add dat.gui to control scale and position of the stroke model
+     
+  //   },
+  //   undefined,
+  //   (error) => {
+  //     console.error("Error loading GLTF model:", error);
+  //   }
+  // );
+  gltfLoader.load(
+    "/isometric.glb", // Replace with the path to your GLTF file
+    (gltf) => {
+      const model = gltf.scene;
+
+    
+
+      // Position and scale the GLTF model
+      model.scale.set(0.5, 0.5, 0.5); // Adjust scale as needed
+      model.position.set(0, 0.3, 0.3); // Adjust position as needed
+      // model.rotation.set(-1.57, 0, 0); // Adjust rotation as needed
+
+      // Auto rotate the isometric model
+      // const rotateIsometric = () => {
+      //   model.rotation.y += 0.005;
+      //   requestAnimationFrame(rotateIsometric);
+      // };
+      // rotateIsometric();
+
+      group.add(model);
+
+
+     
+
+      
+    },
+    undefined,
+    (error) => {
+      console.error("Error loading GLTF model:", error);
+    }
+  );
+  // gltfLoader.load(
+  //   "/strokes.glb", // Replace with the path to your GLTF file
+  //   (gltf) => {
+  //     const model = gltf.scene;
+
+  //     // Position and scale the GLTF model
+  //     model.scale.set(3.8, 5, 0); // Adjust scale as needed
+  //     model.position.set(5.4, 0, 3.5); // Adjust position as needed
+  //     model.rotation.set(-1.57, 3.14, 1.57); // Adjust rotation as needed
+
+  //     group.add(model);
+
+  //     // Add dat.gui to control scale and position of the stroke model
+      
+  //   },
+  //   undefined,
+  //   (error) => {
+  //     console.error("Error loading GLTF model:", error);
+  //   }
+  // );
+
+
+
+
+
+
+
+
     // Hollow Cube
     const hollowCubeSize = 1.2;
     const hollowCubeThickness = 0.27;
     const outerGeometry = new RoundedBoxGeometry(
       hollowCubeSize,
-      hollowCubeSize * 0.6,
+      hollowCubeSize * 0.8,
       hollowCubeSize,
       10,
       0.1
@@ -183,7 +430,7 @@ const ThreeScene = () => {
     const rectLight = new THREE.RectAreaLight(0x00000, 5, 2, 2);
     rectLight.position.set(0, 0.001, 0);
     rectLight.rotation.x = -Math.PI / 2;
-    scene.add(rectLight);
+    // scene.add(rectLight);
 
     const rectLightHelper = new RectAreaLightHelper(rectLight);
     rectLight.add(rectLightHelper);
@@ -192,16 +439,22 @@ const ThreeScene = () => {
     scene.add(ambientLight);
 
     // create lines along four directions
-    createXLines(scene, step, 0x0000); // Set line color to black
-    createZLines(scene, step, 0x0000); // Set line color to black
-    createNegativeZLines(scene, step, 0x0000); // Set line color to black
-    createNegativeXLines(scene, step, 0x0000); // Set line color to black
+  // createXLines(scene, step, 0x0000); // Set line color to black
+  // createZLines(scene, step, 0x0000); // Set line color to black
+  //   createNegativeZLines(scene, step, 0x0000); // Set line color to black
+  //   createNegativeXLines(scene, step, 0x0000); // Set line color to black
+
+
+
+
+  
 
     // Add corners group to the scene
     const cornersGroup = createNavTitle(0.2, 0xa44c24); // Adjust size and color if needed
     cornersGroup.position.set(-2.3, 0, -10.5); // Adjust these values as needed
     cornersGroup.rotation.set(4.71, 0, 1.57);
     group.add(cornersGroup);
+    
 
     // Add navtitle Events
     const navEvents = createNavEvents(0.2, 0xa44c24);
@@ -257,10 +510,16 @@ const ThreeScene = () => {
     const ambientLightModel = new THREE.AmbientLight(0xffffff, 2);
     scene.add(ambientLightModel);
 
-    // Start animation and add navEvents after the animation completes
+    //add point light 
+    
+
+    // Start animation and add navEvents after the animation completes with a delay
     startAnimation(cube, camera, scene, cubeSize, targetScale, () => {
-      scene.add(group);
-      group.add(navEvents);
+      // Add a 1-second delay before showing the nav titles
+      setTimeout(() => {
+        scene.add(group);
+        group.add(navEvents);
+      },500); // 1000ms = 1 second delay
     });
 
 
@@ -269,23 +528,36 @@ const ThreeScene = () => {
     // handleResize(camera, renderer, frustumSize, aspect);
 
     // Mouse tracking
-// const mouse = { x: 0, y: 0 };
+const mouse = { x: 0, y: 0 };
+let mouseControlEnabled = false;  // Add flag to control mouse movement
 
-    // window.addEventListener('mousemove', (event) => {
-    //   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    //   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    // });
-   
+    window.addEventListener('mousemove', (event) => {
+      if (!mouseControlEnabled) return;  // Only process mouse movement after animation
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    startAnimation(cube, camera, scene, cubeSize, targetScale, () => {
+      // Add a delay before showing the nav titles
+      setTimeout(() => {
+        scene.add(group);
+        group.add(navEvents);
+        mouseControlEnabled = true;  // Enable mouse control after animation
+      }, 500);
+    });
 
     function animate() {
       requestAnimationFrame(animate);
 
+      if (mouseControlEnabled) {  // Only apply mouse movement when enabled
+        superGroup.rotation.y += (mouse.x*0.1 - superGroup.rotation.y) * 0.1;
+        superGroup.rotation.x += (mouse.y*0.1 - superGroup.rotation.x) * 0.1;
 
+        group.rotation.y += (mouse.x*0.1 - group.rotation.y) * 0.1;
+        group.rotation.x += (mouse.y*0.1 - group.rotation.x) * 0.1;
+      }
 
-      
       controls.update();
-
-      // rippleEffect.update(); // Update ripple animation
       renderer.render(scene, camera);
     }
 
@@ -332,8 +604,9 @@ const ThreeScene = () => {
 
     // Cleanup event listeners when the component unmounts
     return () => {
-      window.removeEventListener("resize", handleWindowResize);
-      cleanupNavBITEventListener();
+      // window.removeEventListener("resize", handleWindowResize);
+      window.removeEventListener("click", onMouseClick);
+      // cleanupNavBITEventListener();
       cleanupNavMembersEventListener();
       cleanupNavAlumniEventListener();
       cleanupNavCollabEventListener();
@@ -343,7 +616,7 @@ const ThreeScene = () => {
 
   return (
     <>
-      <div id="threejs-canvas" className="relative w-full h-screen"></div>
+      <div id="threejs-canvas" className="relative w-full h-screen bg-white"></div>
       <div 
         className="fixed inset-0 flex items-center justify-start transition-opacity duration-500"
         style={{ 
@@ -357,7 +630,7 @@ const ThreeScene = () => {
         {showAlumni && <Alumni />}
         {showCollabs && <Collabs />} Add Collabs component
       </div>
-      <div id="three-scene" />;
+      <div id="three-scene" />
     </>
   );
 };

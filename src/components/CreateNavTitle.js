@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
+
 // import { GUI } from "dat.gui"; // Correct import for dat.GUI
 
 // Function to create a right-angle corner
@@ -53,6 +54,10 @@ export function createNavTitle(cornerSize = 0.2, lineColor = 0xa44c24) {
   const bottomLeft = createCorner(cornerSize, lineMaterial);
   bottomLeft.position.set(-rectangleWidth / 2, -rectangleHeight / 2, 0);
   bottomLeft.rotation.z = Math.PI / 2;
+
+
+  //add a mouse hover effect that on moving mouse inside the 4 corners, the area confined by 4 corners turns 0xa44c24 and regains its original when hover out 
+  
 
   // Add corners to the group
   cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);
@@ -296,7 +301,7 @@ export function createNavAlumni(cornerSize = 0.2, lineColor = 0xffffff) {
 }
 
 // Function to create and return the navTitle "MERCHANDISE"
-export function createNavMernc(cornerSize = 0.2, lineColor = 0xffffff) {
+export function createNavMernc(cornerSize = 0.2, lineColor = 0x000000) {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: lineColor,
     linewidth: 2,
@@ -390,6 +395,9 @@ export function createNavBIT(cornerSize = 0.2, lineColor = 0xffffff) {
   const bottomLeft = createCorner(cornerSize, lineMaterial);
   bottomLeft.position.set(-rectangleWidth / 2, -rectangleHeight / 2, 0);
   bottomLeft.rotation.z = Math.PI / 2;
+
+
+    
 
   // Add corners to the group
   cornersGroup.add(topLeft, topRight, bottomRight, bottomLeft);

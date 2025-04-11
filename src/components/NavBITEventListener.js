@@ -89,6 +89,8 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
     const intersects = raycaster.intersectObjects([navBIT]);
   
     if (intersects.length > 0) {
+      // Commented out BIT logo popup functionality
+      
       // Fade in overlay first
       gsap.to({}, {
         duration: 0.5,
@@ -96,17 +98,8 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
           setOverlayOpacity(gsap.getProperty({}, "progress"));
         },
       });
-  
-      // Hide all models except Model1
-      scene.children.forEach((child) => {
-        if (child.name === "Model2") {
-          child.visible = true; // Ensure Model1 is visible
-        } else if (child.name && child.name.startsWith("Model")) {
-          child.visible = false; // Hide all other models
-        }
-      });
-  
-      // Make other navCollabs, lines, and RectAreaLights disappear
+
+      // Make other navCollabs, lines, and RectAreaLights disappear 
       group.children.forEach((child) => {
         if (child !== navBIT) {
           child.visible = false;
@@ -117,35 +110,16 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
         if (
           child instanceof THREE.Line ||
           (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
-          child instanceof THREE.RectAreaLight
+          child instanceof THREE.RectAreaLight 
         ) {
           child.visible = false;
         }
       });
   
       // Animate camera position and zoom
-      gsap.to(camera.position, {
-        x: 10,
-        y: 1.5,
-        z: -3.3,
-        duration: 5,
-        ease: "power2.inOut",
-        onUpdate: () => {
-          camera.lookAt(navBIT.position);
-        },
-      });
-  
-      gsap.to(navBIT, {
-        duration: 1,
-        opacity: 0,
-        onComplete: () => {
-          navBIT.visible = false;
-        },
-      });
-  
       gsap.to(camera, {
-        zoom: 3.5,
-        duration: 2,
+        // zoom: 1.5,
+        // duration: 2,
         ease: "power2.inOut",
         onUpdate: () => {
           camera.updateProjectionMatrix();
@@ -155,6 +129,16 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
           crossButton.style.display = 'block'; // Show the 'X' button
         },
       });
+
+      // Set navBIT opacity to 0
+      gsap.to(navBIT, {
+        duration: 1,
+        opacity: 0,
+        onComplete: () => {
+          navBIT.visible = false;
+        },
+      });
+      
     }
   };
   
@@ -231,20 +215,9 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
   // });
   crossButton.addEventListener('click', () => {
     // Reset camera position and zoom
-    gsap.to(camera.position, {
-      x: originalCameraPosition.x,
-      y: originalCameraPosition.y,
-      z: originalCameraPosition.z,
-      duration: 2,
-      ease: "power2.inOut",
-      onUpdate: () => {
-        camera.lookAt(0, 0, 0);
-      },
-    });
-  
     gsap.to(camera, {
-      zoom: originalCameraZoom * 1.3,
-      duration: 2,
+      // zoom: originalCameraZoom * 1, // Decrease the final zoom value
+      // duration: 2,
       ease: "power2.inOut",
       onUpdate: () => {
         camera.updateProjectionMatrix();
@@ -288,79 +261,10 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
     // Hide the 'X' button
     crossButton.style.display = 'none';
   });
-  
-
-  // Add loading screen logic
-  window.addEventListener('load', () => {
-    const loadingScreen = document.getElementById('loading-screen');
-    if (loadingScreen) {
-      gsap.to(loadingScreen, {
-        opacity: 0,
-        duration: 1,
-        ease: 'power2.out',
-        onComplete: () => {
-          loadingScreen.style.display = 'none';
-        },
-      });
-    }
-  });
-
-  // Add resize loader logic
-  // const resizeLoader = document.createElement('div');
-  // resizeLoader.innerText = 'Reloading...';
-  // resizeLoader.style.position = 'fixed';
-  // resizeLoader.style.top = '0';
-  // resizeLoader.style.left = '0';
-  // resizeLoader.style.width = '100vw';
-  // resizeLoader.style.height = '100vh';
-  // resizeLoader.style.backgroundColor = '#000';
-  // resizeLoader.style.color = '#fff';
-  // resizeLoader.style.display = 'none';
-  // resizeLoader.style.zIndex = '9999';
-  // resizeLoader.style.justifyContent = 'center';
-  // resizeLoader.style.alignItems = 'center';
-  // resizeLoader.style.fontSize = '2rem';
-  // resizeLoader.style.fontWeight = 'bold';
-  // document.body.appendChild(resizeLoader);
-
-  let resizeTimeout = null;
-
-  // const handleResize = () => {
-  //   if (resizeTimeout) clearTimeout(resizeTimeout);
-
-  //   // Reset and show loader
-  //   resizeLoader.style.display = 'flex';
-  //   gsap.fromTo(
-  //     resizeLoader,
-  //     { opacity: 0 },
-  //     { opacity: 1, duration: 0.5, ease: 'power1.out' }
-  //   );
-
-  //   // Adjust camera aspect ratio and update projection matrix
-  //   camera.aspect = window.innerWidth / window.innerHeight;
-  //   camera.updateProjectionMatrix();
-
-  //   // Animate out after 1s
-  //   resizeTimeout = setTimeout(() => {
-  //     gsap.to(resizeLoader, {
-  //       opacity: 0,
-  //       duration: 0.5,
-  //       ease: 'power1.inOut',
-  //       onComplete: () => {
-  //         resizeLoader.style.display = 'none';
-  //       },
-  //     });
-  //   }, 1000);
-  // };
-
-  // window.addEventListener('resize', handleResize);
 
   // Cleanup event listeners on unmount
   return () => {
     window.removeEventListener("click", onMouseClick);
     crossButton.remove();
-    // window.removeEventListener('resize', handleResize);
-    // if (resizeTimeout) clearTimeout(resizeTimeout);
-    // resizeLoader.remove();
   };
 }

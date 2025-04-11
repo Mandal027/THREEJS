@@ -17,10 +17,10 @@ export default function Header() {
   }, []);
 
   return (
-    <div className="w-4/5 mt-1 max-w-7xl mx-2 rounded-lg overflow-hidden">
+    <div className="w-full mt-1  mx-2 rounded-lg  bg-white overflow-hidden z-20">
       {/* The margin-top is set here with the class "mt-1" */}
       {/* Existing Header */}
-      {/* <div className="flex items-center px-4 py-2 md:px-10 justify-between w-full border-b">
+      <div className="flex items-center px-4 py-2 md:px-10 justify-between w-full border-b">
         <div className="py-1">
           <a
             href="/"
@@ -39,7 +39,7 @@ export default function Header() {
             className="w-[110px] h-[80px] object-contain"
           />
         </div>
-      </div> */}
+      </div>
 
       {/* Content Section */}
       <div className="p-3 mt-40 md:p-8 overflow-y-scroll max-h-screen">
