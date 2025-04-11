@@ -48,19 +48,22 @@ const ThreeScene = () => {
 
   useEffect(() => {
     // Function to reload the page on resize
-    const handleWindowResize = () => {
-      window.location.reload();
-    };
+    // const handleWindowResize = () => {
+    //   window.location.reload();
+    // };
 
     // Attach the resize event listener
-    window.addEventListener("resize", handleWindowResize);
+    // window.addEventListener("resize", handleWindowResize);
 
     // Existing Three.js setup
     const scene = new THREE.Scene();
+    const superGroup = new THREE.Group();
+    scene.add(superGroup);
 
     // Group for background and grid layout
     const backgroundGridGroup = new THREE.Group();
     scene.add(backgroundGridGroup);
+    superGroup.add(backgroundGridGroup);
 
     // Load a texture as the background
     const loader = new THREE.TextureLoader();
@@ -71,6 +74,7 @@ const ThreeScene = () => {
     // Group for grid and background texture
     const gridBackgroundGroup = new THREE.Group();
     backgroundGridGroup.add(gridBackgroundGroup);
+    superGroup.add(gridBackgroundGroup);
 
     const aspect = window.innerWidth / window.innerHeight;
     const frustumSize = 17;
@@ -259,16 +263,38 @@ const ThreeScene = () => {
       group.add(navEvents);
     });
 
+
+    controls.enable = false
     // Handle resize
-    handleResize(camera, renderer, frustumSize, aspect);
+    // handleResize(camera, renderer, frustumSize, aspect);
+
+    // Mouse tracking
+// const mouse = { x: 0, y: 0 };
+
+    // window.addEventListener('mousemove', (event) => {
+    //   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    //   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    // });
+   
 
     function animate() {
       requestAnimationFrame(animate);
+
+
+
+      
       controls.update();
 
       // rippleEffect.update(); // Update ripple animation
       renderer.render(scene, camera);
     }
+
+   
+
+    
+
+
+
     animate();
 
     // Function to handle navBIT click and show Model1

@@ -42,7 +42,7 @@ export default function Header() {
       </div> */}
 
       {/* Content Section */}
-      <div className="p-3 md:p-8 overflow-y-scroll max-h-screen">
+      <div className="p-3 mt-40 md:p-8 overflow-y-scroll max-h-screen">
         {/* About Section */}
         <div className={`mb-8 transition-all duration-500 ease-out delay-100 ${
           contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
