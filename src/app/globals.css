@@ -25,6 +25,8 @@ body, html {
   z-index: 5;
   overflow-y: auto; /* Allow vertical scrolling */
   height: 100%; /* Ensure full height */
+  /* background-color: #873434; */
+ 
  
 }
 
@@ -37,9 +39,9 @@ body, html {
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
-body::-webkit-scrollbar {
+/* body::-webkit-scrollbar {
   display: none;
-}
+} */
 
 /* Hide scrollbar for IE, Edge and Firefox */
 body {
