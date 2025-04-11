@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { setshowBitSindri } from './BitSindri';
-import { Gltf } from '@react-three/drei';
 
 export function setupNavBITEventListener(scene, camera, navBIT, group, setOverlayOpacity, setshowBitSindri) {
   const raycaster = new THREE.Raycaster();
@@ -11,83 +10,14 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
   const originalCameraPosition = camera.position.clone();
   const originalCameraZoom = camera.zoom;
 
-  // 🖱️ Handle mouse click event
-  // const onMouseClick = (event) => {
-  //   mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  //   mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-  //   raycaster.setFromCamera(mouse, camera);
-  //   const intersects = raycaster.intersectObjects([navBIT]);
-
-  //   if (intersects.length > 0) {
-  //     // Fade in overlay first
-  //     gsap.to({}, {
-  //       duration: 0.5,
-  //       onUpdate: () => {
-  //         setOverlayOpacity(gsap.getProperty({}, "progress"));
-  //       },
-  //     });
-
-  //     // Make other navCollabs, lines, and RectAreaLights disappear
-  //     group.children.forEach((child) => {
-  //       if (child !== navBIT) {
-  //         child.visible = false;
-  //       }
-     
-  //     });
-
-  //     scene.children.forEach((child) => {
-  //       if (
-  //         child instanceof THREE.Line ||
-  //         (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
-  //         child instanceof THREE.RectAreaLight 
-          
-  //       ) {
-  //         child.visible = false;
-  //       }
-  //     });
-
-  //     // Animate camera position and zoom
-  //     gsap.to(camera.position, {
-  //       x: 10,
-  //       y: 1.3,
-  //       z: -3.3,
-  //       duration: 5,
-  //       ease: "power2.inOut",
-  //       onUpdate: () => {
-  //         camera.lookAt(navBIT.position);
-  //       },
-  //     });
-
-  //     gsap.to(navBIT, {
-  //       duration: 1,
-  //       opacity: 0,
-  //       onComplete: () => {
-  //         navBIT.visible = false;
-  //       },
-  //     });
-
-  //     gsap.to(camera, {
-  //       zoom: 4,
-  //       duration: 2,
-  //       ease: "power2.inOut",
-  //       onUpdate: () => {
-  //         camera.updateProjectionMatrix();
-  //       },
-  //       onComplete: () => {
-  //         setshowBitSindri(true);
-  //         crossButton.style.display = 'block'; // Show the 'X' button
-  //       },
-  //     });
-  //   }
-  // };
+  // 🖱 Handle mouse click event
   const onMouseClick = (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  
+
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects([navBIT]);
-  
+
     if (intersects.length > 0) {
       // Commented out BIT logo popup functionality
       
@@ -105,7 +35,7 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
           child.visible = false;
         }
       });
-  
+
       scene.children.forEach((child) => {
         if (
           child instanceof THREE.Line ||
@@ -115,7 +45,7 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
           child.visible = false;
         }
       });
-  
+
       // Animate camera position and zoom
       gsap.to(camera, {
         // zoom: 1.5,
@@ -141,7 +71,6 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
       
     }
   };
-  
 
   window.addEventListener("click", onMouseClick);
 
@@ -158,61 +87,6 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
   document.body.appendChild(crossButton);
 
   // 🔄 Handle cross button click
-  // crossButton.addEventListener('click', () => {
-  //   // Reset camera position and zoom
-  //   gsap.to(camera.position, {
-  //     x: originalCameraPosition.x,
-  //     y: originalCameraPosition.y,
-  //     z: originalCameraPosition.z,
-  //     duration: 2,
-  //     ease: "power2.inOut",
-  //     onUpdate: () => {
-  //       camera.lookAt(0, 0, 0);
-  //     },
-  //   });
-
-  //   gsap.to(camera, {
-  //     zoom: originalCameraZoom * 1.3, // Decrease the final zoom value
-  //     duration: 2,
-  //     ease: "power2.inOut",
-  //     onUpdate: () => {
-  //       camera.updateProjectionMatrix();
-  //     },
-  //   });
-
-  //   // Restore scene objects
-  //   group.children.forEach((child) => {
-  //     child.visible = true;
-  //   });
-
-  //   scene.children.forEach((child) => {
-  //     if (
-  //       child instanceof THREE.Line ||
-  //       (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
-  //       child instanceof THREE.RectAreaLight
-  //     ) {
-  //       child.visible = true;
-  //     }
-  //   });
-
-  //   // Reset overlay opacity and navBIT visibility
-  //   gsap.to({}, {
-  //     duration: 0.5,
-  //     onUpdate: () => {
-  //       setOverlayOpacity(gsap.getProperty({}, "progress"));
-  //     },
-  //     onComplete: () => {
-  //       setOverlayOpacity(0);
-  //       navBIT.visible = true;
-  //     },
-  //   });
-
-  //   // Reverse BitSindri content
-  //   setshowBitSindri(false);
-
-  //   // Hide the 'X' button
-  //   crossButton.style.display = 'none';
-  // });
   crossButton.addEventListener('click', () => {
     // Reset camera position and zoom
     gsap.to(camera, {
@@ -223,41 +97,37 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
         camera.updateProjectionMatrix();
       },
     });
-  
-    // Restore visibility for all models and scene objects
+
+    // Restore scene objects
+    group.children.forEach((child) => {
+      child.visible = true;
+    });
+
     scene.children.forEach((child) => {
-      if (child.name && child.name.startsWith("Model")) {
-        child.visible = true; // Show all models
-      }
-  
       if (
         child instanceof THREE.Line ||
         (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
         child instanceof THREE.RectAreaLight
       ) {
-        child.visible = true; // Show lines and lights
+        child.visible = true;
       }
     });
-  
-    group.children.forEach((child) => {
-      child.visible = true; // Restore visibility of navigation objects
-    });
-  
-    // Reset overlay opacity and 'navBIT' visibility
+
+    // Reset overlay opacity and navBIT visibility
     gsap.to({}, {
       duration: 0.5,
       onUpdate: () => {
         setOverlayOpacity(gsap.getProperty({}, "progress"));
       },
       onComplete: () => {
-        setOverlayOpacity(0); // Ensure overlay fades out
-        navBIT.visible = true; // Make navBIT visible
+        setOverlayOpacity(0);
+        navBIT.visible = true;
       },
     });
-  
-    // Hide BitSindri content
+
+    // Reverse BitSindri content
     setshowBitSindri(false);
-  
+
     // Hide the 'X' button
     crossButton.style.display = 'none';
   });

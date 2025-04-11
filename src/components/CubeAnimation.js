@@ -89,7 +89,7 @@ export function startAnimation(cube, camera, scene, cubeSize, targetScale, compl
       //   });
       // });
 
-      // Add GLTF models to the scene with unique names
+      // Add GLTF model to the scene
       const gltfLoader = new GLTFLoader();
       // gltfLoader.load(
       //   '/BIT.glb', // Path to the model in the public folder
@@ -125,7 +125,7 @@ export function startAnimation(cube, camera, scene, cubeSize, targetScale, compl
          
       //   },
       //   (xhr) => {
-      //     console.log(`Model ${(xhr.loaded / xhr.total) * 100}% loaded`);
+      //     console.log(Model ${(xhr.loaded / xhr.total) * 100}% loaded);
       //   },
       //   (error) => {
       //     console.error('An error occurred:', error);

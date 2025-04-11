@@ -44,7 +44,6 @@ const ThreeScene = () => {
   const [showBitSindri, setshowBitSindri] = useState(false);
   const [showMembers, setshowMembers] = useState(false);
   const [showAlumni, setshowAlumni] = useState(false);
-  const [showCollabs, setshowCollabs] = useState(false); // Add state for Collabs
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [activeContent, setActiveContent] = useState(null);
 
@@ -83,7 +82,7 @@ const ThreeScene = () => {
     superGroup.add(gridBackgroundGroup);
 
     const aspect = window.innerWidth / window.innerHeight;
-    const frustumSize = 17;
+    const frustumSize = 18;
     const camera = new THREE.OrthographicCamera(
       (frustumSize * aspect) / -2,
       (frustumSize * aspect) / 2,
@@ -497,14 +496,12 @@ const ThreeScene = () => {
     navCollab.rotation.set(1.6, 3.1, 3.1);
     group.add(navCollab);
 
-    // Setup event listener for navCollab
-    const cleanupNavCollabEventListener = setupNavCollabEventListener(scene, camera, navCollab, group, setOverlayOpacity, setshowCollabs);
-
     // Add navtitle Induction
     const navInduction = createNavInduction(0.2, 0xa44c24);
     navInduction.position.set(3.5, 0, -7);
     navInduction.rotation.set(4.7, 0, 0);
     group.add(navInduction);
+
 
     //add ambient light to the gltf model
     const ambientLightModel = new THREE.AmbientLight(0xffffff, 2);
@@ -568,51 +565,22 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
 
 
     animate();
+   
 
-    // Function to handle navBIT click and show Model1
-    const handleNavBITClick = () => {
-      const raycaster = new THREE.Raycaster();
-      const mouse = new THREE.Vector2();
-
-      const onMouseClick = (event) => {
-        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObject(navBIT, true);
-
-        if (intersects.length > 0) {
-          const gltfModels = scene.children.filter((child) => child.isMesh && child.name.startsWith('Model'));
-          gltfModels.forEach((model) => {
-            model.visible = model.name === 'Model1';
-          });
-        }
-      };
-
-      window.addEventListener("click", onMouseClick);
-
-      return () => {
-        window.removeEventListener("click", onMouseClick);
-      };
-    };
-
-    // Setup event listener for navBIT
-    const cleanupNavBITEventListener = setupNavBITEventListener(scene, camera, navBIT, group, setOverlayOpacity, setshowBitSindri);
-
-    // Setup event listener for navBIT to show Model1
-    const cleanupNavBITClickListener = handleNavBITClick();
-
-    // Cleanup event listeners when the component unmounts
+     // Setup event listener for navBIT
+  const cleanupNavBITEventListener = setupNavBITEventListener(scene, camera, navBIT, group, setOverlayOpacity, setshowBitSindri);
+    // Cleanup event listener when the component unmounts
     return () => {
       // window.removeEventListener("resize", handleWindowResize);
       window.removeEventListener("click", onMouseClick);
       // cleanupNavBITEventListener();
       cleanupNavMembersEventListener();
       cleanupNavAlumniEventListener();
-      cleanupNavCollabEventListener();
-      cleanupNavBITClickListener();
     };
   }, []);
+
+ 
+
 
   return (
     <>
@@ -621,14 +589,13 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
         className="fixed inset-0 flex items-center justify-start transition-opacity duration-500"
         style={{ 
           backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
-          pointerEvents: showBitSindri || showMembers || showAlumni || showCollabs ? 'auto' : 'none',
-          opacity: showBitSindri || showMembers || showAlumni || showCollabs ? 1 : 0
+          pointerEvents: showBitSindri || showMembers || showAlumni ? 'auto' : 'none',
+          opacity: showBitSindri || showMembers || showAlumni ? 1 : 0
         }}
       >
         {showBitSindri && <BitSindri />}
         {showMembers && <Members />}
         {showAlumni && <Alumni />}
-        {showCollabs && <Collabs />} Add Collabs component
       </div>
       <div id="three-scene" />
     </>
