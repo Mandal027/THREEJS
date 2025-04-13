@@ -37,21 +37,21 @@ export function setupNavAlumniEventListener(scene, camera, navAlumni, group, set
       });
 
       // Make other navCollabs, lines, and RectAreaLights disappear
-      group.children.forEach((child) => {
-        if (child !== navAlumni) {
-          child.visible = false;
-        }
-      });
+      // group.children.forEach((child) => {
+      //   if (child !== navAlumni) {
+      //     child.visible = false;
+      //   }
+      // });
 
-      scene.children.forEach((child) => {
-        if (
-          child instanceof THREE.Line ||
-          (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
-          child instanceof THREE.RectAreaLight
-        ) {
-          child.visible = false;
-        }
-      });
+      // scene.children.forEach((child) => {
+      //   if (
+      //     child instanceof THREE.Line ||
+      //     (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
+      //     child instanceof THREE.RectAreaLight
+      //   ) {
+      //     child.visible = false;
+      //   }
+      // });
 
 
      
@@ -102,6 +102,7 @@ export function setupNavAlumniEventListener(scene, camera, navAlumni, group, set
   crossButton.style.fontSize = '18px';
   crossButton.style.cursor = 'pointer';
   crossButton.style.display = 'none'; // Initially hide the 'X' button
+  crossButton.style.zIndex = "15"
   document.body.appendChild(crossButton);
 
   // 🔄 Handle cross button click
