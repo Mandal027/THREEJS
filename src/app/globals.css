@@ -79,6 +79,14 @@ h1 {
   }
 }
 
+
+
+
+canvas {
+  pointer-events: none; /* Allow cursor to show over the canvas */
+}
+
+
 /* @media (max-width: 768px) {
   h1 {
     font-size: 1.5rem;

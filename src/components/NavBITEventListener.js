@@ -30,21 +30,21 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
       });
 
       // Make other navCollabs, lines, and RectAreaLights disappear 
-      group.children.forEach((child) => {
-        if (child !== navBIT) {
-          child.visible = false;
-        }
-      });
+      // group.children.forEach((child) => {
+      //   if (child !== navBIT) {
+      //     child.visible = false;
+      //   }
+      // });
 
-      scene.children.forEach((child) => {
-        if (
-          child instanceof THREE.Line ||
-          (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
-          child instanceof THREE.RectAreaLight 
-        ) {
-          child.visible = false;
-        }
-      });
+      // scene.children.forEach((child) => {
+      //   if (
+      //     child instanceof THREE.Line ||
+      //     (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
+      //     child instanceof THREE.RectAreaLight 
+      //   ) {
+      //     child.visible = false;
+      //   }
+      // });
 
       // Animate camera position and zoom
       gsap.to(camera, {
@@ -84,6 +84,7 @@ export function setupNavBITEventListener(scene, camera, navBIT, group, setOverla
   crossButton.style.fontSize = '18px';
   crossButton.style.cursor = 'pointer';
   crossButton.style.display = 'none'; // Initially hide the 'X' button
+  crossButton.style.zIndex = '9999'; // Ensure it's on top of other elements
   document.body.appendChild(crossButton);
 
   // 🔄 Handle cross button click

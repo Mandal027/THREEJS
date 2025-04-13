@@ -83,6 +83,7 @@ export function createNavTitle(cornerSize = 0.2, lineColor = 0xa44c24) {
       charGeometry.center(); // Center each letter
 
       charMesh.position.set(xOffset, 2.7, 1.1);
+      charMesh.userData.isNavTitleText = true; // Mark as navTitle text
       textGroup.add(charMesh);
 
       xOffset += 0.35; // Adjust spacing between letters
@@ -150,6 +151,7 @@ export function createNavEvents(cornerSize = 0.2, lineColor = 0xa44c24) {
       charGeometry.center(); // Center each letter
 
       charMesh.position.set(xOffset, 1.5, 0.5);
+      charMesh.userData.isNavTitleText = true; // Mark as navTitle text
       textGroup.add(charMesh);
 
       xOffset += 0.36; // Decrease spacing between letters
@@ -218,6 +220,7 @@ export function createNavMembers(cornerSize = 0.2, lineColor = 0xffffff) {
       charGeometry.center(); // Center each letter
 
       charMesh.position.set(xOffset, 1.5, 0.5);
+      charMesh.userData.isNavTitleText = true; // Mark as navTitle text
       textGroup.add(charMesh);
 
       xOffset += 0.36; // Decrease spacing between letters
@@ -285,6 +288,7 @@ export function createNavAlumni(cornerSize = 0.2, lineColor = 0xffffff) {
       charGeometry.center(); // Center each letter
 
       charMesh.position.set(xOffset, 1.5, 0.5);
+      charMesh.userData.isNavTitleText = true; // Mark as navTitle text
       textGroup.add(charMesh);
 
       xOffset += 0.36; // Decrease spacing between letters
@@ -353,6 +357,7 @@ export function createNavMernc(cornerSize = 0.2, lineColor = 0x000000) {
       charGeometry.center(); // Center each letter
 
       charMesh.position.set(xOffset, 1.5, 0.5);
+      charMesh.userData.isNavTitleText = true; // Mark as navTitle text
       textGroup.add(charMesh);
 
       xOffset += 0.36; // Decrease spacing between letters
@@ -413,6 +418,12 @@ export function createNavBIT(cornerSize = 0.2, lineColor = 0xffffff) {
     const textGroup = new THREE.Group(); // Group to hold all letters
     let xOffset = -0.7 * text.length; // Decrease spacing between letters
 
+
+
+  
+
+  
+
     for (let i = 0; i < text.length; i++) {
       const charGeometry = new TextGeometry(text[i], {
         font: font,
@@ -424,6 +435,7 @@ export function createNavBIT(cornerSize = 0.2, lineColor = 0xffffff) {
       charGeometry.center(); // Center each letter
 
       charMesh.position.set(xOffset, 1.5, 0.5);
+      charMesh.userData.isNavTitleText = true; // Mark as navTitle text
       textGroup.add(charMesh);
 
       xOffset += 0.36; // Decrease spacing between letters
@@ -494,6 +506,7 @@ export function createNavCollab(cornerSize = 0.2, lineColor = 0xffffff) {
       charGeometry.center(); // Center each letter
 
       charMesh.position.set(xOffset, 1.5, 0.5);
+      charMesh.userData.isNavTitleText = true; // Mark as navTitle text
       textGroup.add(charMesh);
 
       xOffset += 0.36; // Decrease spacing between letters
@@ -561,6 +574,7 @@ export function createNavInduction(cornerSize = 0.2, lineColor = 0xffffff) {
       charGeometry.center(); // Center each letter
 
       charMesh.position.set(xOffset, 1.5, 0.5);
+      charMesh.userData.isNavTitleText = true; // Mark as navTitle text
       textGroup.add(charMesh);
 
       xOffset += 0.36; // Decrease spacing between letters

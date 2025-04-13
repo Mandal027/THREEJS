@@ -35,6 +35,7 @@ import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { Raycaster } from "three";
 
+
 const gridSize = 100; // Example value, adjust as needed
 const gridDivisions = 100; // Example value, adjust as needed
 const step = gridSize / gridDivisions;
@@ -46,6 +47,10 @@ const ThreeScene = () => {
   const [showAlumni, setshowAlumni] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [activeContent, setActiveContent] = useState(null);
+
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  let camera; // Define camera outside useEffect
 
   useEffect(() => {
     // Function to reload the page on resize
@@ -74,16 +79,17 @@ const ThreeScene = () => {
 
     scene.background = new THREE.Color(0xffffff);  // Set back
 
+
     
 
-    // Group for grid and background texture
+    // Group for grid and geometry setup
     const gridBackgroundGroup = new THREE.Group();
     backgroundGridGroup.add(gridBackgroundGroup);
     superGroup.add(gridBackgroundGroup);
 
     const aspect = window.innerWidth / window.innerHeight;
     const frustumSize = 18;
-    const camera = new THREE.OrthographicCamera(
+    camera = new THREE.OrthographicCamera(
       (frustumSize * aspect) / -2,
       (frustumSize * aspect) / 2,
       frustumSize / 1,
@@ -123,9 +129,28 @@ const ThreeScene = () => {
     // controls.maxDistance = 50; // Maximum distance from the target
 
 
+    // Add the mousemove event listener inside useEffect
+  window.addEventListener("mousemove", (event) => {
+    // Convert mouse position to normalized device coordinates
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
+    // Perform raycasting
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(group.children, true);
 
-   
+    // Check if any intersected object is a navTitle
+    let isHoveringNavTitle = false;
+    intersects.forEach((intersect) => {
+      if (intersect.object.userData.isNavTitle) {
+        isHoveringNavTitle = true;
+      }
+    });
+
+    // Change cursor based on hover state
+    document.body.style.cursor = isHoveringNavTitle ? "pointer" : "default";
+
+  });
 
 
     // Disable panning
@@ -195,6 +220,12 @@ const ThreeScene = () => {
     cube.position.set(0, 13.35, 0);
     scene.add(cube);
 
+
+
+
+
+    //Loading Environment
+    
 
      // Load the SVG
   const gltfLoader = new GLTFLoader()
@@ -338,37 +369,48 @@ const ThreeScene = () => {
   //     console.error("Error loading GLTF model:", error);
   //   }
   // );
-  gltfLoader.load(
-    "/isometric.glb", // Replace with the path to your GLTF file
-    (gltf) => {
-      const model = gltf.scene;
+  // gltfLoader.load(
+  //   "/isometric.glb", // Replace with the path to your GLTF file
+  //   (gltf) => {
+  //     const model = gltf.scene;
 
     
 
-      // Position and scale the GLTF model
-      model.scale.set(0.5, 0.5, 0.5); // Adjust scale as needed
-      model.position.set(0, 0.3, 0.3); // Adjust position as needed
-      // model.rotation.set(-1.57, 0, 0); // Adjust rotation as needed
+  //     // Position and scale the GLTF model
+  //     model.scale.set(0.5, 0.5, 0.5); // Adjust scale as needed
+  //     model.position.set(0, 0.3, 0.3); // Adjust position as needed
+  //     // model.rotation.set(-1.57, 0, 0); // Adjust rotation as needed
 
-      // Auto rotate the isometric model
-      // const rotateIsometric = () => {
-      //   model.rotation.y += 0.005;
-      //   requestAnimationFrame(rotateIsometric);
-      // };
-      // rotateIsometric();
+  //     // Auto rotate the isometric model
+  //     // const rotateIsometric = () => {
+  //     //   model.rotation.y += 0.005;
+  //     //   requestAnimationFrame(rotateIsometric);
+  //     // };
+  //     // rotateIsometric();
 
-      group.add(model);
+  //     group.add(model);
 
 
      
 
       
-    },
-    undefined,
-    (error) => {
-      console.error("Error loading GLTF model:", error);
-    }
-  );
+  //   },
+  //   undefined,
+  //   (error) => {
+  //     console.error("Error loading GLTF model:", error);
+  //   }
+  // );
+
+
+
+ 
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+  dirLight.position.set(5, 10, 5);
+  scene.add(dirLight);
+  
+
   // gltfLoader.load(
   //   "/strokes.glb", // Replace with the path to your GLTF file
   //   (gltf) => {
@@ -488,6 +530,7 @@ const ThreeScene = () => {
     const navBIT = createNavBIT(0.2, 0xa44c24);
     navBIT.position.set(-8.5, 0, 0);
     navBIT.rotation.set(1.57, 0, 0);
+    navBIT.userData.isNavTitle = true; // Mark as a navTitle
     group.add(navBIT);
 
     // Add navtitle Collab
@@ -543,6 +586,10 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
       }, 500);
     });
 
+
+
+    
+
     function animate() {
       requestAnimationFrame(animate);
 
@@ -552,7 +599,12 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
 
         group.rotation.y += (mouse.x*0.1 - group.rotation.y) * 0.1;
         group.rotation.x += (mouse.y*0.1 - group.rotation.x) * 0.1;
+
       }
+
+
+      
+      
 
       controls.update();
       renderer.render(scene, camera);
@@ -574,23 +626,59 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
       // window.removeEventListener("resize", handleWindowResize);
       window.removeEventListener("click", onMouseClick);
       // cleanupNavBITEventListener();
+      window.removeEventListener("mousemove", () => {});
       cleanupNavMembersEventListener();
       cleanupNavAlumniEventListener();
     };
   }, []);
 
- 
-
+  // useEffect(() => {
+  //   const raycaster = new THREE.Raycaster();
+  //   const mouse = new THREE.Vector2();
+  
+  //   // Add click event listener
+  //   window.addEventListener("click", (event) => {
+  //     // Convert mouse position to normalized device coordinates
+  //     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  //     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  
+  //     // Perform raycasting
+  //     raycaster.setFromCamera(mouse, camera);
+  //     const intersects = raycaster.intersectObjects(scene.children, true);
+  
+  //     // Reset all navTitle text colors to black
+  //     scene.traverse((child) => {
+  //       if (child.userData.isNavTitleText) {
+  //         child.material.color.set(0x000000); // Reset to black
+  //       }
+  //     });
+  
+  //     // Set clicked navTitle text color to orange
+  //     intersects.forEach((intersect) => {
+  //       if (intersect.object.userData.isNavTitleText) {
+  //         intersect.object.material.color.set(0xffa500); // Set to orange
+  //       }
+  //     });
+  //   });
+  
+  //   // Cleanup event listener on component unmount
+  //   return () => {
+  //     window.removeEventListener("click", () => {});
+  //   };
+  // }, []);
 
   return (
     <>
-      <div id="threejs-canvas" className="relative w-full h-screen bg-white"></div>
+      <div id="threejs-canvas" className="relative w-full h-screen bg-white">
+        
+      </div>
       <div 
         className="fixed inset-0 flex items-center justify-start transition-opacity duration-500"
         style={{ 
           backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
           pointerEvents: showBitSindri || showMembers || showAlumni ? 'auto' : 'none',
-          opacity: showBitSindri || showMembers || showAlumni ? 1 : 0
+          opacity: showBitSindri || showMembers || showAlumni ? 1 : 0,
+          zIndex: 11,
         }}
       >
         {showBitSindri && <BitSindri />}
@@ -598,6 +686,7 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
         {showAlumni && <Alumni />}
       </div>
       <div id="three-scene" />
+    
     </>
   );
 };

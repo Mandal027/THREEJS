@@ -34,7 +34,16 @@ export default {
           'extra-bold': '800',
           black: '900',
         }
-      }
+      },
+      keyframes: {
+        'loop-scroll': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
+      },
+      animation: {
+        'loop-scroll': 'loop-scroll 30s linear infinite',
+      },
     },
   },
   plugins: [],
