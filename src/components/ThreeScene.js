@@ -673,7 +673,7 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
         
       </div>
       <div 
-        className="fixed inset-0 flex items-center justify-start transition-opacity duration-500"
+        className="fixed inset-0 flex justify-start transition-opacity duration-500"
         style={{ 
           backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
           pointerEvents: showBitSindri || showMembers || showAlumni ? 'auto' : 'none',

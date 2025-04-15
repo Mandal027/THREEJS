@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { easeInOut, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
@@ -21,19 +21,19 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className=" text-black py-8 px-10 flex items-center justify-between z-50 relative">
+    <nav className=" text-black px-8 pt-6 flex items-center justify-between z-50 relative font-sans">
       {/* Left: Brand */}
       <motion.div
         whileHover={{ scale: 1.1 }}
-        className="text-2xl tracking-wide font-semibold cursor-pointer"
+        className="cursor-pointer"
       >
-        PAINTING WING
+        <Image src='/pw_logo.png' alt='logo' width={100} height={100} />
       </motion.div>
 
       {/* Center (Fixed) */}
       <motion.div
-        className={`hidden md:flex items-center space-x-4 text-sm font-medium px-4 py-2 rounded-full transition-all duration-300 ${
-          scrolled ? 'fixed top-4 left-1/2 -translate-x-1/2 shadow-lg' : ''
+        className={`hidden md:flex items-center space-x-4 text- font-medium px-4 py-2 rounded-full transition-all duration-600 ${
+          scrolled ? 'fixed top-4 left-1/2 -translate-x-1/2 shadow-lg' : 'bg-gray-100'
         } backdrop-blur-md`}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -42,14 +42,17 @@ export default function Navbar() {
           className="bg-gray-50 text-black rounded-full px-3 py-1 cursor-pointer"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
+          transition={easeInOut}
         >
-          🖌 Wthr
+          {/* 🖌 Wthr */}
+          Home
         </motion.div>
         {navLinks.map((link, i) => (
           <motion.button
             key={i}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
+            transition={easeInOut}
             className={`px-3 py-1 rounded-full transition-all duration-200 ${
               link === 'About' ? ' text-black' : 'text-black'
             }`}
@@ -63,10 +66,10 @@ export default function Navbar() {
       <motion.div
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
+        transition={easeInOut}
         className="hidden md:block text-sm font-medium cursor-pointer"
       >
         JOIN US
-        <Image src='/logo.png' alt='logo' width={10} height={10} />
       </motion.div>
 
       {/* Mobile Hamburger */}
