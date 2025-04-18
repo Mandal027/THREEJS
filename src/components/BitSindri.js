@@ -262,7 +262,7 @@ export default function BitSindri() {
 
         <Navbar />
 
-      <div className='pt-10 overflow-y-scroll max-h-screen'>
+      <div className='overflow-x-clip pt-10 overflow-y-scroll max-h-screen'>
         <div className='font-serif'>
           <ScrollingText />
         </div>
