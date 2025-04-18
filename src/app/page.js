@@ -1,5 +1,4 @@
 import ThreeScene from '../components/ThreeScene';
-import ThreeJSPaintbrush from '@/components/ThreejsPaintBrush';
 import Header from '@/components/Header';
 
 
@@ -14,7 +13,6 @@ export default function HomePage() {
       </div>
     
       
-      {/* <ThreeJSPaintbrush /> */}
     </div>
     </>
   );

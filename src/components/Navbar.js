@@ -1,6 +1,6 @@
 'use client';
 
-import { easeInOut, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
@@ -14,14 +14,14 @@ export default function Navbar() {
   // Scroll detection for styling (optional)
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <nav className=" text-black px-8 pt-6 flex items-center justify-between z-50 relative font-sans">
+    <nav className=" text-black max-auto px-8 pt-6 flex items-center justify-between z-50 relative font-sans">
       {/* Left: Brand */}
       <motion.div
         whileHover={{ scale: 1.1 }}
@@ -32,8 +32,8 @@ export default function Navbar() {
 
       {/* Center (Fixed) */}
       <motion.div
-        className={`hidden md:flex items-center space-x-4 text- font-medium px-4 py-2 rounded-full transition-all duration-600 ${
-          scrolled ? 'fixed top-4 left-1/2 -translate-x-1/2 shadow-lg' : 'bg-gray-100'
+        className={`hidden md:flex items-center space-x-4 text- font-medium px-4 py-2 rounded-full transition-all duration-300 ${
+          scrolled ? 'fixed top-4 left-1/2 -translate-x-1/2 shadow-lg' : ''
         } backdrop-blur-md`}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -42,7 +42,7 @@ export default function Navbar() {
           className="bg-gray-50 text-black rounded-full px-3 py-1 cursor-pointer"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
-          transition={easeInOut}
+          // transition={easeInOut}
         >
           {/* 🖌 Wthr */}
           Home
@@ -52,7 +52,7 @@ export default function Navbar() {
             key={i}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            transition={easeInOut}
+            // transition={easeInOut}
             className={`px-3 py-1 rounded-full transition-all duration-200 ${
               link === 'About' ? ' text-black' : 'text-black'
             }`}
@@ -66,7 +66,7 @@ export default function Navbar() {
       <motion.div
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        transition={easeInOut}
+        // transition={easeInOut}
         className="hidden md:block text-sm font-medium cursor-pointer"
       >
         JOIN US

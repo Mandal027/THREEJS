@@ -305,7 +305,7 @@ export function createNavAlumni(cornerSize = 0.2, lineColor = 0xffffff) {
 }
 
 // Function to create and return the navTitle "MERCHANDISE"
-export function createNavMernc(cornerSize = 0.2, lineColor = 0x000000) {
+export function createNavMerchandise(cornerSize = 0.2, lineColor = 0x000000) {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: lineColor,
     linewidth: 2,

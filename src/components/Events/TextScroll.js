@@ -27,7 +27,7 @@ const ScrollingText = () => {
   
     return (
       <motion.div 
-        className="relative w-full bg-white py-4 overflow-hidden"
+        className="relative w-full bg-white py-4"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         >

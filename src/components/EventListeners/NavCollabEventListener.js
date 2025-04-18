@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
-import Members from './Members';
 
-export function setupNavMembersEventListener(scene, camera, navMembers, group, setOverlayOpacity, setshowMembers) {
+
+export function setupNavCollabEventListener(scene, camera, navCollabs, group, setOverlayOpacity, setShowCollabs) {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
@@ -16,7 +16,7 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects([navMembers]);
+    const intersects = raycaster.intersectObjects([navCollabs]);
 
     if (intersects.length > 0) {
       // Fade in overlay first
@@ -27,10 +27,10 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
         },
       });
 
-      // Hide all models except Model2
+      // Hide all models except Model3
       scene.children.forEach((child) => {
-        if (child.name === "Model1") {
-          child.visible = true; // Ensure Model2 is visible
+        if (child.name === "Model4") {
+          child.visible = true; // Ensure Model3 is visible
         } else if (child.name && child.name.startsWith("Model")) {
           child.visible = false; // Hide all other models
         }
@@ -38,7 +38,7 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
 
       // Make other navCollabs, lines, and RectAreaLights disappear
       group.children.forEach((child) => {
-        if (child !== navMembers) {
+        if (child !== navCollabs) {
           child.visible = false;
         }
       });
@@ -55,33 +55,33 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
 
       // Animate camera position, rotation, and zoom
       gsap.to(camera.position, {
-        x: -40,
-        y: 6,
-        z: 22,
+        x: -35,
+        y: 7,
+        z: -3,
         duration: 5,
         ease: "power2.inOut",
         onUpdate: () => {
-          camera.lookAt(navMembers.position);
+          camera.lookAt(navCollabs.position);
         },
       });
 
-      gsap.to(navMembers, {
+      gsap.to(navCollabs, {
         duration: 1,
         opacity: 0,
         onComplete: () => {
-          navMembers.visible = false;
+          navCollabs.visible = false;
         },
       });
 
       gsap.to(camera, {
-        zoom: 3.5,
+        zoom: 4,
         duration: 2,
         ease: "power2.inOut",
         onUpdate: () => {
           camera.updateProjectionMatrix();
         },
         onComplete: () => {
-          setshowMembers(true);
+          setShowCollabs(true);
           crossButton.style.display = 'block'; // Show the 'X' button
         },
       });
@@ -95,7 +95,7 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
   crossButton.innerText = 'X';
   crossButton.style.position = 'absolute';
   crossButton.style.top = '50px'; // Shift downward
-  crossButton.style.right = '50px';
+  crossButton.style.right = '90px'; // Adjust position for alignment
   crossButton.style.padding = '10px';
   crossButton.style.fontSize = '18px';
   crossButton.style.cursor = 'pointer';
@@ -144,7 +144,7 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
       child.visible = true; // Restore visibility of navigation objects
     });
 
-    // Reset overlay opacity and 'navMembers' visibility
+    // Reset overlay opacity and 'navCollabs' visibility
     gsap.to({}, {
       duration: 0.5,
       onUpdate: () => {
@@ -152,12 +152,12 @@ export function setupNavMembersEventListener(scene, camera, navMembers, group, s
       },
       onComplete: () => {
         setOverlayOpacity(0); // Ensure overlay fades out
-        navMembers.visible = true; // Make navMembers visible
+        navCollabs.visible = true; // Make navCollabs visible
       },
     });
 
-    // Hide Members content
-    setshowMembers(false);
+    // Hide Collabs content
+    setShowCollabs(false);
 
     // Hide the 'X' button
     crossButton.style.display = 'none';

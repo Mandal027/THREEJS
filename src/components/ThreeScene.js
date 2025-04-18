@@ -5,20 +5,20 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry";
 import gsap from "gsap";
-import { createPlusSign, addGridPlusSigns } from "./PlusSign";
+import { createPlusSign, addGridPlusSigns } from "../components/Lines/PlusSign";
 // import { createThickLine } from './ThickLine';
 import { startAnimation } from "./CubeAnimation";
-import { handleResize } from "./HandleResize";
-import { createXLines } from "./LineX";
-import { createZLines } from "./LineZ";
-import { createNegativeZLines } from "./LineNegativeZ";
-import { createNegativeXLines } from "./LineNegativeX";
+// import { handleResize } from "./HandleResize";
+// import { createXLines } from "./LineX";
+// import { createZLines } from "./LineZ";
+// import { createNegativeZLines } from "./LineNegativeZ";
+// import { createNegativeXLines } from "./LineNegativeX";
 import {
   createNavEvents,
   createNavTitle,
   createNavAlumni,
   createNavMembers,
-  createNavMernc,
+  createNavMerchandise,
   createNavBIT,
   createNavCollab,
   createNavInduction,
@@ -28,12 +28,17 @@ import { GUI } from "dat.gui";
 import BitSindri from "./BitSindri";
 import Members from "./Members";
 import Alumni from "./Alumni";
-import { setupNavBITEventListener } from './NavBITEventListener';
-import { setupNavMembersEventListener } from './NavMembersEventListener';
-import { setupNavAlumniEventListener } from './NavAlumniEventListener';
+import { setupNavBITEventListener } from './EventListeners/NavBITEventListener';
+import { setupNavMembersEventListener } from './EventListeners/NavMembersEventListener';
+import { setupNavAlumniEventListener } from './EventListeners/NavAlumniEventListener';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { Raycaster } from "three";
+import { setupNavEventsEventListener } from "./EventListeners/NavEventsEventListener";
+import { setupNavMerchandiseEventListener } from "./EventListeners/NavMerchandiseEventListener";
+
+import Events from "./Events";
+import Merchandise from "./Merchandise";
 
 
 const gridSize = 100; // Example value, adjust as needed
@@ -42,9 +47,11 @@ const step = gridSize / gridDivisions;
 const group = new THREE.Group();
 
 const ThreeScene = () => {
-  const [showBitSindri, setshowBitSindri] = useState(false);
-  const [showMembers, setshowMembers] = useState(false);
-  const [showAlumni, setshowAlumni] = useState(false);
+  const [showBitSindri, setShowBitSindri] = useState(false);
+  const [showEvents, setShowEvents] = useState(false);
+  const [showMembers, setShowMembers] = useState(false);
+  const [showAlumni, setShowAlumni] = useState(false);
+  const [showMerchandise, setShowMerchandise] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [activeContent, setActiveContent] = useState(null);
 
@@ -501,6 +508,11 @@ const ThreeScene = () => {
     const navEvents = createNavEvents(0.2, 0xa44c24);
     navEvents.rotation.set(4.71, 0, 0);
     navEvents.position.set(-7, 0, -7.5); // Adjust these values as needed
+    group.add(navEvents);
+
+    // Setup event listener for navEvents
+    const cleanupNavEventsEventListener = setupNavEventsEventListener(scene, camera, navEvents, group, setOverlayOpacity, setShowEvents);
+
 
     // Add navtitle Members
     const navMembers = createNavMembers(0.2, 0xa44c24);
@@ -509,8 +521,9 @@ const ThreeScene = () => {
     group.add(navMembers);
 
     // Setup event listener for navMembers
-    const cleanupNavMembersEventListener = setupNavMembersEventListener(scene, camera, navMembers, group, setOverlayOpacity, setshowMembers);
+    const cleanupNavMembersEventListener = setupNavMembersEventListener(scene, camera, navMembers, group, setOverlayOpacity, setShowMembers);
 
+    
     // Add navtitle Alumni
     const navAlumni = createNavAlumni(0.2, 0xa44c24);
     navAlumni.position.set(-0.55, 0, 6.9);
@@ -518,13 +531,18 @@ const ThreeScene = () => {
     group.add(navAlumni);
 
     // Setup event listener for navAlumni
-    const cleanupNavAlumniEventListener = setupNavAlumniEventListener(scene, camera, navAlumni, group, setOverlayOpacity, setshowAlumni);
+    const cleanupNavAlumniEventListener = setupNavAlumniEventListener(scene, camera, navAlumni, group, setOverlayOpacity, setShowAlumni);
+    
 
     // Add navtitle Merchandise
-    const navMernc = createNavMernc(0.2, 0xa44c24);
-    navMernc.position.set(8.5, 0, -1.2);
-    navMernc.rotation.set(1.6, 0, 0);
-    group.add(navMernc);
+    const navMerchandise = createNavMerchandise(0.2, 0xa44c24);
+    navMerchandise.position.set(8.5, 0, -1.2);
+    navMerchandise.rotation.set(1.6, 0, 0);
+    group.add(navMerchandise);
+
+    // Setup event listener for Merchandise
+    const cleanupNavMerchandiseEventListener = setupNavMerchandiseEventListener(scene, camera, navMerchandise, group, setOverlayOpacity, setShowMerchandise);
+    
 
     // Add navtitle BIT
     const navBIT = createNavBIT(0.2, 0xa44c24);
@@ -533,6 +551,7 @@ const ThreeScene = () => {
     navBIT.userData.isNavTitle = true; // Mark as a navTitle
     group.add(navBIT);
 
+    
     // Add navtitle Collab
     const navCollab = createNavCollab(0.2, 0xa44c24);
     navCollab.position.set(5.5, 0, 3.8);
@@ -620,7 +639,7 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
    
 
      // Setup event listener for navBIT
-  const cleanupNavBITEventListener = setupNavBITEventListener(scene, camera, navBIT, group, setOverlayOpacity, setshowBitSindri);
+  const cleanupNavBITEventListener = setupNavBITEventListener(scene, camera, navBIT, group, setOverlayOpacity, setShowBitSindri);
     // Cleanup event listener when the component unmounts
     return () => {
       // window.removeEventListener("resize", handleWindowResize);
@@ -676,14 +695,16 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
         className="fixed inset-0 flex justify-start transition-opacity duration-500"
         style={{ 
           backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
-          pointerEvents: showBitSindri || showMembers || showAlumni ? 'auto' : 'none',
-          opacity: showBitSindri || showMembers || showAlumni ? 1 : 0,
+          pointerEvents: showBitSindri || showEvents || showMembers || showAlumni || showMerchandise ? 'auto' : 'none',
+          opacity: showBitSindri || showEvents || showMembers || showAlumni || showMerchandise ? 1 : 0,
           zIndex: 11,
         }}
       >
         {showBitSindri && <BitSindri />}
+        {showEvents && <Events />}
         {showMembers && <Members />}
         {showAlumni && <Alumni />}
+        {showMerchandise && <Merchandise />}
       </div>
       <div id="three-scene" />
     
