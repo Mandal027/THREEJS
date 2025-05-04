@@ -36,9 +36,12 @@ import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { Raycaster } from "three";
 import { setupNavEventsEventListener } from "./EventListeners/NavEventsEventListener";
 import { setupNavMerchandiseEventListener } from "./EventListeners/NavMerchandiseEventListener";
+import { setupNavInductionEventListener } from "./EventListeners/NavInductionEventListener";
 
 import Events from "./Events";
 import Merchandise from "./Merchandise";
+import ModelViewer from "./ModelViewer";
+import { useRouter } from "next/navigation";
 
 
 const gridSize = 100; // Example value, adjust as needed
@@ -46,14 +49,18 @@ const gridDivisions = 100; // Example value, adjust as needed
 const step = gridSize / gridDivisions;
 const group = new THREE.Group();
 
+
 const ThreeScene = () => {
   const [showBitSindri, setShowBitSindri] = useState(false);
   const [showEvents, setShowEvents] = useState(false);
   const [showMembers, setShowMembers] = useState(false);
   const [showAlumni, setShowAlumni] = useState(false);
   const [showMerchandise, setShowMerchandise] = useState(false);
+  const [showInduction, setShowInduction] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [activeContent, setActiveContent] = useState(null);
+
+const router  = useRouter();
 
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
@@ -563,7 +570,9 @@ const ThreeScene = () => {
     navInduction.position.set(3.5, 0, -7);
     navInduction.rotation.set(4.7, 0, 0);
     group.add(navInduction);
-
+// Setup event listener for Merchandise
+const cleanupNavInductionEventListener = setupNavInductionEventListener(scene, camera, navInduction, group, setOverlayOpacity, setShowInduction, router);
+    
 
     //add ambient light to the gltf model
     const ambientLightModel = new THREE.AmbientLight(0xffffff, 2);
@@ -643,7 +652,7 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
     // Cleanup event listener when the component unmounts
     return () => {
       // window.removeEventListener("resize", handleWindowResize);
-      window.removeEventListener("click", onMouseClick);
+      // window.removeEventListener("click", onMouseClick);
       // cleanupNavBITEventListener();
       window.removeEventListener("mousemove", () => {});
       cleanupNavMembersEventListener();
@@ -695,8 +704,8 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
         className="fixed inset-0 flex justify-start transition-opacity duration-500"
         style={{ 
           backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
-          pointerEvents: showBitSindri || showEvents || showMembers || showAlumni || showMerchandise ? 'auto' : 'none',
-          opacity: showBitSindri || showEvents || showMembers || showAlumni || showMerchandise ? 1 : 0,
+          pointerEvents: showBitSindri || showEvents || showMembers || showAlumni || showMerchandise || showInduction ? 'auto' : 'none',
+          opacity: showBitSindri || showEvents || showMembers || showAlumni || showMerchandise || showInduction ? 1 : 0,
           zIndex: 11,
         }}
       >
@@ -705,6 +714,7 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
         {showMembers && <Members />}
         {showAlumni && <Alumni />}
         {showMerchandise && <Merchandise />}
+        {showInduction && <ModelViewer />}
       </div>
       <div id="three-scene" />
     

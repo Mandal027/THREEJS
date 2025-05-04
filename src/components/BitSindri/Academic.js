@@ -100,7 +100,7 @@ export default function AcademicsSection() {
         </motion.div>
 
         <Tabs defaultValue="cse" className="max-w-5xl mx-auto">
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-14">
             <TabsList className="grid grid-cols-3 md:grid-cols-6 bg-gray-200 dark:bg-gray-700">
               {departments.map((dept) => (
                 <TabsTrigger

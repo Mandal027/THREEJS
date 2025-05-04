@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,11 +15,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -48,9 +44,12 @@ export default function Navbar() {
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="#home" className="flex items-center space-x-2">
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.5 }}>
-              <Image src='/pw_logo.png' alt='logo' width={100} height={100} />
-              
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Image src="/pw_logo.png" alt="logo" width={100} height={100} />
             </motion.div>
           </Link>
 
@@ -66,32 +65,20 @@ export default function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    className={`${
+                    className={`link-6 ${
                       isScrolled
-                        ? "text-gray-700 dark:text-gray-200 hover:text-orange-600 dark:hover:text-orange-400"
-                        : "text-white hover:text-orange-200"
-                    } font-medium transition-colors`}
+                        ? "text-gray-700 dark:text-gray-200"
+                        : "text-white"
+                    }`}
                   >
                     {link.name}
                   </Link>
                 </motion.div>
               ))}
             </nav>
-            {/* <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              aria-label="Toggle theme"
-              className={isScrolled ? "" : "text-white hover:bg-white/20"}
-            >
-              <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </Button> */}
           </div>
 
-          <div className="text-white">
-            Back
-          </div>
+          <Button className="text-white ">Back</Button>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center md:hidden">
@@ -105,13 +92,17 @@ export default function Navbar() {
               <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => setIsMenuOpen(!isMenuOpen)} 
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </Button>
           </div>
         </div>
