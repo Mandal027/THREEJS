@@ -59,7 +59,7 @@ export default function SuccessPage() {
           whileTap={{ scale: 0.95 }}
         >
           <Link
-            href="/"
+            href="/modelviewer"
             className="inline-block bg-[#d25c25] text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition-colors focus:outline-none focus:border-[#d25c25] focus:ring focus:ring-[#d25c25] focus:ring-opacity-50"
           >
             Return Home

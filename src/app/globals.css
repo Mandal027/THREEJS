@@ -17,17 +17,19 @@
   src: url("/fonts/handle-change-demo.regular.woff2") format("woff2");
 }
 
-body, html {
+body,
+html {
   font-family: sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   z-index: 5;
   overflow-y: auto; /* Allow vertical scrolling */
-  height: 100%; /* Ensure full height */
+  overflow-x: hidden;
+  min-height: 100%;
+  height: auto; /* Ensure full height */
+  scroll-behavior: smooth;
   /* background-color: #873434; */
- 
- 
 }
 
 #threejs-canvas {
@@ -45,24 +47,19 @@ body, html {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 body {
-  -ms-overflow-style: none;  /* IE and Edge */
+  -ms-overflow-style: none; /* IE and Edge */
   /* scrollbar-width: none;   */
 }
 
 /* Hide vertical scrollbar but keep content scrollable */
 ::-webkit-scrollbar {
-  width: 0;  /* Remove scrollbar space */
-  background: transparent;  /* Optional: just to avoid a white bar */
+  width: 0; 
+  background: transparent;  
 }
-
-
-
-
 
 canvas {
   pointer-events: none; /* Allow cursor to show over the canvas */
 }
-
 
 /* @media (max-width: 768px) {
   h1 {
@@ -81,8 +78,6 @@ canvas {
 /* button{
   background: #a81a1a;
 } */
-
-
 
 @layer base {
   :root {
@@ -140,7 +135,6 @@ canvas {
   }
 }
 
-
 /* 
 @layer base {
   * {
@@ -150,7 +144,6 @@ canvas {
     @apply bg-background text-foreground;
   }
 } */
-
 
 .slider-container {
   perspective: 1000px;
@@ -203,3 +196,22 @@ canvas {
   font-size: 1.2rem;
 }
 
+/* ✅ Allow gallery to grow naturally and scroll */
+.gallery-container {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: visible;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.gallery-container canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none;
+}

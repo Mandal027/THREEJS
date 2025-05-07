@@ -491,7 +491,7 @@ export function createNavCollab(cornerSize = 0.2, lineColor = 0xffffff) {
     const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
 
     // Generate each letter as a separate mesh
-    const text = "COLLABS";
+    const text = "GALLERY";
     const textGroup = new THREE.Group(); // Group to hold all letters
     let xOffset = -0.7 * text.length; // Decrease spacing between letters
 

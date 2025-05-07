@@ -59,7 +59,7 @@ export default function InductionForm() {
       toast.success(result.message || "Form submitted successfully!");
 
       // Add await to ensure navigation happens after success message
-      await router.push("/success");
+      await router.replace("/success");
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error(error.message || "Failed to submit form. Please try again.");

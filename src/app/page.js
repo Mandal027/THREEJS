@@ -21,9 +21,9 @@ export default function HomePage() {
   return (
      <>
       <Header/>
+      <ThreeScene />
     <div className="w-screen h-screen bg-white  ">
       <div >
-      <ThreeScene />
       {/* <HollowCylinder/> */}
       {/* <AlumniSection/> */}
       {/* <Gallery/> */}

@@ -53,9 +53,8 @@ const config = {
 		},
 		fontFamily: {
 			sans: [
-					'Poppins',
-					'ChakraPetch',
-					'sans-serif'
+				'ChakraPetch',
+				'sans-serif'
 			],
 			sketch: [
 				'sketch',
@@ -69,12 +68,6 @@ const config = {
 				'Roashe',
 				'serif'
 			]
-		},
-		fontSize: {
-			"10xl": "10rem",
-			"11xl": "11rem",
-			"12xl": "12rem",
-			"13xl": "13rem",
 		},
 		theme: {
 			fontWeight: {
@@ -99,20 +92,10 @@ const config = {
 				'100%': {
 					transform: 'translateX(-50%)'
 				}
-			},
-			"horizontal-scroll": {
-				from: { transform: "translateX(0)" },
-				to: { transform: "translateX(-100%)" },
-			},
-			"horizontal-scroll-2": {
-				from: { transform: "translateX(100%)" },
-				to: { transform: "translateX(0)" },
 			}
 		},
 		animation: {
-			'loop-scroll': 'loop-scroll 30s linear infinite',
-			"horizontal-scroll": "horizontal-scroll linear 16s infinite",
-			"horizontal-scroll-2": "horizontal-scroll-2 linear 16s infinite",
+			'loop-scroll': 'loop-scroll 30s linear infinite'
 		},
 		borderRadius: {
 			lg: 'var(--radius)',

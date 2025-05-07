@@ -30,9 +30,13 @@ export function setupNavInductionEventListener(
     const intersects = raycaster.intersectObjects([navInduction]);
 
     if (intersects.length > 0) {
+      // Clean up scene before navigation
+      scene.traverse((child) => {
+        if (child.dispose) child.dispose();
+      });
+      
       markNavigationOccurred();
-      // Use the router for programmatic navigation
-      router.push("/modelviewer");
+      window.location.href = '/modelviewer';
     }
   };
 

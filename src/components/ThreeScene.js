@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHelper";
@@ -28,27 +28,26 @@ import { GUI } from "dat.gui";
 import BitSindri from "./BitSindri";
 import Members from "./Members";
 import Alumni from "./Alumni";
-import { setupNavBITEventListener } from './EventListeners/NavBITEventListener';
-import { setupNavMembersEventListener } from './EventListeners/NavMembersEventListener';
-import { setupNavAlumniEventListener } from './EventListeners/NavAlumniEventListener';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader';
+import { setupNavBITEventListener } from "./EventListeners/NavBITEventListener";
+import { setupNavMembersEventListener } from "./EventListeners/NavMembersEventListener";
+import { setupNavAlumniEventListener } from "./EventListeners/NavAlumniEventListener";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { SVGLoader } from "three/examples/jsm/loaders/SVGLoader";
 import { Raycaster } from "three";
 import { setupNavEventsEventListener } from "./EventListeners/NavEventsEventListener";
 import { setupNavMerchandiseEventListener } from "./EventListeners/NavMerchandiseEventListener";
 import { setupNavInductionEventListener } from "./EventListeners/NavInductionEventListener";
+import { setupNavCollabEventListener } from "./EventListeners/NavCollabEventListener";
 
 import Events from "./Events";
 import Merchandise from "./Merchandise";
 import ModelViewer from "./ModelViewer";
 import { useRouter } from "next/navigation";
 
-
 const gridSize = 100; // Example value, adjust as needed
 const gridDivisions = 100; // Example value, adjust as needed
 const step = gridSize / gridDivisions;
 const group = new THREE.Group();
-
 
 const ThreeScene = () => {
   const [showBitSindri, setShowBitSindri] = useState(false);
@@ -59,14 +58,14 @@ const ThreeScene = () => {
   const [showInduction, setShowInduction] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
   const [activeContent, setActiveContent] = useState(null);
+  const cameraRef = useRef(null);
 
-const router  = useRouter();
-
-  const raycaster = new THREE.Raycaster();
+  const router = useRouter();
   const mouse = new THREE.Vector2();
-  let camera; // Define camera outside useEffect
 
   useEffect(() => {
+    const raycaster = new THREE.Raycaster();
+
     // Function to reload the page on resize
     // const handleWindowResize = () => {
     //   window.location.reload();
@@ -91,10 +90,7 @@ const router  = useRouter();
     //   scene.background = texture;
     // });
 
-    scene.background = new THREE.Color(0xffffff);  // Set back
-
-
-    
+    scene.background = new THREE.Color(0xffffff); // Set back
 
     // Group for grid and geometry setup
     const gridBackgroundGroup = new THREE.Group();
@@ -103,7 +99,8 @@ const router  = useRouter();
 
     const aspect = window.innerWidth / window.innerHeight;
     const frustumSize = 18;
-    camera = new THREE.OrthographicCamera(
+
+    cameraRef.current = new THREE.OrthographicCamera(
       (frustumSize * aspect) / -2,
       (frustumSize * aspect) / 2,
       frustumSize / 1,
@@ -111,18 +108,15 @@ const router  = useRouter();
       0.1,
       100000
     );
-    camera.position.set(4.7, 11.39, 4.7);
-    camera.lookAt(0, 0, 0);
-
-    // Increase the final zoom value
-    // camera.zoom = 1.5; // Adjust this value as needed
-    camera.updateProjectionMatrix();
+    cameraRef.current.position.set(4.7, 11.39, 4.7);
+    cameraRef.current.lookAt(0, 0, 0);
+    cameraRef.current.updateProjectionMatrix();
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById("threejs-canvas").appendChild(renderer.domElement);
 
-    const controls = new OrbitControls(camera, renderer.domElement);
+    const controls = new OrbitControls(cameraRef.current, renderer.domElement);
 
     // Enable damping for smooth movement
     controls.enableDamping = true;
@@ -142,30 +136,27 @@ const router  = useRouter();
     // controls.minDistance = 10; // Minimum distance from the target
     // controls.maxDistance = 50; // Maximum distance from the target
 
-
     // Add the mousemove event listener inside useEffect
-  window.addEventListener("mousemove", (event) => {
-    // Convert mouse position to normalized device coordinates
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    window.addEventListener("mousemove", (event) => {
+      // Convert mouse position to normalized device coordinates
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    // Perform raycasting
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(group.children, true);
+      // Perform raycasting
+      raycaster.setFromCamera(mouse, cameraRef.current);
+      const intersects = raycaster.intersectObjects(group.children, true);
 
-    // Check if any intersected object is a navTitle
-    let isHoveringNavTitle = false;
-    intersects.forEach((intersect) => {
-      if (intersect.object.userData.isNavTitle) {
-        isHoveringNavTitle = true;
-      }
+      // Check if any intersected object is a navTitle
+      let isHoveringNavTitle = false;
+      intersects.forEach((intersect) => {
+        if (intersect.object.userData.isNavTitle) {
+          isHoveringNavTitle = true;
+        }
+      });
+
+      // Change cursor based on hover state
+      document.body.style.cursor = isHoveringNavTitle ? "pointer" : "default";
     });
-
-    // Change cursor based on hover state
-    document.body.style.cursor = isHoveringNavTitle ? "pointer" : "default";
-
-  });
-
 
     // Disable panning
     controls.enablePan = false;
@@ -181,7 +172,6 @@ const router  = useRouter();
       transparent: true,
     });
 
-
     // const gltfLoader = new GLTFLoader();
     // gltfLoader.load(
     //   '/pw.glb',
@@ -191,23 +181,21 @@ const router  = useRouter();
     //     model.position.set(0, 0, 0);
     //     model.rotation.set(0, 0, 0);
     //     scene.add(model);
-    
+
     //     // GUI should go here — after model is loaded
-    // 
+    //
     //   },
     //   undefined,
     //   (error) => {
     //     console.error('Error loading GLTF model:', error);
     //   }
     // );
-    
-  
+
     addGridPlusSigns(gridGroup, gridSize, gridDivisions);
     const gridHelper = new THREE.GridHelper(gridSize, gridDivisions);
     gridHelper.material = gridMaterial;
     gridGroup.add(gridHelper);
     gridBackgroundGroup.add(gridGroup);
-     
 
     //       // Load texture
     // const textureLoader = new THREE.TextureLoader();
@@ -219,7 +207,10 @@ const router  = useRouter();
     //     scene.add(plane);
 
     // Cube
-    const cubeSize = 2;
+    const hasNavigatedFrom3DScene = sessionStorage.getItem(
+      "hasNavigatedFrom3DScene"
+    );
+    const cubeSize = hasNavigatedFrom3DScene === "true" ? 0 : 2;
     const cubeGeometry = new THREE.BoxGeometry(
       cubeSize,
       cubeSize * 1,
@@ -228,230 +219,205 @@ const router  = useRouter();
     const cubeMaterial = new THREE.MeshBasicMaterial({
       color: 0xd25c25,
       transparent: true,
-      opacity: 0.8,
+      opacity: hasNavigatedFrom3DScene === "true" ? 0 : 0.8,
     });
     const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
     cube.position.set(0, 13.35, 0);
     scene.add(cube);
 
-
-
-
-
     //Loading Environment
-    
 
-     // Load the SVG
-  const gltfLoader = new GLTFLoader()
+    // Load the SVG
+    const gltfLoader = new GLTFLoader();
 
-  //add dat.gui to control scale and postion of the stroke model 
-  // gltfLoader.load(
-  //   "/strokes.glb", // Replace with the path to your GLTF file
-  //   (gltf) => {
-  //     const model = gltf.scene;
+    //add dat.gui to control scale and postion of the stroke model
+    // gltfLoader.load(
+    //   "/strokes.glb", // Replace with the path to your GLTF file
+    //   (gltf) => {
+    //     const model = gltf.scene;
 
-  //     // Position and scale the GLTF model
-  //     model.scale.set(5, 5, 0); // Adjust scale as needed
-  //     model.position.set(8.5, -0.2, -1.5); // Adjust position as needed
-  //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
+    //     // Position and scale the GLTF model
+    //     model.scale.set(5, 5, 0); // Adjust scale as needed
+    //     model.position.set(8.5, -0.2, -1.5); // Adjust position as needed
+    //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
 
-  //     group.add(model);
-    
-  //   },
-  //   undefined,
-  //   (error) => {
-  //     console.error("Error loading GLTF model:", error);
-  //   }
-  // );
-  // gltfLoader.load(
-  //   "/strokes.glb", // Replace with the path to your GLTF file
-  //   (gltf) => {
-  //     const model = gltf.scene;
+    //     group.add(model);
 
-  //     // Position and scale the GLTF model
-  //     model.scale.set(5, 5, 0); // Adjust scale as needed
-  //     model.position.set(-8.4, 0, 0.1); // Adjust position as needed
-  //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
+    //   },
+    //   undefined,
+    //   (error) => {
+    //     console.error("Error loading GLTF model:", error);
+    //   }
+    // );
+    // gltfLoader.load(
+    //   "/strokes.glb", // Replace with the path to your GLTF file
+    //   (gltf) => {
+    //     const model = gltf.scene;
 
-  //     group.add(model);
+    //     // Position and scale the GLTF model
+    //     model.scale.set(5, 5, 0); // Adjust scale as needed
+    //     model.position.set(-8.4, 0, 0.1); // Adjust position as needed
+    //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
 
-     
-  //   },
-  //   undefined,
-  //   (error) => {
-  //     console.error("Error loading GLTF model:", error);
-  //   }
-  // );
+    //     group.add(model);
 
-  // gltfLoader.load(
-  //   "/strokes.glb", // Replace with the path to your GLTF file
-  //   (gltf) => {
-  //     const model = gltf.scene;
+    //   },
+    //   undefined,
+    //   (error) => {
+    //     console.error("Error loading GLTF model:", error);
+    //   }
+    // );
 
-  //     // Position and scale the GLTF model
-  //     model.scale.set(5, 5, 0); // Adjust scale as needed
-  //     model.position.set(3.6, 0, -7); // Adjust position as needed
-  //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
+    // gltfLoader.load(
+    //   "/strokes.glb", // Replace with the path to your GLTF file
+    //   (gltf) => {
+    //     const model = gltf.scene;
 
-  //     group.add(model);
+    //     // Position and scale the GLTF model
+    //     model.scale.set(5, 5, 0); // Adjust scale as needed
+    //     model.position.set(3.6, 0, -7); // Adjust position as needed
+    //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
 
-  //     // Add dat.gui to control scale and position of the stroke model
-     
-  //   },
-  //   undefined,
-  //   (error) => {
-  //     console.error("Error loading GLTF model:", error);
-  //   }
-  // );
-  // gltfLoader.load(
-  //   "/strokes.glb", // Replace with the path to your GLTF file
-  //   (gltf) => {
-  //     const model = gltf.scene;
+    //     group.add(model);
 
-  //     // Position and scale the GLTF model
-  //     model.scale.set(3.3, 5, 0); // Adjust scale as needed
-  //     model.position.set(-6.9, 0, -7.8); // Adjust position as needed
-  //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
+    //     // Add dat.gui to control scale and position of the stroke model
 
-  //     group.add(model);
+    //   },
+    //   undefined,
+    //   (error) => {
+    //     console.error("Error loading GLTF model:", error);
+    //   }
+    // );
+    // gltfLoader.load(
+    //   "/strokes.glb", // Replace with the path to your GLTF file
+    //   (gltf) => {
+    //     const model = gltf.scene;
 
-     
-  //   },
-  //   undefined,
-  //   (error) => {
-  //     console.error("Error loading GLTF model:", error);
-  //   }
-  // );
+    //     // Position and scale the GLTF model
+    //     model.scale.set(3.3, 5, 0); // Adjust scale as needed
+    //     model.position.set(-6.9, 0, -7.8); // Adjust position as needed
+    //     model.rotation.set(1.57, 3.14, 4.71); // Adjust rotation as needed
 
-  // gltfLoader.load(
-  //   "/strokes.glb", // Replace with the path to your GLTF file
-  //   (gltf) => {
-  //     const model = gltf.scene;
+    //     group.add(model);
 
-  //     // Position and scale the GLTF model
-  //     model.scale.set(3.9, 5, 0); // Adjust scale as needed
-  //     model.position.set(-2.5, 0, -10.5); // Adjust position as needed
-  //     model.rotation.set(-1.57, 3.14, 0); // Adjust rotation as needed
+    //   },
+    //   undefined,
+    //   (error) => {
+    //     console.error("Error loading GLTF model:", error);
+    //   }
+    // );
 
-  //     group.add(model);
+    // gltfLoader.load(
+    //   "/strokes.glb", // Replace with the path to your GLTF file
+    //   (gltf) => {
+    //     const model = gltf.scene;
 
-  //     // Add dat.gui to control scale and position of the stroke model
-     
-  //   },
-  //   undefined,
-  //   (error) => {
-  //     console.error("Error loading GLTF model:", error);
-  //   }
-  // );
-  // gltfLoader.load(
-  //   "/strokes.glb", // Replace with the path to your GLTF file
-  //   (gltf) => {
-  //     const model = gltf.scene;
+    //     // Position and scale the GLTF model
+    //     model.scale.set(3.9, 5, 0); // Adjust scale as needed
+    //     model.position.set(-2.5, 0, -10.5); // Adjust position as needed
+    //     model.rotation.set(-1.57, 3.14, 0); // Adjust rotation as needed
 
-  //     // Position and scale the GLTF model
-  //     model.scale.set(3.8, 5, 0); // Adjust scale as needed
-  //     model.position.set(-0.5, 0, 7.1); // Adjust position as needed
-  //     model.rotation.set(-1.57, 3.14, 0); // Adjust rotation as needed
+    //     group.add(model);
 
-  //     group.add(model);
+    //     // Add dat.gui to control scale and position of the stroke model
 
-  //     // Add dat.gui to control scale and position of the stroke model
-    
-  //   },
-  //   undefined,
-  //   (error) => {
-  //     console.error("Error loading GLTF model:", error);
-  //   }
-  // );
-  // gltfLoader.load(
-  //   "/strokes.glb", // Replace with the path to your GLTF file
-  //   (gltf) => {
-  //     const model = gltf.scene;
+    //   },
+    //   undefined,
+    //   (error) => {
+    //     console.error("Error loading GLTF model:", error);
+    //   }
+    // );
+    // gltfLoader.load(
+    //   "/strokes.glb", // Replace with the path to your GLTF file
+    //   (gltf) => {
+    //     const model = gltf.scene;
 
-  //     // Position and scale the GLTF model
-  //     model.scale.set(3.8, 5, 0); // Adjust scale as needed
-  //     model.position.set(-6.8, 0, 6.5); // Adjust position as needed
-  //     model.rotation.set(-1.57, 3.14, 0); // Adjust rotation as needed
+    //     // Position and scale the GLTF model
+    //     model.scale.set(3.8, 5, 0); // Adjust scale as needed
+    //     model.position.set(-0.5, 0, 7.1); // Adjust position as needed
+    //     model.rotation.set(-1.57, 3.14, 0); // Adjust rotation as needed
 
-  //     group.add(model);
+    //     group.add(model);
 
-  //     // Add dat.gui to control scale and position of the stroke model
-     
-  //   },
-  //   undefined,
-  //   (error) => {
-  //     console.error("Error loading GLTF model:", error);
-  //   }
-  // );
-  // gltfLoader.load(
-  //   "/isometric.glb", // Replace with the path to your GLTF file
-  //   (gltf) => {
-  //     const model = gltf.scene;
+    //     // Add dat.gui to control scale and position of the stroke model
 
-    
+    //   },
+    //   undefined,
+    //   (error) => {
+    //     console.error("Error loading GLTF model:", error);
+    //   }
+    // );
+    // gltfLoader.load(
+    //   "/strokes.glb", // Replace with the path to your GLTF file
+    //   (gltf) => {
+    //     const model = gltf.scene;
 
-  //     // Position and scale the GLTF model
-  //     model.scale.set(0.5, 0.5, 0.5); // Adjust scale as needed
-  //     model.position.set(0, 0.3, 0.3); // Adjust position as needed
-  //     // model.rotation.set(-1.57, 0, 0); // Adjust rotation as needed
+    //     // Position and scale the GLTF model
+    //     model.scale.set(3.8, 5, 0); // Adjust scale as needed
+    //     model.position.set(-6.8, 0, 6.5); // Adjust position as needed
+    //     model.rotation.set(-1.57, 3.14, 0); // Adjust rotation as needed
 
-  //     // Auto rotate the isometric model
-  //     // const rotateIsometric = () => {
-  //     //   model.rotation.y += 0.005;
-  //     //   requestAnimationFrame(rotateIsometric);
-  //     // };
-  //     // rotateIsometric();
+    //     group.add(model);
 
-  //     group.add(model);
+    //     // Add dat.gui to control scale and position of the stroke model
 
+    //   },
+    //   undefined,
+    //   (error) => {
+    //     console.error("Error loading GLTF model:", error);
+    //   }
+    // );
+    // gltfLoader.load(
+    //   "/isometric.glb", // Replace with the path to your GLTF file
+    //   (gltf) => {
+    //     const model = gltf.scene;
 
-     
+    //     // Position and scale the GLTF model
+    //     model.scale.set(0.5, 0.5, 0.5); // Adjust scale as needed
+    //     model.position.set(0, 0.3, 0.3); // Adjust position as needed
+    //     // model.rotation.set(-1.57, 0, 0); // Adjust rotation as needed
 
-      
-  //   },
-  //   undefined,
-  //   (error) => {
-  //     console.error("Error loading GLTF model:", error);
-  //   }
-  // );
+    //     // Auto rotate the isometric model
+    //     // const rotateIsometric = () => {
+    //     //   model.rotation.y += 0.005;
+    //     //   requestAnimationFrame(rotateIsometric);
+    //     // };
+    //     // rotateIsometric();
 
+    //     group.add(model);
 
+    //   },
+    //   undefined,
+    //   (error) => {
+    //     console.error("Error loading GLTF model:", error);
+    //   }
+    // );
 
- 
+    scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    dirLight.position.set(5, 10, 5);
+    scene.add(dirLight);
 
-  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-  dirLight.position.set(5, 10, 5);
-  scene.add(dirLight);
-  
+    // gltfLoader.load(
+    //   "/strokes.glb", // Replace with the path to your GLTF file
+    //   (gltf) => {
+    //     const model = gltf.scene;
 
-  // gltfLoader.load(
-  //   "/strokes.glb", // Replace with the path to your GLTF file
-  //   (gltf) => {
-  //     const model = gltf.scene;
+    //     // Position and scale the GLTF model
+    //     model.scale.set(3.8, 5, 0); // Adjust scale as needed
+    //     model.position.set(5.4, 0, 3.5); // Adjust position as needed
+    //     model.rotation.set(-1.57, 3.14, 1.57); // Adjust rotation as needed
 
-  //     // Position and scale the GLTF model
-  //     model.scale.set(3.8, 5, 0); // Adjust scale as needed
-  //     model.position.set(5.4, 0, 3.5); // Adjust position as needed
-  //     model.rotation.set(-1.57, 3.14, 1.57); // Adjust rotation as needed
+    //     group.add(model);
 
-  //     group.add(model);
+    //     // Add dat.gui to control scale and position of the stroke model
 
-  //     // Add dat.gui to control scale and position of the stroke model
-      
-  //   },
-  //   undefined,
-  //   (error) => {
-  //     console.error("Error loading GLTF model:", error);
-  //   }
-  // );
-
-
-
-
-
-
-
+    //   },
+    //   undefined,
+    //   (error) => {
+    //     console.error("Error loading GLTF model:", error);
+    //   }
+    // );
 
     // Hollow Cube
     const hollowCubeSize = 1.2;
@@ -494,22 +460,16 @@ const router  = useRouter();
     scene.add(ambientLight);
 
     // create lines along four directions
-  // createXLines(scene, step, 0x0000); // Set line color to black
-  // createZLines(scene, step, 0x0000); // Set line color to black
-  //   createNegativeZLines(scene, step, 0x0000); // Set line color to black
-  //   createNegativeXLines(scene, step, 0x0000); // Set line color to black
-
-
-
-
-  
+    // createXLines(scene, step, 0x0000); // Set line color to black
+    // createZLines(scene, step, 0x0000); // Set line color to black
+    //   createNegativeZLines(scene, step, 0x0000); // Set line color to black
+    //   createNegativeXLines(scene, step, 0x0000); // Set line color to black
 
     // Add corners group to the scene
     const cornersGroup = createNavTitle(0.2, 0xa44c24); // Adjust size and color if needed
     cornersGroup.position.set(-2.3, 0, -10.5); // Adjust these values as needed
     cornersGroup.rotation.set(4.71, 0, 1.57);
     group.add(cornersGroup);
-    
 
     // Add navtitle Events
     const navEvents = createNavEvents(0.2, 0xa44c24);
@@ -518,8 +478,14 @@ const router  = useRouter();
     group.add(navEvents);
 
     // Setup event listener for navEvents
-    const cleanupNavEventsEventListener = setupNavEventsEventListener(scene, camera, navEvents, group, setOverlayOpacity, setShowEvents);
-
+    const cleanupNavEventsEventListener = setupNavEventsEventListener(
+      scene,
+      cameraRef.current,
+      navEvents,
+      group,
+      setOverlayOpacity,
+      setShowEvents
+    );
 
     // Add navtitle Members
     const navMembers = createNavMembers(0.2, 0xa44c24);
@@ -528,9 +494,15 @@ const router  = useRouter();
     group.add(navMembers);
 
     // Setup event listener for navMembers
-    const cleanupNavMembersEventListener = setupNavMembersEventListener(scene, camera, navMembers, group, setOverlayOpacity, setShowMembers);
+    const cleanupNavMembersEventListener = setupNavMembersEventListener(
+      scene,
+      cameraRef.current,
+      navMembers,
+      group,
+      setOverlayOpacity,
+      setShowMembers
+    );
 
-    
     // Add navtitle Alumni
     const navAlumni = createNavAlumni(0.2, 0xa44c24);
     navAlumni.position.set(-0.55, 0, 6.9);
@@ -538,8 +510,14 @@ const router  = useRouter();
     group.add(navAlumni);
 
     // Setup event listener for navAlumni
-    const cleanupNavAlumniEventListener = setupNavAlumniEventListener(scene, camera, navAlumni, group, setOverlayOpacity, setShowAlumni);
-    
+    const cleanupNavAlumniEventListener = setupNavAlumniEventListener(
+      scene,
+      cameraRef.current,
+      navAlumni,
+      group,
+      setOverlayOpacity,
+      setShowAlumni
+    );
 
     // Add navtitle Merchandise
     const navMerchandise = createNavMerchandise(0.2, 0xa44c24);
@@ -548,8 +526,14 @@ const router  = useRouter();
     group.add(navMerchandise);
 
     // Setup event listener for Merchandise
-    const cleanupNavMerchandiseEventListener = setupNavMerchandiseEventListener(scene, camera, navMerchandise, group, setOverlayOpacity, setShowMerchandise);
-    
+    const cleanupNavMerchandiseEventListener = setupNavMerchandiseEventListener(
+      scene,
+      cameraRef.current,
+      navMerchandise,
+      group,
+      setOverlayOpacity,
+      setShowMerchandise
+    );
 
     // Add navtitle BIT
     const navBIT = createNavBIT(0.2, 0xa44c24);
@@ -558,97 +542,115 @@ const router  = useRouter();
     navBIT.userData.isNavTitle = true; // Mark as a navTitle
     group.add(navBIT);
 
-    
     // Add navtitle Collab
     const navCollab = createNavCollab(0.2, 0xa44c24);
     navCollab.position.set(5.5, 0, 3.8);
     navCollab.rotation.set(1.6, 3.1, 3.1);
     group.add(navCollab);
 
+    // Setup event listener for navCollab
+    const cleanupNavCollabEventListener = setupNavCollabEventListener(
+      scene,
+      cameraRef.current,
+      navCollab,
+      group,
+      setOverlayOpacity,
+      setShowBitSindri,
+      router
+    );
+
+
     // Add navtitle Induction
     const navInduction = createNavInduction(0.2, 0xa44c24);
     navInduction.position.set(3.5, 0, -7);
     navInduction.rotation.set(4.7, 0, 0);
     group.add(navInduction);
-// Setup event listener for Merchandise
-const cleanupNavInductionEventListener = setupNavInductionEventListener(scene, camera, navInduction, group, setOverlayOpacity, setShowInduction, router);
-    
+    // Setup event listener for Merchandise
+    const cleanupNavInductionEventListener = setupNavInductionEventListener(
+      scene,
+      cameraRef.current,
+      navInduction,
+      group,
+      setOverlayOpacity,
+      setShowInduction,
+      router
+    );
 
     //add ambient light to the gltf model
     const ambientLightModel = new THREE.AmbientLight(0xffffff, 2);
     scene.add(ambientLightModel);
 
-    //add point light 
-    
-
-    // Start animation and add navEvents after the animation completes with a delay
-    startAnimation(cube, camera, scene, cubeSize, targetScale, () => {
-      // Add a 1-second delay before showing the nav titles
-      setTimeout(() => {
-        scene.add(group);
-        group.add(navEvents);
-      },500); // 1000ms = 1 second delay
-    });
-
-
-    controls.enable = false
-    // Handle resize
-    // handleResize(camera, renderer, frustumSize, aspect);
+    //add point light
 
     // Mouse tracking
-const mouse = { x: 0, y: 0 };
-let mouseControlEnabled = false;  // Add flag to control mouse movement
+    const mouse = { x: 0, y: 0 };
+    let mouseControlEnabled = false; // Add flag to control mouse movement
 
-    window.addEventListener('mousemove', (event) => {
-      if (!mouseControlEnabled) return;  // Only process mouse movement after animation
+    window.addEventListener("mousemove", (event) => {
+      if (!mouseControlEnabled) return; // Only process mouse movement after animation
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     });
 
-    startAnimation(cube, camera, scene, cubeSize, targetScale, () => {
-      // Add a delay before showing the nav titles
-      setTimeout(() => {
-        scene.add(group);
-        group.add(navEvents);
-        mouseControlEnabled = true;  // Enable mouse control after animation
-      }, 500);
-    });
+    // Check if we're returning from modelviewer route
+    if (hasNavigatedFrom3DScene === "true") {
+      // Clear the flag
+      sessionStorage.removeItem("hasNavigatedFrom3DScene");
 
+      // Set specific camera position and zoom
+      cameraRef.current.position.set(4.6, 8.2, 4.6);
+      cameraRef.current.zoom = 1.3; // Changed from -2 to 0.5 for proper zoom
+      cameraRef.current.updateProjectionMatrix();
 
-
-    
+      // Skip animation and enable mouse control immediately
+      scene.add(group);
+      group.add(navEvents);
+      mouseControlEnabled = true;
+    } else {
+      // Run the normal animation flow
+      startAnimation(
+        cube,
+        cameraRef.current,
+        scene,
+        cubeSize,
+        targetScale,
+        () => {
+          setTimeout(() => {
+            scene.add(group);
+            group.add(navEvents);
+            mouseControlEnabled = true; // Enable mouse control after animation
+          });
+        }
+      );
+    }
 
     function animate() {
       requestAnimationFrame(animate);
 
-      if (mouseControlEnabled) {  // Only apply mouse movement when enabled
-        superGroup.rotation.y += (mouse.x*0.1 - superGroup.rotation.y) * 0.1;
-        superGroup.rotation.x += (mouse.y*0.1 - superGroup.rotation.x) * 0.1;
+      if (mouseControlEnabled) {
+        // Only apply mouse movement when enabled
+        superGroup.rotation.y += (mouse.x * 0.1 - superGroup.rotation.y) * 0.1;
+        superGroup.rotation.x += (mouse.y * 0.1 - superGroup.rotation.x) * 0.1;
 
-        group.rotation.y += (mouse.x*0.1 - group.rotation.y) * 0.1;
-        group.rotation.x += (mouse.y*0.1 - group.rotation.x) * 0.1;
-
+        group.rotation.y += (mouse.x * 0.1 - group.rotation.y) * 0.1;
+        group.rotation.x += (mouse.y * 0.1 - group.rotation.x) * 0.1;
       }
 
-
-      
-      
-
       controls.update();
-      renderer.render(scene, camera);
+      renderer.render(scene, cameraRef.current);
     }
 
-   
-
-    
-
-
-
     animate();
-   
 
-     // Setup event listener for navBIT
-  const cleanupNavBITEventListener = setupNavBITEventListener(scene, camera, navBIT, group, setOverlayOpacity, setShowBitSindri);
+    // Setup event listener for navBIT
+    const cleanupNavBITEventListener = setupNavBITEventListener(
+      scene,
+      cameraRef.current,
+      navBIT,
+      group,
+      setOverlayOpacity,
+      setShowBitSindri
+    );
     // Cleanup event listener when the component unmounts
     return () => {
       // window.removeEventListener("resize", handleWindowResize);
@@ -658,54 +660,36 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
       cleanupNavMembersEventListener();
       cleanupNavAlumniEventListener();
     };
-  }, []);
-
-  // useEffect(() => {
-  //   const raycaster = new THREE.Raycaster();
-  //   const mouse = new THREE.Vector2();
-  
-  //   // Add click event listener
-  //   window.addEventListener("click", (event) => {
-  //     // Convert mouse position to normalized device coordinates
-  //     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  //     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  
-  //     // Perform raycasting
-  //     raycaster.setFromCamera(mouse, camera);
-  //     const intersects = raycaster.intersectObjects(scene.children, true);
-  
-  //     // Reset all navTitle text colors to black
-  //     scene.traverse((child) => {
-  //       if (child.userData.isNavTitleText) {
-  //         child.material.color.set(0x000000); // Reset to black
-  //       }
-  //     });
-  
-  //     // Set clicked navTitle text color to orange
-  //     intersects.forEach((intersect) => {
-  //       if (intersect.object.userData.isNavTitleText) {
-  //         intersect.object.material.color.set(0xffa500); // Set to orange
-  //       }
-  //     });
-  //   });
-  
-  //   // Cleanup event listener on component unmount
-  //   return () => {
-  //     window.removeEventListener("click", () => {});
-  //   };
-  // }, []);
+  }, [router]); // Add missing dependencies
 
   return (
     <>
-      <div id="threejs-canvas" className="relative w-full h-screen bg-white">
-        
-      </div>
-      <div 
+      <div
+        id="threejs-canvas"
+        className="fixed w-full h-screen bg-white"
+      ></div>
+      <div
         className="fixed inset-0 flex justify-start transition-opacity duration-500"
-        style={{ 
+        style={{
           backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
-          pointerEvents: showBitSindri || showEvents || showMembers || showAlumni || showMerchandise || showInduction ? 'auto' : 'none',
-          opacity: showBitSindri || showEvents || showMembers || showAlumni || showMerchandise || showInduction ? 1 : 0,
+          pointerEvents:
+            showBitSindri ||
+            showEvents ||
+            showMembers ||
+            showAlumni ||
+            showMerchandise ||
+            showInduction
+              ? "auto"
+              : "none",
+          opacity:
+            showBitSindri ||
+            showEvents ||
+            showMembers ||
+            showAlumni ||
+            showMerchandise ||
+            showInduction
+              ? 1
+              : 0,
           zIndex: 11,
         }}
       >
@@ -714,10 +698,10 @@ let mouseControlEnabled = false;  // Add flag to control mouse movement
         {showMembers && <Members />}
         {showAlumni && <Alumni />}
         {showMerchandise && <Merchandise />}
-        {showInduction && <ModelViewer />}
+
+        {/* {showInduction && <ModelViewer />} */}
       </div>
       <div id="three-scene" />
-    
     </>
   );
 };

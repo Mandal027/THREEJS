@@ -6,8 +6,8 @@ export function setupNavEventsEventListener(scene, camera, navEvents, group, set
   const mouse = new THREE.Vector2();
 
   // 🔴 Store the original camera position and zoom
-  const originalCameraPosition = camera.position.clone();
-  const originalCameraZoom = camera.zoom;
+  // const originalCameraPosition = camera.position.clone();
+  // const originalCameraZoom = camera.zoom;
 
   // 🖱 Handle mouse click event
   const onMouseClick = (event) => {
