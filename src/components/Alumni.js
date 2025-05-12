@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import AlumniCard from './AlumniCard';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Navbar from './BitSindri/Navbar';
 
 // Dummy alumni data grouped by batch
 const alumniData = {
@@ -228,50 +229,54 @@ export default function AlumniPage() {
   }, []);
 
   return (
-    <div className="py-16 px-4 md:px-12 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
-      {/* Hero Section */}
-      <div className="text-center mb-16 max-w-4xl mx-auto">
-        <h1 className="text-5xl font-bold text-gray-800 mb-6 relative inline-block">
-          Painting Wing Alumni
-          <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r to-[#d25c25] from-gray-300 "></span>
-        </h1>
-        <p className="text-xl text-gray-600">Celebrating the artistic journeys of our graduates</p>
-      </div>
+    <div>
+      <Navbar />
+      <div className="py-16 px-4 md:pt-28 md:px-12 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
+        {/* Hero Section */}
+        <div className="text-center mb-16 max-w-4xl mx-auto">
+          <h1 className="text-5xl font-bold text-gray-800 mb-6 relative inline-block">
+            Alumni
+            <span className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r to-[#e65512] from-gray-300 "></span>
+          </h1>
+          {/* <p className="text-xl text-gray-600">Celebrating the artistic journeys of our graduates</p> */}
+          <p className='text-gray-600 mt-5'>A dedicated team of passionate alumni, united by a shared vision to drive innovation, foster meaningful connections, and consistently exceed expectations through their expertise, experience, and collaborative spirit.</p>
+        </div>
 
-      {Object.entries(alumniData).map(([batch, members], batchIndex) => (
-        <div 
-          key={batch} 
-          className="mb-20 pb-6 relative"
-          ref={el => sectionsRef.current[batchIndex] = el}
-        >
-          {/* Decorative background element */}
-          <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b to-[#d25c25] from-gray-300  rounded-full"></div>
-          
-          <h2 className="text-3xl font-semibold text-gray-700 mb-8 ml-4 batch-heading relative inline-block">
-            Batch {batch}
-            <span className="absolute -bottom-2 left-0 w-3/4 h-1 bg-gradient-to-r to-[#d25c25] from-gray-300  to-transparent"></span>
-          </h2>
-          
-          <div className="flex flex-wrap gap-8 justify-center">
-            {members.map((alumnus, index) => (
-              <div key={index} className="alumni-card">
-                <AlumniCard {...alumnus} />
-              </div>
-            ))}
+        {Object.entries(alumniData).map(([batch, members], batchIndex) => (
+          <div 
+            key={batch} 
+            className="mb-20 pb-6 relative"
+            ref={el => sectionsRef.current[batchIndex] = el}
+          >
+            {/* Decorative background element */}
+            <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b to-[#e65512] from-gray-100  rounded-full"></div>
+            
+            <h2 className="text-3xl font-semibold text-gray-700 mb-8 ml-4 batch-heading relative inline-block">
+              Batch {batch}
+              <span className="absolute -bottom-2 left-0 w-3/4 h-1 bg-gradient-to-r to-[#e65512] from-gray-300  to-transparent"></span>
+            </h2>
+            
+            <div className="flex flex-wrap gap-8 justify-center">
+              {members.map((alumnus, index) => (
+                <div key={index} className="alumni-card">
+                  <AlumniCard {...alumnus} />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
 
-      {/* Footer Section */}
-      {/* <div className="mt-24 text-center">
-        <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
-          <h3 className="text-2xl font-semibold text-gray-700 mb-4">Join Our Alumni Network</h3>
-          <p className="text-gray-600 mb-6">Stay connected with fellow artists and get updates on alumni events</p>
-          <button className="px-6 py-3 bg-gradient-to-r to-[#d25c25] from-gray-300  text-white rounded-full hover:shadow-lg transition-all transform hover:-translate-y-1">
-            Connect With Us
-          </button>
-        </div>
-      </div> */}
+        {/* Footer Section */}
+        {/* <div className="mt-24 text-center">
+          <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
+            <h3 className="text-2xl font-semibold text-gray-700 mb-4">Join Our Alumni Network</h3>
+            <p className="text-gray-600 mb-6">Stay connected with fellow artists and get updates on alumni events</p>
+            <button className="px-6 py-3 bg-gradient-to-r to-[#d25c25] from-gray-300  text-white rounded-full hover:shadow-lg transition-all transform hover:-translate-y-1">
+              Connect With Us
+            </button>
+          </div>
+        </div> */}
+      </div>
     </div>
   );
 }

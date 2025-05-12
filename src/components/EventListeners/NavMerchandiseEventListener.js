@@ -123,58 +123,9 @@
 
 
 
-// import * as THREE from "three";
-// import gsap from "gsap";
-// import { useRouter } from "next/navigation"; // Use Next.js router
-
-// export function setupNavMerchandiseEventListener(
-//   scene,
-//   camera,
-//   navMerchandise,
-//   group,
-//   setOverlayOpacity,
-//   setShowAlumni,
-//   router // Router is passed as a parameter
-// ) {
-//   const raycaster = new THREE.Raycaster();
-//   const mouse = new THREE.Vector2();
-
-//   // Remove this line - router is already passed as a parameter
-//   // const router = useRouter(); 
-
-//   // Store navigation state in sessionStorage
-//   const markNavigationOccurred = () => {
-//     sessionStorage.setItem('hasNavigatedFrom3DScene', 'true');
-//   };
-
-//   const onMouseClick = (event) => {
-//     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-//     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-//     raycaster.setFromCamera(mouse, camera);
-//     const intersects = raycaster.intersectObjects([navMerchandise]);
-
-//     if (intersects.length > 0) {
-//       // Clean up scene before navigation
-//       scene.traverse((child) => {
-//         if (child.dispose) child.dispose();
-//       });
-      
-//       markNavigationOccurred();
-//       window.location.href = '/merchandise';
-//     }
-//   };
-
-//   window.addEventListener("click", onMouseClick);
-
-//   return () => {
-//     window.removeEventListener("click", onMouseClick);
-//   };
-// }
-
-
 import * as THREE from "three";
 import gsap from "gsap";
+import { useRouter } from "next/navigation"; // Use Next.js router
 
 export function setupNavMerchandiseEventListener(
   scene,
@@ -183,11 +134,18 @@ export function setupNavMerchandiseEventListener(
   group,
   setOverlayOpacity,
   setShowAlumni,
-  router,
-  containerRef // Add a reference to the DOM container where iframe will be mounted
+  router // Router is passed as a parameter
 ) {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
+
+  // Remove this line - router is already passed as a parameter
+  // const router = useRouter(); 
+
+  // Store navigation state in sessionStorage
+  const markNavigationOccurred = () => {
+    sessionStorage.setItem('hasNavigatedFrom3DScene', 'true');
+  };
 
   const onMouseClick = (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -197,35 +155,13 @@ export function setupNavMerchandiseEventListener(
     const intersects = raycaster.intersectObjects([navMerchandise]);
 
     if (intersects.length > 0) {
-      // Optional: Hide scene/canvas
-      const canvas = document.querySelector('canvas');
-      if (canvas) canvas.style.display = 'none';
-
-      // Optional: Remove Three.js scene objects to clean up memory
+      // Clean up scene before navigation
       scene.traverse((child) => {
         if (child.dispose) child.dispose();
-        if (child.geometry) child.geometry.dispose();
-        if (child.material) {
-          if (Array.isArray(child.material)) {
-            child.material.forEach((m) => m.dispose());
-          } else {
-            child.material.dispose();
-          }
-        }
       });
-
-      // Add iframe
-      const iframe = document.createElement("iframe");
-      iframe.src = "/merchandise"; // Local Next.js route
-      iframe.style.width = "100%";
-      iframe.style.height = "100%";
-      iframe.style.position = "absolute";
-      iframe.style.top = "0";
-      iframe.style.left = "0";
-      iframe.style.border = "none";
-      iframe.setAttribute("id", "embedded-page");
-
-      containerRef.current.appendChild(iframe);
+      
+      markNavigationOccurred();
+      window.location.href = '/merchandise';
     }
   };
 
@@ -233,9 +169,78 @@ export function setupNavMerchandiseEventListener(
 
   return () => {
     window.removeEventListener("click", onMouseClick);
-
-    // Clean up iframe if it exists
-    const existingIframe = document.getElementById("embedded-page");
-    if (existingIframe) existingIframe.remove();
   };
 }
+
+
+// import * as THREE from "three";
+// import gsap from "gsap";
+
+// export function setupNavMerchandiseEventListener(
+//   scene,
+//   camera,
+//   navMerchandise,
+//   group,
+//   setOverlayOpacity,
+//   setShowAlumni,
+//   router,
+//   containerRef // Add a reference to the DOM container where iframe will be mounted
+// ) {
+//   const raycaster = new THREE.Raycaster();
+//   const mouse = new THREE.Vector2();
+
+//     // Store navigation state in sessionStorage
+//     const markNavigationOccurred = () => {
+//       sessionStorage.setItem('hasNavigatedFrom3DScene', 'true');
+//     };
+
+//   const onMouseClick = (event) => {
+//     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+//     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+//     raycaster.setFromCamera(mouse, camera);
+//     const intersects = raycaster.intersectObjects([navMerchandise]);
+
+//     if (intersects.length > 0) {
+//       // // Optional: Hide scene/canvas
+//       // const canvas = document.querySelector('canvas');
+//       // if (canvas) canvas.style.display = 'none';
+
+//       // // Optional: Remove Three.js scene objects to clean up memory
+//       // scene.traverse((child) => {
+//       //   if (child.dispose) child.dispose();
+//       //   if (child.geometry) child.geometry.dispose();
+//       //   if (child.material) {
+//       //     if (Array.isArray(child.material)) {
+//       //       child.material.forEach((m) => m.dispose());
+//       //     } else {
+//       //       child.material.dispose();
+//       //     }
+//       //   }
+//       // });
+
+//       // Add iframe
+//       const iframe = document.createElement("iframe");
+//       iframe.src = "/merchandise"; // Local Next.js route
+//       iframe.style.width = "100%";
+//       iframe.style.height = "100%";
+//       iframe.style.position = "absolute";
+//       iframe.style.top = "0";
+//       iframe.style.left = "0";
+//       iframe.style.border = "none";
+//       iframe.setAttribute("id", "embedded-page");
+
+//       containerRef.current.appendChild(iframe);
+//     }
+//   };
+
+//   window.addEventListener("click", onMouseClick);
+
+//   return () => {
+//     window.removeEventListener("click", onMouseClick);
+
+//     // Clean up iframe if it exists
+//     const existingIframe = document.getElementById("embedded-page");
+//     if (existingIframe) existingIframe.remove();
+//   };
+// }
