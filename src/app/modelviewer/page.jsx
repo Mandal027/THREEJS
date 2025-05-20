@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import ModelViewer from "@/components/ModelViewer";
 import LoadingScreen from "@/components/LoadingScreen";
+// import Navbar from "@/components/Induction/Navbar";
+import Navbar from "@/components/BitSindri/Navbar";
 
 export default function ModelViewers() {
   const [isLoading, setIsLoading] = useState(true);
@@ -43,6 +45,7 @@ export default function ModelViewers() {
   return (
     <>
       {isLoading && <LoadingScreen />}
+      <Navbar/>
       <ModelViewer />
     </>
   );

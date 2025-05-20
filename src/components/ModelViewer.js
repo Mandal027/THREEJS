@@ -5,7 +5,7 @@ import Link from "next/link";
 const ModelViewer = () => {
   return (
     <div className="relative w-full h-screen bg-gray-300 overflow-hidden">
-      <h1 className="text-6xl md:text-8xl lg:text-9xl whitespace-normal break-words top-[15px] md:top-[100px] text-gray opacity-50   text-center  tracking-wider   leading-loose z-90 flex justify-center items-center absolute">
+      <h1 className="text-6xl md:text-8xl lg:text-9xl mt-20 md:mt-3 whitespace-normal break-words top-[15px] md:top-[100px] text-gray opacity-50   text-center  tracking-wider   leading-tight z-90 flex justify-center items-center absolute">
         INDUCTION PROGRAM
       </h1>
       {/* Base plane */}

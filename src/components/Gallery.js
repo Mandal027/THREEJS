@@ -71,7 +71,7 @@ export default function CylindricalGallery() {
 
   // Random image selection
   const getRandomImage = useCallback(() => {
-    return Math.floor(Math.random() * 50) + 1;
+    return Math.floor(Math.random() * 30) + 1;
   }, []);
 
   // Load texture with promise
@@ -79,7 +79,7 @@ export default function CylindricalGallery() {
     const textureLoader = new THREE.TextureLoader();
 
     return new Promise((resolve) => {
-      const texture = textureLoader.load(`/img/1.jpg`, (loadedTexture) => {
+      const texture = textureLoader.load(`/img/${imageNumber}.jpg`, (loadedTexture) => {
         loadedTexture.generateMipmaps = true;
         loadedTexture.minFilter = THREE.LinearMipmapLinearFilter;
         loadedTexture.magFilter = THREE.LinearFilter;
@@ -166,6 +166,32 @@ export default function CylindricalGallery() {
       // Create scene
       const scene = new THREE.Scene();
       sceneRef.current = scene;
+
+
+
+      // 🔽 ADD GRADIENT BACKGROUND SPHERE HERE
+      const gradientCanvas = document.createElement('canvas');
+      gradientCanvas.width = 256;
+      gradientCanvas.height = 256;
+      const ctx = gradientCanvas.getContext('2d');
+
+      const gradient = ctx.createLinearGradient(0, 0, 0, gradientCanvas.height);
+      gradient.addColorStop(0, "#ff6200");  // Top color
+      gradient.addColorStop(1, "#ffffff");  // Bottom color
+
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, gradientCanvas.width, gradientCanvas.height);
+
+      const gradientTexture = new THREE.CanvasTexture(gradientCanvas);
+
+      const backgroundSphereGeometry = new THREE.SphereGeometry(100, 32, 32);
+      const backgroundSphereMaterial = new THREE.MeshBasicMaterial({
+        map: gradientTexture,
+        side: THREE.BackSide,
+      });
+      const backgroundSphere = new THREE.Mesh(backgroundSphereGeometry, backgroundSphereMaterial);
+      scene.add(backgroundSphere);
+      // 🔼 GRADIENT BACKGROUND ADDED
 
       // Create camera with adjusted FOV and position
       const camera = new THREE.PerspectiveCamera(

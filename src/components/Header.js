@@ -13,7 +13,7 @@ const Header = () => {
           PAINTING WING
         </Link>
         <h4 className="text-xs md:text-sm font-bold tracking-wider">
-          Lets Satisfaction Prevail
+          Let Satisfaction Prevail
         </h4>
       </div>
 

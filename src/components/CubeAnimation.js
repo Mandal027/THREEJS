@@ -6,7 +6,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GUI } from 'dat.gui';
 
 export function startAnimation(cube, camera, scene, cubeSize, targetScale, completionCallback) {
-  const timeline = gsap.timeline({ delay: 0.3 }); // Add a delay of 0.6 seconds
+  const timeline = gsap.timeline({ delay: 4.4 }); // Add a delay of 0.6 seconds
 
   timeline.to(cube.position, {
     y: 0, // Final Y position

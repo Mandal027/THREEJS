@@ -2,7 +2,7 @@ import React from "react";
 
 const Merchandise = () => {
   return (
-    <div className="relative w-full h-screen">
+    <div className="relative   w-full h-screen">
       <iframe
         // src="http://localhost:5173/" // Replace with your actual URL
          src="https://pw-marchandise.vercel.app"

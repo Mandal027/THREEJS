@@ -7,11 +7,14 @@ import { Menu, X, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isRestoringState, setIsRestoringState] = useState(false);
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,12 +25,61 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleBack = () => {
+    try {
+      // Save current UI state
+      const stateToSave = {
+        scrollPosition: window.scrollY,
+        isMenuOpen,
+        isScrolled,
+        pathname: window.location.pathname,
+        timestamp: Date.now(),
+      };
+      sessionStorage.setItem(
+        "navbarPreviousState",
+        JSON.stringify(stateToSave)
+      );
+      router.back();
+    } catch (error) {
+      console.error("Error saving navbar state:", error);
+      router.back();
+    }
+  };
+
+  useEffect(() => {
+    if (!isRestoringState) {
+      try {
+        const savedState = sessionStorage.getItem("navbarPreviousState");
+        if (savedState) {
+          setIsRestoringState(true);
+          const parsedState = JSON.parse(savedState);
+
+          // Only restore if state is less than 5 minutes old
+          if (Date.now() - parsedState.timestamp < 300000) {
+            setTimeout(() => {
+              window.scrollTo(0, parsedState.scrollPosition);
+              setIsMenuOpen(parsedState.isMenuOpen);
+              setIsScrolled(parsedState.isScrolled);
+              setIsRestoringState(false);
+            }, 100);
+          }
+
+          // Clean up
+          sessionStorage.removeItem("navbarPreviousState");
+        }
+      } catch (error) {
+        console.error("Error restoring navbar state:", error);
+        setIsRestoringState(false);
+      }
+    }
+  }, [isRestoringState]);
+
   const navLinks = [
-    { name: "Home", href: "#home" },
-    { name: "About", href: "#about" },
-    { name: "Academics", href: "#academics" },
-    { name: "Campus", href: "#campus" },
-    { name: "Join Us", href: "#joinus" },
+    { name: "Home", href: "/" },
+    { name: "About Us", href: "/about-us" },
+    { name: "Events", href: "/events" },
+    { name: "BIT Sindri", href: "/bit-sindri" },
+    { name: "Join Us", href: "/modelviewer" },
   ];
 
   return (
@@ -38,8 +90,8 @@ export default function Navbar() {
         transition={{ duration: 0.5 }}
         className={`fixed top-0 left-0 right-0 z-50 ${
           isScrolled
-            ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-md"
-            : "backdrop-blur-sm bg-black/20"
+            ? " backdrop-blur-md shadow-md"
+            : "backdrop-blur-sm"
         } transition-all duration-300`}
       >
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -55,7 +107,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <nav className="flex items-center space-x-6 font-sans">
+            <nav className="flex items-center space-x-6 text-3/2xl font-sans">
               {navLinks.map((link, index) => (
                 <motion.div
                   key={link.name}
@@ -78,7 +130,12 @@ export default function Navbar() {
             </nav>
           </div>
 
-          <Button className="text-white ">Back</Button>
+          <Button
+            onClick={handleBack}
+            className="bg-orange-600 hover:bg-orange-700 text-white"
+          >
+            Back
+          </Button>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center md:hidden">

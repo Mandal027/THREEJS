@@ -1,13 +1,16 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BookOpen, Code, Cpu, Database, FlaskRoundIcon as Flask, Lightbulb, Radio, Zap } from "lucide-react";
 
 export default function AcademicsSection() {
   const ref = useRef(null);
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: false, amount: 0.3 });
+  
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
@@ -67,10 +70,35 @@ export default function AcademicsSection() {
     },
   ];
 
+  // Staggered animation variants for cards
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.5 }
+    }
+  };
+
   return (
-    <section id="academics" ref={ref} className="py-20 bg-white dark:bg-gray-800">
-      <div className="container mx-auto px-4">
-        <motion.div className="text-center mb-16" style={{ y }}>
+    <section id="academics" ref={ref} className="py-20 bg-white dark:bg-gray-800 overflow-hidden">
+      <div ref={sectionRef} className="container mx-auto px-4">
+        <motion.div 
+          className="text-center mb-16" 
+          style={{ y }}
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -99,66 +127,113 @@ export default function AcademicsSection() {
           </motion.p>
         </motion.div>
 
-        <Tabs defaultValue="cse" className="max-w-5xl mx-auto">
-          <div className="flex justify-center mb-14">
-            <TabsList className="grid grid-cols-3 md:grid-cols-6 bg-gray-200 dark:bg-gray-700">
-              {departments.map((dept) => (
-                <TabsTrigger
-                  key={dept.id}
-                  value={dept.id}
-                  className="flex flex-col items-center gap-1 py-3 px-4 data-[state=active]:bg-orange-600 data-[state=active]:text-white"
-                >
-                  {dept.icon}
-                  <span className="text-xs md:text-sm text-center">{dept.name.split(" ")[0]}</span>
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </div>
-
-          {departments.map((dept) => (
-            <TabsContent key={dept.id} value={dept.id}>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-8"
-              >
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          <Tabs defaultValue="cse" className="max-w-5xl mx-auto">
+            <motion.div 
+              className="flex justify-center mb-14"
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <TabsList className="grid grid-cols-3 md:grid-cols-6 bg-gray-200 dark:bg-gray-700">
+                {departments.map((dept, index) => (
+                  <motion.div
+                    key={dept.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    viewport={{ once: true }}
+                  >
+                    <TabsTrigger
+                      value={dept.id}
+                      className="flex flex-col items-center gap-1 py-3 px-4 data-[state=active]:bg-orange-600 data-[state=active]:text-white"
+                    >
                       {dept.icon}
-                      <span>{dept.name}</span>
-                    </CardTitle>
-                    <CardDescription>Department Overview</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700 dark:text-gray-300">{dept.description}</p>
-                  </CardContent>
-                </Card>
+                      <span className="text-xs md:text-sm text-center">{dept.name.split(" ")[0]}</span>
+                    </TabsTrigger>
+                  </motion.div>
+                ))}
+              </TabsList>
+            </motion.div>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <BookOpen className="h-5 w-5" />
-                      <span>Programs Offered</span>
-                    </CardTitle>
-                    <CardDescription>Undergraduate and Postgraduate Courses</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {dept.courses.map((course, i) => (
-                        <li key={i} className="flex items-start gap-2">
-                          <Lightbulb className="h-5 w-5 text-orange-600 mt-0.5" />
-                          <span className="text-gray-700 dark:text-gray-300">{course}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </TabsContent>
-          ))}
-        </Tabs>
+            {departments.map((dept) => (
+              <TabsContent key={dept.id} value={dept.id}>
+                <motion.div
+                  variants={containerVariants}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.3 }}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-8"
+                >
+                  <motion.div variants={itemVariants}>
+                    <Card className="h-full transition-all duration-300 hover:shadow-lg">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <motion.div
+                            whileHover={{ rotate: 15, scale: 1.1 }}
+                            transition={{ type: "spring", stiffness: 300 }}
+                          >
+                            {dept.icon}
+                          </motion.div>
+                          <span>{dept.name}</span>
+                        </CardTitle>
+                        <CardDescription>Department Overview</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-gray-700 dark:text-gray-300">{dept.description}</p>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+
+                  <motion.div variants={itemVariants}>
+                    <Card className="h-full transition-all duration-300 hover:shadow-lg">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <motion.div
+                            whileHover={{ rotate: 15, scale: 1.1 }}
+                            transition={{ type: "spring", stiffness: 300 }}
+                          >
+                            <BookOpen className="h-5 w-5" />
+                          </motion.div>
+                          <span>Programs Offered</span>
+                        </CardTitle>
+                        <CardDescription>Undergraduate and Postgraduate Courses</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <ul className="space-y-2">
+                          {dept.courses.map((course, i) => (
+                            <motion.li 
+                              key={i} 
+                              className="flex items-start gap-2"
+                              initial={{ opacity: 0, x: -10 }}
+                              whileInView={{ opacity: 1, x: 0 }}
+                              transition={{ duration: 0.3, delay: i * 0.1 }}
+                              viewport={{ once: true }}
+                            >
+                              <motion.div
+                                whileHover={{ scale: 1.2, color: "#f97316" }}
+                                transition={{ type: "spring", stiffness: 400 }}
+                              >
+                                <Lightbulb className="h-5 w-5 text-orange-600 mt-0.5" />
+                              </motion.div>
+                              <span className="text-gray-700 dark:text-gray-300">{course}</span>
+                            </motion.li>
+                          ))}
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                </motion.div>
+              </TabsContent>
+            ))}
+          </Tabs>
+        </motion.div>
       </div>
     </section>
   );

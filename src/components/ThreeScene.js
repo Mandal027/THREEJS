@@ -6,16 +6,10 @@ import { RectAreaLightHelper } from "three/examples/jsm/helpers/RectAreaLightHel
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry";
 import gsap from "gsap";
 import { createPlusSign, addGridPlusSigns } from "../components/Lines/PlusSign";
-// import { createThickLine } from './ThickLine';
 import { startAnimation } from "./CubeAnimation";
-// import { handleResize } from "./HandleResize";
-// import { createXLines } from "./LineX";
-// import { createZLines } from "./LineZ";
-// import { createNegativeZLines } from "./LineNegativeZ";
-// import { createNegativeXLines } from "./LineNegativeX";
 import {
   createNavEvents,
-  createNavTitle,
+  createNavAboutUs,
   createNavAlumni,
   createNavMembers,
   createNavMerchandise,
@@ -24,6 +18,7 @@ import {
   createNavInduction,
 } from "./CreateNavTitle.js";
 import { GUI } from "dat.gui";
+import * as dat from "dat.gui";
 // import Header from "./Header";
 import BitSindri from "./BitSindri";
 import Members from "./Members";
@@ -38,6 +33,7 @@ import { setupNavEventsEventListener } from "./EventListeners/NavEventsEventList
 import { setupNavMerchandiseEventListener } from "./EventListeners/NavMerchandiseEventListener";
 import { setupNavInductionEventListener } from "./EventListeners/NavInductionEventListener";
 import { setupNavCollabEventListener } from "./EventListeners/NavCollabEventListener";
+import { setupNavAboutUsEventListener } from "./EventListeners/NavAboutUsEventListener";
 
 import Events from "./Events";
 import Merchandise from "./Merchandise";
@@ -54,6 +50,7 @@ const ThreeScene = () => {
   const [showEvents, setShowEvents] = useState(false);
   const [showMembers, setShowMembers] = useState(false);
   const [showAlumni, setShowAlumni] = useState(false);
+  const [showAboutUs, setShowAboutUs] = useState(false);
   const [showMerchandise, setShowMerchandise] = useState(false);
   const [showInduction, setShowInduction] = useState(false);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
@@ -64,6 +61,11 @@ const ThreeScene = () => {
   const mouse = new THREE.Vector2();
 
   useEffect(() => {
+    // Move these to the top of useEffect
+    let artStudioModel = null;
+    let artStudioClickable = false;
+    let isArtStudioScaled = false; // Track scale state
+
     const raycaster = new THREE.Raycaster();
 
     // Function to reload the page on resize
@@ -114,12 +116,19 @@ const ThreeScene = () => {
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     document.getElementById("threejs-canvas").appendChild(renderer.domElement);
 
     const controls = new OrbitControls(cameraRef.current, renderer.domElement);
 
     // Enable damping for smooth movement
     controls.enableDamping = true;
+
+    // Initially disable manual controls
+    controls.enableRotate = false;
+    controls.enableZoom = false;
+
     // Create an Axis Helper
     // const axesHelper = new THREE.AxesHelper(5); // Size of 5 means each axis is 5 units long
     // scene.add(axesHelper);
@@ -138,24 +147,30 @@ const ThreeScene = () => {
 
     // Add the mousemove event listener inside useEffect
     window.addEventListener("mousemove", (event) => {
-      // Convert mouse position to normalized device coordinates
+      if (!mouseControlEnabled) return; // Only process mouse movement after animation
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-      // Perform raycasting
-      raycaster.setFromCamera(mouse, cameraRef.current);
-      const intersects = raycaster.intersectObjects(group.children, true);
+      // Show/hide instruction on hover
+      if (artStudioModel && artStudioClickable) {
+        const instructionEl = document.getElementById("model-instruction");
+        if (instructionEl) {
+          const raycaster = new THREE.Raycaster();
+          raycaster.setFromCamera(mouse, cameraRef.current);
+          const intersects = raycaster.intersectObjects(
+            artStudioModel.children,
+            true
+          );
 
-      // Check if any intersected object is a navTitle
-      let isHoveringNavTitle = false;
-      intersects.forEach((intersect) => {
-        if (intersect.object.userData.isNavTitle) {
-          isHoveringNavTitle = true;
+          if (intersects.length > 0) {
+            instructionEl.style.left = `${event.clientX}px`;
+            instructionEl.style.top = `${event.clientY - 30}px`; // Show above cursor
+            instructionEl.classList.add("visible");
+          } else {
+            instructionEl.classList.remove("visible");
+          }
         }
-      });
-
-      // Change cursor based on hover state
-      document.body.style.cursor = isHoveringNavTitle ? "pointer" : "default";
+      }
     });
 
     // Disable panning
@@ -466,10 +481,22 @@ const ThreeScene = () => {
     //   createNegativeXLines(scene, step, 0x0000); // Set line color to black
 
     // Add corners group to the scene
-    const cornersGroup = createNavTitle(0.2, 0xa44c24); // Adjust size and color if needed
-    cornersGroup.position.set(-2.3, 0, -10.5); // Adjust these values as needed
-    cornersGroup.rotation.set(4.71, 0, 1.57);
-    group.add(cornersGroup);
+    const navAboutUs = createNavAboutUs(0.2, 0xa44c24); // Adjust size and color if needed
+    navAboutUs.position.set(-2.3, 0, -10.5); // Adjust these values as needed
+    navAboutUs.rotation.set(4.71, 0, 1.57);
+    group.add(navAboutUs);
+
+
+    // Setup event listener for navAboutUs
+    const cleanupNavAboutUsEventListener = setupNavAboutUsEventListener(
+      scene,
+      cameraRef.current,
+      navAboutUs,
+      group,
+      setOverlayOpacity,
+      setShowAboutUs,
+      router // Pass the router to the event listener
+    );
 
     // Add navtitle Events
     const navEvents = createNavEvents(0.2, 0xa44c24);
@@ -559,7 +586,6 @@ const ThreeScene = () => {
       router
     );
 
-
     // Add navtitle Induction
     const navInduction = createNavInduction(0.2, 0xa44c24);
     navInduction.position.set(3.5, 0, -7);
@@ -590,6 +616,27 @@ const ThreeScene = () => {
       if (!mouseControlEnabled) return; // Only process mouse movement after animation
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      // Show/hide instruction on hover
+      if (artStudioModel && artStudioClickable) {
+        const instructionEl = document.getElementById("model-instruction");
+        if (instructionEl) {
+          const raycaster = new THREE.Raycaster();
+          raycaster.setFromCamera(mouse, cameraRef.current);
+          const intersects = raycaster.intersectObjects(
+            artStudioModel.children,
+            true
+          );
+
+          if (intersects.length > 0) {
+            instructionEl.style.left = `${event.clientX}px`;
+            instructionEl.style.top = `${event.clientY - 30}px`; // Show above cursor
+            instructionEl.classList.add("visible");
+          } else {
+            instructionEl.classList.remove("visible");
+          }
+        }
+      }
     });
 
     // Check if we're returning from modelviewer route
@@ -606,7 +653,133 @@ const ThreeScene = () => {
       scene.add(group);
       group.add(navEvents);
       mouseControlEnabled = true;
+
+      // Directly add artStudioModel to superGroup if loaded, or load and add it immediately
+      if (artStudioModel && !superGroup.children.includes(artStudioModel)) {
+        superGroup.add(artStudioModel);
+        // Animate scale from (0,0,0) to (1,1,1) for smooth popup
+        artStudioModel.scale.set(0, 0, 0);
+        gsap.to(artStudioModel.scale, {
+          x: 1,
+          y: 1,
+          z: 1,
+          duration: 0.1, // Reduced from 0.8 to 0.5 for faster animation
+          ease: "power2.out",
+        });
+        controls.enableRotate = true;
+        controls.enableZoom = true;
+        controls.target.copy(artStudioModel.position);
+        controls.update();
+      } else if (!artStudioModel) {
+        // If not loaded yet, load and add immediately
+        const gltfLoader = new GLTFLoader();
+        gltfLoader.load(
+          "/art_studio.glb",
+          (gltf) => {
+            artStudioModel = gltf.scene;
+            artStudioModel.position.set(0.5, 2, 0);
+            artStudioModel.scale.set(0, 0, 0); // Start from 0 for animation
+
+            // Animate scale from (0,0,0) to (1,1,1) for smooth popup
+            gsap.to(artStudioModel.scale, {
+              x: 1,
+              y: 1,
+              z: 1,
+              duration: 0.5, // Reduced from 0.8 to 0.5 for faster animation
+              ease: "power2.out",
+            });
+
+            // Add strong ambient light to the model
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+            artStudioModel.add(ambientLight);
+
+            // Add a bright point light above the model
+            const pointLight = new THREE.PointLight(0xffffff, 2, 100);
+            pointLight.position.set(0.5, 8, 0);
+            pointLight.castShadow = true;
+            artStudioModel.add(pointLight);
+
+            // Optionally add a directional light for more even illumination
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+            dirLight.position.set(5, 10, 5);
+            dirLight.castShadow = true;
+            artStudioModel.add(dirLight);
+
+            // Enable shadow casting and receiving for all meshes in the model
+            artStudioModel.traverse((child) => {
+              if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+              }
+            });
+
+            artStudioClickable = true;
+            superGroup.add(artStudioModel);
+
+            // Animate scale from (0,0,0) to (1,1,1) for smooth popup
+            gsap.to(artStudioModel.scale, {
+              x: 1,
+              y: 1,
+              z: 1,
+              duration: 0.5, // Reduced from 0.8 to 0.5 for faster animation
+              ease: "power2.out",
+            });
+
+            controls.enableRotate = true;
+            controls.enableZoom = true;
+            controls.target.copy(artStudioModel.position);
+            controls.update();
+          },
+          undefined,
+          (error) => {
+            console.error("Error loading GLTF model:", error);
+          }
+        );
+      }
     } else {
+      // Prepare to pop up the model 3 seconds before the cube animation completes
+
+      const gltfLoader = new GLTFLoader();
+      gltfLoader.load(
+        "/art_studio.glb",
+        (gltf) => {
+          artStudioModel = gltf.scene;
+          artStudioModel.position.set(0.5, 2, 0);
+          artStudioModel.scale.set(1, 1, 1);
+
+          // Add strong ambient light to the model
+          const ambientLight = new THREE.AmbientLight(0xffffff, 1.2); // Increased intensity
+          artStudioModel.add(ambientLight);
+
+          // Add a bright point light above the model
+          const pointLight = new THREE.PointLight(0xffffff, 2, 100); // Increased intensity
+          pointLight.position.set(0.5, 8, 0); // Higher above the model
+          pointLight.castShadow = true;
+          artStudioModel.add(pointLight);
+
+          // Optionally add a directional light for more even illumination
+          const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+          dirLight.position.set(5, 10, 5);
+          dirLight.castShadow = true;
+          artStudioModel.add(dirLight);
+
+          // Enable shadow casting and receiving for all meshes in the model
+          artStudioModel.traverse((child) => {
+            if (child.isMesh) {
+              child.castShadow = true;
+              child.receiveShadow = true;
+            }
+          });
+
+          // Make model clickable when added to scene
+          artStudioClickable = true;
+        },
+        undefined,
+        (error) => {
+          console.error("Error loading GLTF model:", error);
+        }
+      );
+
       // Run the normal animation flow
       startAnimation(
         cube,
@@ -615,14 +788,89 @@ const ThreeScene = () => {
         cubeSize,
         targetScale,
         () => {
-          setTimeout(() => {
-            scene.add(group);
-            group.add(navEvents);
-            mouseControlEnabled = true; // Enable mouse control after animation
-          });
+          scene.add(group);
+          group.add(navEvents);
+          mouseControlEnabled = true;
+
+          // Enable OrbitControls for art_studio.glb when it appears
+          if (artStudioModel && !superGroup.children.includes(artStudioModel)) {
+            superGroup.add(artStudioModel);
+            artStudioModel.position.y = 2;
+            controls.enableRotate = true;
+            controls.enableZoom = true;
+            controls.target.copy(artStudioModel.position);
+            controls.update();
+          }
+        },
+        () => {
+          // 3 seconds before animation completes
+          if (artStudioModel && !superGroup.children.includes(artStudioModel)) {
+            superGroup.add(artStudioModel);
+            artStudioModel.position.y = 2;
+            controls.enableRotate = true;
+            controls.enableZoom = true;
+            controls.target.copy(artStudioModel.position);
+            controls.update();
+          }
         }
       );
+
+      // If your startAnimation does not support an "almost complete" callback,
+      // you can use setTimeout to add the model 3 seconds before the animation's known duration ends:
+
+      /*
+      const animationDuration = 5; // seconds, adjust to your animation's duration
+      setTimeout(() => {
+        if (artStudioModel && !scene.children.includes(artStudioModel)) {
+          scene.add(artStudioModel);
+          artStudioModel.position.y = 2;
+        }
+      }, (animationDuration - 3) * 1000);
+      */
     }
+
+    window.addEventListener("dblclick", (event) => {
+      if (!artStudioModel || !artStudioClickable) return;
+
+      // Raycast to check if artStudioModel was double-clicked
+      const mouseClick = new THREE.Vector2(
+        (event.clientX / window.innerWidth) * 2 - 1,
+        -(event.clientY / window.innerHeight) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouseClick, cameraRef.current);
+
+      const intersects = raycaster.intersectObjects(
+        artStudioModel.children,
+        true
+      );
+      if (intersects.length > 0) {
+        // Toggle scale with smooth transition
+        if (!isArtStudioScaled) {
+          gsap.to(artStudioModel.scale, {
+            x: 2,
+            y: 2,
+            z: 2,
+            duration: 0.5, // Reduced from 0.7 to 0.5 for faster animation
+            ease: "power2.out",
+            onComplete: () => {
+              isArtStudioScaled = true;
+            },
+          });
+        } else {
+          gsap.to(artStudioModel.scale, {
+            x: 1,
+            y: 1,
+            z: 1,
+            duration: 0.5, // Reduced from 0.7 to 0.5 for faster animation
+            ease: "power2.out",
+            onComplete: () => {
+              isArtStudioScaled = false;
+            },
+          });
+        }
+      }
+    });
 
     function animate() {
       requestAnimationFrame(animate);
@@ -641,6 +889,41 @@ const ThreeScene = () => {
     }
 
     animate();
+
+    // Add click event listener for artStudioModel
+    window.addEventListener("click", (event) => {
+      if (!artStudioModel || !artStudioClickable) return;
+
+      // Raycast to check if artStudioModel was clicked
+      const mouseClick = new THREE.Vector2(
+        (event.clientX / window.innerWidth) * 2 - 1,
+        -(event.clientY / window.innerHeight) * 2 + 1
+      );
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouseClick, cameraRef.current);
+
+      // Check intersection with all meshes in artStudioModel
+      const intersects = raycaster.intersectObjects(
+        artStudioModel.children,
+        true
+      );
+      if (intersects.length > 0) {
+        // Animate camera to zoom in and focus on the model
+        const targetPos = artStudioModel.position.clone();
+        const cam = cameraRef.current;
+        gsap.to(cam.position, {
+          duration: 1,
+          // x: targetPos.x,
+          // y: targetPos.y + 4, // Adjust for a nice top view
+          z: targetPos.z + 4, // Adjust for a nice front view
+          onUpdate: () => {
+            cam.lookAt(targetPos);
+            controls.target.copy(targetPos);
+            controls.update();
+          },
+        });
+      }
+    });
 
     // Setup event listener for navBIT
     const cleanupNavBITEventListener = setupNavBITEventListener(
@@ -664,40 +947,61 @@ const ThreeScene = () => {
 
   return (
     <>
-      <div
-        id="threejs-canvas"
-        className="fixed w-full h-screen bg-white"
-      ></div>
+      <style jsx>{`
+        .model-instruction {
+          position: fixed;
+          padding: 8px 16px;
+          background: rgba(0, 0, 0, 0.75);
+          color: white;
+          border-radius: 8px;
+          font-size: 14px;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.3s;
+          transform: translate(-50%, -50%);
+          z-index: 1000;
+          font-family: sans-serif;
+          text-align: center;
+        }
+
+        .model-instruction.visible {
+          opacity: 1;
+        }
+      `}</style>
+      <div id="model-instruction" className="model-instruction">
+        Double-tap to resize model
+      </div>
+      <div id="threejs-canvas" className="fixed w-full h-screen bg-white"></div>
       <div
         className="fixed inset-0 flex justify-start transition-opacity duration-500"
-        style={{
-          backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
-          pointerEvents:
-            showBitSindri ||
-            showEvents ||
-            showMembers ||
-            showAlumni ||
-            showMerchandise ||
-            showInduction
-              ? "auto"
-              : "none",
-          opacity:
-            showBitSindri ||
-            showEvents ||
-            showMembers ||
-            showAlumni ||
-            showMerchandise ||
-            showInduction
-              ? 1
-              : 0,
-          zIndex: 11,
-        }}
+        // style={{
+        //   backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
+        //   pointerEvents:
+        //     showBitSindri ||
+        //     showEvents ||
+        //     showMembers ||
+        //     showAlumni ||
+        //     showMerchandise ||
+        //     showInduction
+        //       ? "auto"
+        //       : "none",
+        //   opacity:
+        //     showBitSindri ||
+        //     showEvents ||
+        //     showMembers ||
+        //     showAlumni ||
+        //     showMerchandise ||
+        //     showInduction
+        //       ? 1
+        //       : 0,
+        //   zIndex: 11,
+        // }}
       >
-        {showBitSindri && <BitSindri />}
+        {/* {showBitSindri && <BitSindri />}
         {showEvents && <Events />}
         {showMembers && <Members />}
         {showAlumni && <Alumni />}
-        {showMerchandise && <Merchandise />}
+        {showMerchandise && <Merchandise />} */}
 
         {/* {showInduction && <ModelViewer />} */}
       </div>

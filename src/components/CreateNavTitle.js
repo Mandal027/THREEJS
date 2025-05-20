@@ -28,7 +28,7 @@ function createCorner(size, material) {
 }
 
 // Function to create and return the navTitle "ABOUT US"
-export function createNavTitle(cornerSize = 0.2, lineColor = 0xa44c24) {
+export function createNavAboutUs(cornerSize = 0.2, lineColor = 0xa44c24) {
   const lineMaterial = new THREE.LineBasicMaterial({
     color: lineColor,
     linewidth: 5,
@@ -205,7 +205,7 @@ export function createNavMembers(cornerSize = 0.2, lineColor = 0xffffff) {
     const textMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Change color to black
 
     // Generate each letter as a separate mesh
-    const text = "MEMBERS";
+    const text = "BEARERS";
     const textGroup = new THREE.Group(); // Group to hold all letters
     let xOffset = -0.7 * text.length; // Decrease spacing between letters
 
