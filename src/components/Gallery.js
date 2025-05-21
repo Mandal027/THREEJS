@@ -226,8 +226,11 @@ export default function CylindricalGallery() {
       scene.add(galleryGroup);
       galleryGroupRef.current = galleryGroup;
 
-      // Create cylinder with adjusted dimensions
-      const radius = 7;
+      // Detect mobile (or small screen)
+      const isMobile = window.innerWidth < 768;
+
+      // Set radius based on device
+      const radius = isMobile ? 4 : 7; // Decrease radius for mobile
       const height = 60;
       const segments = 30;
 
@@ -322,7 +325,8 @@ export default function CylindricalGallery() {
         cameraRef.current.updateProjectionMatrix();
         rendererRef.current.setSize(window.innerWidth, window.innerHeight);
 
-        if (lenisRef.current) {
+        // Fix: Only call update if it exists and is a function
+        if (lenisRef.current && typeof lenisRef.current.update === "function") {
           lenisRef.current.update();
         }
       };

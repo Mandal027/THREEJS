@@ -9,7 +9,7 @@ const page = () => {
     <>
       <Navbar />
       <AboutUs/>
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }

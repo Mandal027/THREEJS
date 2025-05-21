@@ -27,7 +27,7 @@ export default function Footer() {
       icon: <Facebook className="h-5 w-5" />,
       href: "#",
       label: "Facebook",
-      color: "hover:bg-blue-600",
+      color: "hover:bg-orange-500",
     },
     // {
     //   icon: <Twitter className="h-5 w-5" />,
@@ -39,13 +39,13 @@ export default function Footer() {
       icon: <Instagram className="h-5 w-5" />,
      href:'https://www.instagram.com/pw_bitsindri/',
       label: "Instagram",
-      color: "hover:bg-pink-600",
+      color: "hover:bg-orange-500",
     },
     {
       icon: <Linkedin className="h-5 w-5" />,
       href:'https://www.linkedin.com/company/painting-wing-bit-sindri/',
       label: "LinkedIn",
-      color: "hover:bg-blue-700",
+      color: "hover:bg-orange-500",
     },
     // {
     //   icon: <Github className="h-5 w-5" />,
@@ -117,7 +117,7 @@ export default function Footer() {
     <footer
       id="contact"
       ref={footerRef}
-      className="bg-black-100 text-white pt-12 pb-6 relative overflow-hidden"
+      className="bg-black text-white pt-12 pb-6 relative overflow-hidden"
     >
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden opacity-5 pointer-events-none">
@@ -262,7 +262,7 @@ export default function Footer() {
                 className="w-full h-full"
               />
               <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg backdrop-blur-sm">
+                <span className="bg-orange-600 text-white px-4 py-2 rounded-full text-xs font-medium shadow-lg backdrop-blur-sm">
                   Painting Wing, BIT Sindri
                 </span>
               </div>

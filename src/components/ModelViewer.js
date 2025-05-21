@@ -66,9 +66,7 @@ const ModelViewer = () => {
           <div className="progress-bar hide" slot="progress-bar">
             <div className="update-bar"></div>
           </div>
-          <button slot="ar-button" id="ar-button">
-            View in your space
-          </button>
+          
         </model-viewer>
 
         <model-viewer
@@ -103,9 +101,7 @@ const ModelViewer = () => {
           <div className="progress-bar hide" slot="progress-bar">
             <div className="update-bar"></div>
           </div>
-          <button slot="ar-button" id="ar-button">
-            View in your space
-          </button>
+          
           <div id="ar-prompt">
             {/* <img src="https://modelviewer.dev/shared-assets/icons/hand.png"> */}
           </div>
@@ -223,9 +219,7 @@ const ModelViewer = () => {
           <div className="progress-bar hide" slot="progress-bar">
             <div className="update-bar"></div>
           </div>
-          <button slot="ar-button" id="ar-button">
-            View in your space
-          </button>
+          
           <div id="ar-prompt">
             {/* <img src="https://modelviewer.dev/shared-assets/icons/hand.png"> */}
           </div>
@@ -262,9 +256,7 @@ const ModelViewer = () => {
           <div className="progress-bar hide" slot="progress-bar">
             <div className="update-bar"></div>
           </div>
-          <button slot="ar-button" id="ar-button">
-            View in your space
-          </button>
+          
           <div id="ar-prompt">
             {/* <img src="https://modelviewer.dev/shared-assets/icons/hand.png"> */}
           </div>

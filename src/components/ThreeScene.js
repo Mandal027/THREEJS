@@ -639,6 +639,39 @@ const ThreeScene = () => {
       }
     });
 
+    // Handle window resize and reset camera position if screen size increases
+    function handleResize() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // Update renderer size
+      renderer.setSize(width, height);
+
+      // Update camera aspect and projection
+      const aspect = width / height;
+      const frustumSize = 18;
+      cameraRef.current.left = (frustumSize * aspect) / -2;
+      cameraRef.current.right = (frustumSize * aspect) / 2;
+      cameraRef.current.top = frustumSize / 1;
+      cameraRef.current.bottom = frustumSize / -1.4;
+      cameraRef.current.updateProjectionMatrix();
+
+      // Reset camera position if screen size increases to medium or large
+      // (You can adjust the breakpoints as needed)
+      if (width >= 768) { // Example: 768px is the start of "md" in Tailwind
+        cameraRef.current.position.set(4.7, 11.39, 4.7);
+        cameraRef.current.lookAt(0, 0, 0);
+        cameraRef.current.updateProjectionMatrix();
+        controls.target.set(0, 0, 0);
+        controls.update();
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    // Call once to set initial size
+    handleResize();
+
     // Check if we're returning from modelviewer route
     if (hasNavigatedFrom3DScene === "true") {
       // Clear the flag
@@ -936,6 +969,7 @@ const ThreeScene = () => {
     );
     // Cleanup event listener when the component unmounts
     return () => {
+      window.removeEventListener("resize", handleResize);
       // window.removeEventListener("resize", handleWindowResize);
       // window.removeEventListener("click", onMouseClick);
       // cleanupNavBITEventListener();
@@ -972,39 +1006,7 @@ const ThreeScene = () => {
         Double-tap to resize model
       </div>
       <div id="threejs-canvas" className="fixed w-full h-screen bg-white"></div>
-      <div
-        className="fixed inset-0 flex justify-start transition-opacity duration-500"
-        // style={{
-        //   backgroundColor: `rgba(0, 0, 0, ${overlayOpacity * 1})`,
-        //   pointerEvents:
-        //     showBitSindri ||
-        //     showEvents ||
-        //     showMembers ||
-        //     showAlumni ||
-        //     showMerchandise ||
-        //     showInduction
-        //       ? "auto"
-        //       : "none",
-        //   opacity:
-        //     showBitSindri ||
-        //     showEvents ||
-        //     showMembers ||
-        //     showAlumni ||
-        //     showMerchandise ||
-        //     showInduction
-        //       ? 1
-        //       : 0,
-        //   zIndex: 11,
-        // }}
-      >
-        {/* {showBitSindri && <BitSindri />}
-        {showEvents && <Events />}
-        {showMembers && <Members />}
-        {showAlumni && <Alumni />}
-        {showMerchandise && <Merchandise />} */}
 
-        {/* {showInduction && <ModelViewer />} */}
-      </div>
       <div id="three-scene" />
     </>
   );

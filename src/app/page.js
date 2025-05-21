@@ -1,34 +1,56 @@
 "use client";
+import { useEffect, useState } from "react";
 import ThreeScene from "../components/ThreeScene";
-import Header from "@/components/Header";
-import dynamic from "next/dynamic";
-import { useState, useEffect } from "react";
 import LoadingScreen from "@/components/LoadingScreen";
-import HollowCylinder from "@/components/Collabration";
-import AlumniSection from "@/components/Alumni";
-import Gallery from "@/components/Gallery";
-import CylindricalGallery from "@/components/Gallery";
-import { Cylindrical } from "three";
-import ImageScroll from "@/components/imageScroll";
-import PaintingWing from "@/components/paintingwing";
 import { useAssetLoading } from "@/hooks/useAssetLoading";
-import Navbar from "@/components/BitSindri/Navbar";
-
-//dynamically import the model viewer component
-const ModelViewer = dynamic(() => import("../components/ModelViewer"), {
-  ssr: false,
-});
+import ArtStudioModelViewer from "@/components/LandingPage";
+import Header from "@/components/Header";
 
 export default function HomePage() {
   const { assetsLoaded, progress } = useAssetLoading();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Set initial value
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    // Listen for resize
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   return (
     <>
       {!assetsLoaded && <LoadingScreen progress={progress} />}
-      {/* <Navbar /> */}
-      <Header />
-      <ThreeScene />
 
+      {/* Smooth transition between mobile and desktop */}
+      <div
+        style={{
+          transition: "opacity 0.5s",
+          opacity: isMobile ? 1 : 0,
+          pointerEvents: isMobile ? "auto" : "none",
+          position: isMobile ? "static" : "absolute",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        {isMobile && <ArtStudioModelViewer />}
+      </div>
+
+      <div
+        style={{
+          transition: "opacity 0.5s",
+          opacity: isMobile ? 0 : 1,
+          pointerEvents: isMobile ? "none" : "auto",
+        }}
+      >
+        {!isMobile && (
+          <>
+            <Header />
+            <ThreeScene />
+          </>
+        )}
+      </div>
     </>
   );
 }

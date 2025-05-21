@@ -79,6 +79,8 @@ export default function Navbar() {
     { name: "About Us", href: "/about-us" },
     { name: "Events", href: "/events" },
     { name: "BIT Sindri", href: "/bit-sindri" },
+    { name: "Gallery", href: "/gallery" },
+    { name: "Bearers", href: "/alumni"},
     { name: "Join Us", href: "/modelviewer" },
   ];
 
@@ -88,25 +90,38 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className={`fixed top-0 left-0 right-0 z-50 ${
-          isScrolled
-            ? " backdrop-blur-md shadow-md"
-            : "backdrop-blur-sm"
-        } transition-all duration-300`}
+        className="fixed top-0 left-0 right-0 z-50  transition-all duration-300"
       >
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="container  mx-auto px-2 py-4 flex items-center justify-between">
           <Link href="#home" className="flex items-center space-x-2">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <Image src="/pw_logo.png" alt="logo" width={100} height={100} />
+              <div className="hidden md:block">
+                <Image src="/pw_logo.png" alt="logo" width={100} height={100} />
+              </div>
+
+              <div className="py-1 md:hidden" style={{ fontFamily: 'handle' }}>
+                <div href="/" className="text-lg md:text-2xl font-black tracking-widest">
+                  PAINTING WING
+                </div>
+                <h4 className="text-[12px] md:text-sm font-bold tracking-wider">
+                  Let Satisfaction Prevail
+                </h4>
+              </div>
             </motion.div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className={`hidden md:flex items-center space-x-8 border border-gray-500 dark:border-white rounded-lg p-3 px-7
+            ${
+          isScrolled
+            ? " backdrop-blur-xl shadow-lg"
+            : "backdrop-blur-md"
+        }
+      `}>
             <nav className="flex items-center space-x-6 text-3/2xl font-sans">
               {navLinks.map((link, index) => (
                 <motion.div
@@ -117,11 +132,17 @@ export default function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    className={`link-6 ${
+                    className={`link-6  p-2 rounded-sm hover:bg-slate-300 hover:text-gray-900 ${
                       isScrolled
                         ? "text-gray-700 dark:text-gray-200"
-                        : "text-white"
+                        : "text-gray-500 dark:text-white"
                     }`}
+                    onClick={e => {
+                      if (link.name === "Home") {
+                        e.preventDefault();
+                        window.location.href = "/";
+                      }
+                    }}
                   >
                     {link.name}
                   </Link>
@@ -132,14 +153,14 @@ export default function Navbar() {
 
           <Button
             onClick={handleBack}
-            className="bg-orange-600 hover:bg-orange-700 text-white"
+            className="bg-orange-600 hidden md:block hover:bg-orange-700 text-white"
           >
             Back
           </Button>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center md:hidden">
-            <Button
+            {/* <Button
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -148,7 +169,7 @@ export default function Navbar() {
             >
               <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </Button>
+            </Button> */}
             <Button
               variant="ghost"
               size="icon"
@@ -156,12 +177,12 @@ export default function Navbar() {
               aria-label="Toggle menu"
             >
               {isMenuOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-12 w-12" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-12 w-12" />
               )}
             </Button>
-          </div>
+          </div>  
         </div>
       </motion.header>
 
