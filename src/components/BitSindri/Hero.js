@@ -95,7 +95,7 @@ export default function HeroSection() {
       <section
         id="home"
         ref={ref}
-        className="relative h-screen flex items-center justify-center overflow-hidden"
+        className="relative h-screen bg-[#26282A] flex items-center justify-center overflow-hidden"
       >
         {/* Content */}
         <motion.div
@@ -108,7 +108,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-4xl md:text-6xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mb-6"
           >
-            Birla Institute of Technology, Sindri
+           Birsa Institute of Technology, Sindri
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -193,7 +193,7 @@ export default function HeroSection() {
               variants={fadeInUp}
               className="text-lg text-gray-700 max-w-3xl mx-auto"
             >
-              Established in 1949, Birla Institute of Technology, Sindri is one of the oldest engineering colleges in India. 
+              Established in 1949,Birsa Institute of Technology, Sindri is one of the oldest engineering colleges in India. 
               The institute offers undergraduate and postgraduate programs in various engineering disciplines,
               fostering excellence in education, research, and innovation.
             </motion.p>

@@ -80,7 +80,7 @@ export default function Navbar() {
     { name: "Events", href: "/events" },
     { name: "BIT Sindri", href: "/bit-sindri" },
     { name: "Gallery", href: "/gallery" },
-    { name: "Bearers", href: "/alumni"},
+    { name: "Bearers", href: "/members" },
     { name: "Join Us", href: "/modelviewer" },
   ];
 
@@ -90,7 +90,7 @@ export default function Navbar() {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className="fixed top-0 left-0 right-0 z-50  transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-50  transition-all duration-300 bg-transparent"
       >
         <div className="container  mx-auto px-2 py-4 flex items-center justify-between">
           <Link href="#home" className="flex items-center space-x-2">
@@ -175,11 +175,12 @@ export default function Navbar() {
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="Toggle menu"
+              
             >
               {isMenuOpen ? (
-                <X className="h-12 w-12" />
+                <X className="h-30 w-30" />
               ) : (
-                <Menu className="h-12 w-12" />
+                <Menu className="h-30 w-30" />
               )}
             </Button>
           </div>  

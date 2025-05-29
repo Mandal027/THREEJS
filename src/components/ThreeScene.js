@@ -1003,7 +1003,7 @@ const ThreeScene = () => {
         }
       `}</style>
       <div id="model-instruction" className="model-instruction">
-        Double-tap to resize model
+        Double-tap to resize Art Room
       </div>
       <div id="threejs-canvas" className="fixed w-full h-screen bg-white"></div>
 

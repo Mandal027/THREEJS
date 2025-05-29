@@ -5,16 +5,27 @@ import LoadingScreen from "@/components/LoadingScreen";
 import { useAssetLoading } from "@/hooks/useAssetLoading";
 import ArtStudioModelViewer from "@/components/LandingPage";
 import Header from "@/components/Header";
+// import AlumniDirectory from "@/components/AlumniDirectory";
 
 export default function HomePage() {
   const { assetsLoaded, progress } = useAssetLoading();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Set initial value
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    let lastIsMobile = window.innerWidth < 768;
+
+    const checkMobile = () => {
+      const currentIsMobile = window.innerWidth < 768;
+      setIsMobile(currentIsMobile);
+
+      // Reload if switching from mobile to desktop
+      if (lastIsMobile && !currentIsMobile) {
+        window.location.reload();
+      }
+      lastIsMobile = currentIsMobile;
+    };
+
     checkMobile();
-    // Listen for resize
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
@@ -47,10 +58,11 @@ export default function HomePage() {
         {!isMobile && (
           <>
             <Header />
-            <ThreeScene />
+            <ThreeScene  isMobile={isMobile} />
           </>
         )}
       </div>
+      {/* <AlumniDirectory/> */}
     </>
   );
 }

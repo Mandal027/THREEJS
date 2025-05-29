@@ -99,7 +99,7 @@ export default function AboutSection() {
             viewport={{ once: true, amount: 0.3 }}
             className="max-w-3xl mx-auto text-lg text-gray-700 dark:text-gray-300"
           >
-            Birla Institute of Technology, Sindri was established in 1949 and is one of the oldest engineering colleges
+            Birsa Institute of Technology, Sindri was established in 1949 and is one of the oldest engineering colleges
             in India. Located in Sindri, Jharkhand, the institute has been consistently producing quality engineers who
             have contributed significantly to the nations development.
           </motion.p>
