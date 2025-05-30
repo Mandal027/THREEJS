@@ -1,15 +1,29 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
 
-export function setupNavEventsEventListener(scene, camera, navEvents, group, setOverlayOpacity, setShowEvents) {
+
+import { useRouter } from "next/navigation"; // Use Next.js router
+
+export function setupNavEventsEventListener(
+  scene,
+  camera,
+  navEvents,
+  group,
+  setOverlayOpacity,
+  setShowCollabs,
+  router // Router is passed as a parameter
+) {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
 
-  // 🔴 Store the original camera position and zoom
-  // const originalCameraPosition = camera.position.clone();
-  // const originalCameraZoom = camera.zoom;
+  // Remove this line - router is already passed as a parameter
+  // const router = useRouter(); 
 
-  // 🖱 Handle mouse click event
+  // Store navigation state in sessionStorage
+  const markNavigationOccurred = () => {
+    sessionStorage.setItem('hasNavigatedFrom3DScene', 'true');
+  };
+
   const onMouseClick = (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
@@ -18,105 +32,19 @@ export function setupNavEventsEventListener(scene, camera, navEvents, group, set
     const intersects = raycaster.intersectObjects([navEvents]);
 
     if (intersects.length > 0) {
-      
-      // Fade in overlay first
-      gsap.to({}, {
-        duration: 0.5,
-        onUpdate: () => {
-          setOverlayOpacity(gsap.getProperty({}, "progress"));
-        },
-      });
-
-      // Animate camera position and zoom
-      gsap.to(camera, {
-        // zoom: 1.5,
-        // duration: 2,
-        ease: "power2.inOut",
-        onUpdate: () => {
-          camera.updateProjectionMatrix();
-        },
-        onComplete: () => {
-          setShowEvents(true);
-          crossButton.style.display = 'block'; // Show the 'X' button
-        },
-      });
-
-      // Set navEvents opacity to 0
-      gsap.to(navEvents, {
-        duration: 1,
-        opacity: 0,
-        onComplete: () => {
-          navEvents.visible = false;
-        },
+      // Clean up scene before navigation
+      scene.traverse((child) => {
+        if (child.dispose) child.dispose();
       });
       
+      markNavigationOccurred();
+      window.location.href = '/events';
     }
   };
 
   window.addEventListener("click", onMouseClick);
 
-  // 🔄 Add cross button to reset the scene
-  const crossButton = document.createElement('button');
-  crossButton.innerText = 'X';
-  crossButton.style.position = 'absolute';
-  crossButton.style.bottom = '10px'; // Shift to the bottom
-  crossButton.style.right = '10px';
-  crossButton.style.padding = '50px';
-  crossButton.style.fontSize = '18px';
-  crossButton.style.cursor = 'pointer';
-  crossButton.style.display = 'none'; // Initially hide the 'X' button
-  crossButton.style.zIndex = '9999'; // Ensure it's on top of other elements
-  document.body.appendChild(crossButton);
-
-  // 🔄 Handle cross button click
-  crossButton.addEventListener('click', () => {
-    // Reset camera position and zoom
-    gsap.to(camera, {
-      // zoom: originalCameraZoom * 1, // Decrease the final zoom value
-      // duration: 2,
-      ease: "power2.inOut",
-      onUpdate: () => {
-        camera.updateProjectionMatrix();
-      },
-    });
-
-    // Restore scene objects
-    group.children.forEach((child) => {
-      child.visible = true;
-    });
-
-    scene.children.forEach((child) => {
-      if (
-        child instanceof THREE.Line ||
-        (child.material && child.material instanceof THREE.MeshBasicMaterial) ||
-        child instanceof THREE.RectAreaLight
-      ) {
-        child.visible = true;
-      }
-    });
-
-    // Reset overlay opacity and navEvents visibility
-    gsap.to({}, {
-      duration: 0.5,
-      onUpdate: () => {
-        setOverlayOpacity(gsap.getProperty({}, "progress"));
-      },
-      onComplete: () => {
-        setOverlayOpacity(0);
-        navEvents.visible = true;
-      },
-    });
-
-    // Reverse content
-    setShowEvents(false);
-
-    // Hide the 'X' button
-    crossButton.style.display = 'none';
-  });
-
-  // Cleanup event listeners on unmount
   return () => {
     window.removeEventListener("click", onMouseClick);
-    crossButton.remove();
   };
 }
